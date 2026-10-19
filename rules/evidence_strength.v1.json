@@ -1,0 +1,15 @@
+{
+ "rules_version": "1.0.0",
+ "_doc": "Reliability of a datum (not commercial usefulness). Ordered; first match wins. Design adopted from OI evidence_strength.v1; MEASUREMENT, PUBLIC_REGISTRY and HUMAN_REVIEW added. freshness_days is a HYPOTHESIS.",
+ "freshness_days_for_dated_sector_source": 365,
+ "rules": [
+  {"id": "NOT_A_FACT", "when": {"claim_status": ["INFERRED", "ESTIMATED", "UNKNOWN", "CONFLICTING"]}, "strength": "UNKNOWN"},
+  {"id": "NOT_FOUND_OR_UNVERIFIED", "when": {"source_class": ["NOT_FOUND", "UNVERIFIED"]}, "strength": "UNKNOWN"},
+  {"id": "OFFICIAL_AT_ORIGIN", "when": {"source_class": ["OFFICIAL", "MEASUREMENT", "PUBLIC_REGISTRY"], "claim_status": ["KNOWN"]}, "strength": "HIGH"},
+  {"id": "HUMAN_REVIEWED", "when": {"source_class": ["HUMAN_REVIEW"], "claim_status": ["KNOWN"]}, "strength": "MEDIUM"},
+  {"id": "DATED_SECTOR_SOURCE", "when": {"source_class": ["SECTOR_SOURCE", "PROFESSIONAL_DIRECTORY"], "claim_status": ["KNOWN"], "dated_within_freshness": [true]}, "strength": "MEDIUM"},
+  {"id": "CORROBORATED", "when": {"source_class": ["SECTOR_SOURCE", "PROFESSIONAL_DIRECTORY", "OTHER_VERIFIABLE"], "claim_status": ["KNOWN"], "corroborated": [true]}, "strength": "MEDIUM"},
+  {"id": "SINGLE_UNCORROBORATED", "when": {"source_class": ["SECTOR_SOURCE", "PROFESSIONAL_DIRECTORY", "OTHER_VERIFIABLE"], "claim_status": ["KNOWN"]}, "strength": "LOW"}
+ ],
+ "default": "UNKNOWN"
+}

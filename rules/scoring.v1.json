@@ -1,0 +1,19 @@
+{
+ "scoring_version": "1.0.0",
+ "_status": "All thresholds are provisional parameters (P-12, P-13, P-32), HYPOTHESIS. TG never appears in the REVIEW_PRIORITY rule (D-021).",
+ "gates": {
+  "G_GEO": {"fields": ["business.municipality"], "acceptable_sources": ["OFFICIAL", "HUMAN_REVIEW"]},
+  "G_CATEGORY": {"fields": ["business.category"], "acceptable_sources": ["OFFICIAL", "HUMAN_REVIEW"]},
+  "G_ACTIVE": {"fields": ["business.activity_dated"], "status_field": "business.status",
+               "acceptable_sources": ["OFFICIAL", "PUBLIC_REGISTRY", "HUMAN_REVIEW"], "window_days": 365}
+ },
+ "tg_levels": {"minor": 1, "major": 2, "critical_or_two_major": 3},
+ "activity_signal_prefix": "activity.signal.",
+ "contraindication_prefix": "contraindication.",
+ "band_levels": {"NONE": 0, "LOW": 1, "MEDIUM": 2, "HIGH": 3},
+ "buckets": {
+  "REVIEW_PRIORITY": {"IM_floor_min": 2, "BV_floor_min": 2, "AC_floor_min": 1, "confidence": ["STRONG", "MODERATE"]},
+  "WATCH": {"IM_floor_min": 1, "TG_floor_min": 2}
+ },
+ "disclaimer": "priority for human review; not a probability or indication of purchase intent"
+}

@@ -1,0 +1,7 @@
+{
+ "_doc": "Product configuration for M1. paid_calls_enabled must stay false; the code constant in waos/budget.py is also false and both are required (B8). Values marked HYPOTHESIS are provisional parameters.",
+ "paid_calls_enabled": false,
+ "approval_expiry_hours": {"SHORTLIST": 168, "BUDGET_CHANGE": 48, "_status": "HYPOTHESIS P-21"},
+ "suppression_salt": "m1-synthetic-salt-not-a-secret",
+ "_suppression_salt_note": "Synthetic-only salt committed to the repository; a real deployment needs a secret salt (PENDING)."
+}

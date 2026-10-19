@@ -1,0 +1,29 @@
+{
+ "$id": "waos.approval.v1",
+ "title": "ApprovalRequest bound to the SHA-256 of the canonical JSON of the exact action; decided only by a human.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["schema_version", "approval_id", "type", "action", "action_sha256", "requested_by", "requested_at",
+              "expires_at", "decision", "status", "executed_at", "execution_count"],
+ "properties": {
+  "schema_version": {"const": "waos.approval.v1"},
+  "approval_id": {"type": "string", "pattern": "^apr_[a-z0-9_]+$"},
+  "type": {"enum": ["SHORTLIST", "BUDGET_CHANGE", "CAMPAIGN_PLAN", "PREVIEW_T2", "OUTREACH", "PUBLISH", "EXTERNAL_WRITE",
+                    "DATA_SOURCE_ENABLE", "EXTERNAL_DESTINATION"]},
+  "action": {"type": "object", "required": ["kind"], "properties": {"kind": {"type": "string"}}},
+  "action_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+  "requested_by": {"type": "string", "minLength": 1},
+  "requested_at": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},
+  "expires_at": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},
+  "decision": {
+   "type": ["object", "null"], "additionalProperties": false,
+   "required": ["decision", "by", "at", "comment"],
+   "properties": {"decision": {"enum": ["APPROVED", "REJECTED"]},
+                  "by": {"type": "string", "pattern": "^human:[A-Za-z0-9_.-]+$"},
+                  "at": {"type": "string"}, "comment": {"type": ["string", "null"]}}
+  },
+  "status": {"enum": ["PENDING", "APPROVED", "REJECTED", "EXPIRED", "EXECUTED"]},
+  "executed_at": {"type": ["string", "null"]},
+  "execution_count": {"type": "integer", "minimum": 0, "maximum": 1}
+ }
+}

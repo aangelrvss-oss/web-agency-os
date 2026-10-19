@@ -1,0 +1,849 @@
+{
+ "schema_version": "waos.fixture.v1",
+ "data_mode": "SYNTHETIC",
+ "_note": "Synthetic data only. Businesses, people, .example domains and +34 000 ... numbers (not a valid Spanish range) are fictitious. Category value bands are synthetic test values, not commercial assumptions (P-14).",
+ "campaign": {
+  "campaign_id": "cmp_demo",
+  "name": "Campaña de demostración sintética",
+  "data_mode": "SYNTHETIC",
+  "area": {
+   "municipalities": [
+    "Villa Sintética Norte",
+    "Villa Sintética Sur"
+   ],
+   "districts": [],
+   "postal_codes": []
+  },
+  "categories": [
+   "renovation",
+   "plumbing",
+   "auto_repair"
+  ],
+  "category_value_bands": {
+   "renovation": "HIGH",
+   "plumbing": "MEDIUM",
+   "auto_repair": "UNKNOWN"
+  },
+  "existing_client_keys": [],
+  "competitor_keys": [
+   "agencia-sintetica-uno.example"
+  ]
+ },
+ "captures": {
+  "cap_01": "Reformas Alba Sintética S.L. Reformas integrales de cocinas y baños en Villa Sintética Norte. Llámenos al +34 000 000 101. Última obra entregada el 2026-09-15.",
+  "cap_02": "Fontanería Beatriz Sintética — Beatriz Ejemplo Sintético, fontanera autónoma. Fontanería y reparaciones en Villa Sintética Sur. Contacto: beatriz@fontaneria-beatriz.example o +34 000 000 102. Actualizado el 2026-08-30. Atendemos urgencias.",
+  "cap_03": "Pintores Carmen Sintético. Pintura y reformas. Trabajos fechados 2026-07-01.",
+  "cap_04": "Taller Delta Sintético. Mecánica general y reparación de automóviles en Villa Sintética Sur. Revisión publicada el 2026-10-01. Servicio de recogida.",
+  "cap_05": "Reformas Epsilon Sintética. Reformas de viviendas en Villa Sintética Norte. Proyecto terminado el 2026-09-01. Web diseñada por Agencia Sintética Uno.",
+  "cap_08": "Reformas Theta Sintética. Reformas en Ciudad Fuera Del Área. Obra del 2026-09-20.",
+  "cap_09": "Fontanería Iota Sintética. Fontanería en Villa Sintética Sur. Noticia del 2026-09-10. Instalación de calderas.",
+  "cap_10b": "Reformas Kappa Sintética. Oficina central en Villa Sintética Sur.",
+  "cap_10": "Reformas Kappa Sintética. Reformas en Villa Sintética Norte. Obra del 2026-09-05.",
+  "cap_11": "Taller Lambda Sintético en Villa Sintética Norte."
+ },
+ "leads": [
+  {
+   "lead": {
+    "lead_id": "lead_demo_01",
+    "entity_key": "reformas-alba.example",
+    "business": {
+     "name": "Reformas Alba Sintética S.L.",
+     "category_id": "renovation",
+     "municipality": "Villa Sintética Norte",
+     "website_url": "https://reformas-alba.example",
+     "domain": "reformas-alba.example",
+     "phone": "+34 000 000 101"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    }
+   },
+   "evidence": [
+    {
+     "evidence_id": "ev_demo_01_01",
+     "field": "business.municipality",
+     "value": "Villa Sintética Norte",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_01",
+     "snippet": "en Villa Sintética Norte",
+     "source_url": "https://reformas-alba.example/"
+    },
+    {
+     "evidence_id": "ev_demo_01_02",
+     "field": "business.category",
+     "value": "renovation",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_01",
+     "snippet": "Reformas integrales de cocinas y baños",
+     "source_url": "https://reformas-alba.example/"
+    },
+    {
+     "evidence_id": "ev_demo_01_03",
+     "field": "business.activity_dated",
+     "value": "2026-09-15",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_01",
+     "snippet": "Última obra entregada el 2026-09-15",
+     "source_url": "https://reformas-alba.example/"
+    },
+    {
+     "evidence_id": "ev_demo_01_04",
+     "field": "business.phone",
+     "value": "+34 000 000 101",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "BUSINESS_CONTACT",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_01",
+     "snippet": "Llámenos al +34 000 000 101",
+     "source_url": "https://reformas-alba.example/"
+    },
+    {
+     "evidence_id": "ev_demo_01_05",
+     "field": "activity.signal.service_lines",
+     "value": true,
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_01",
+     "snippet": "cocinas y baños",
+     "source_url": "https://reformas-alba.example/"
+    }
+   ],
+   "findings": [
+    {
+     "finding_id": "fnd_demo_01_01",
+     "code": "NO_MOBILE_CONTACT_PATH",
+     "technical_severity": "MAJOR",
+     "claim_status": "KNOWN"
+    },
+    {
+     "finding_id": "fnd_demo_01_02",
+     "code": "SLOW_MOBILE",
+     "technical_severity": "MAJOR",
+     "claim_status": "KNOWN",
+     "measured_value": 38,
+     "threshold_param": "P-03"
+    }
+   ]
+  },
+  {
+   "lead": {
+    "lead_id": "lead_demo_02",
+    "entity_key": "fontaneria-beatriz.example",
+    "business": {
+     "name": "Fontanería Beatriz Sintética",
+     "category_id": "plumbing",
+     "municipality": "Villa Sintética Sur",
+     "website_url": "https://fontaneria-beatriz.example",
+     "domain": "fontaneria-beatriz.example",
+     "phone": "+34 000 000 102",
+     "email": "beatriz@fontaneria-beatriz.example",
+     "owner_name": "Beatriz Ejemplo Sintético"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    }
+   },
+   "evidence": [
+    {
+     "evidence_id": "ev_demo_02_01",
+     "field": "business.municipality",
+     "value": "Villa Sintética Sur",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_02",
+     "snippet": "en Villa Sintética Sur",
+     "source_url": "https://fontaneria-beatriz.example/"
+    },
+    {
+     "evidence_id": "ev_demo_02_02",
+     "field": "business.category",
+     "value": "plumbing",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_02",
+     "snippet": "Fontanería y reparaciones",
+     "source_url": "https://fontaneria-beatriz.example/"
+    },
+    {
+     "evidence_id": "ev_demo_02_03",
+     "field": "business.activity_dated",
+     "value": "2026-08-30",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_02",
+     "snippet": "Actualizado el 2026-08-30",
+     "source_url": "https://fontaneria-beatriz.example/"
+    },
+    {
+     "evidence_id": "ev_demo_02_04",
+     "field": "business.owner_name",
+     "value": "Beatriz Ejemplo Sintético",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "BUSINESS_CONTACT",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_02",
+     "snippet": "Beatriz Ejemplo Sintético, fontanera autónoma",
+     "source_url": "https://fontaneria-beatriz.example/"
+    },
+    {
+     "evidence_id": "ev_demo_02_05",
+     "field": "business.email",
+     "value": "beatriz@fontaneria-beatriz.example",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "BUSINESS_CONTACT",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_02",
+     "snippet": "Contacto: beatriz@fontaneria-beatriz.example",
+     "source_url": "https://fontaneria-beatriz.example/"
+    },
+    {
+     "evidence_id": "ev_demo_02_06",
+     "field": "business.phone",
+     "value": "+34 000 000 102",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "BUSINESS_CONTACT",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_02",
+     "snippet": "o +34 000 000 102",
+     "source_url": "https://fontaneria-beatriz.example/"
+    },
+    {
+     "evidence_id": "ev_demo_02_07",
+     "field": "activity.signal.emergency_service",
+     "value": true,
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_02",
+     "snippet": "Atendemos urgencias",
+     "source_url": "https://fontaneria-beatriz.example/"
+    }
+   ],
+   "findings": [
+    {
+     "finding_id": "fnd_demo_02_01",
+     "code": "NO_HTTPS",
+     "technical_severity": "MAJOR",
+     "claim_status": "KNOWN"
+    }
+   ]
+  },
+  {
+   "lead": {
+    "lead_id": "lead_demo_03",
+    "entity_key": "pintores-carmen.example",
+    "business": {
+     "name": "Pintores Carmen Sintético",
+     "category_id": "renovation",
+     "municipality": null,
+     "website_url": "https://pintores-carmen.example",
+     "domain": "pintores-carmen.example"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    }
+   },
+   "evidence": [
+    {
+     "evidence_id": "ev_demo_03_01",
+     "field": "business.municipality",
+     "value": "Villa Sintética Norte",
+     "claim_status": "INFERRED",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT"
+    },
+    {
+     "evidence_id": "ev_demo_03_02",
+     "field": "business.category",
+     "value": "renovation",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_03",
+     "snippet": "Pintura y reformas",
+     "source_url": "https://pintores-carmen.example/"
+    },
+    {
+     "evidence_id": "ev_demo_03_03",
+     "field": "business.activity_dated",
+     "value": "2026-07-01",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_03",
+     "snippet": "Trabajos fechados 2026-07-01",
+     "source_url": "https://pintores-carmen.example/"
+    },
+    {
+     "evidence_id": "ev_demo_03_04",
+     "field": "activity.signal.service_lines",
+     "value": true,
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_03",
+     "snippet": "Pintura y reformas",
+     "source_url": "https://pintores-carmen.example/"
+    }
+   ],
+   "findings": [
+    {
+     "finding_id": "fnd_demo_03_01",
+     "code": "SLOW_MOBILE",
+     "technical_severity": "MAJOR",
+     "claim_status": "KNOWN",
+     "measured_value": 41,
+     "threshold_param": "P-03"
+    }
+   ]
+  },
+  {
+   "lead": {
+    "lead_id": "lead_demo_04",
+    "entity_key": "taller-delta.example",
+    "business": {
+     "name": "Taller Delta Sintético",
+     "category_id": "auto_repair",
+     "municipality": "Villa Sintética Sur",
+     "website_url": "https://taller-delta.example",
+     "domain": "taller-delta.example"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    }
+   },
+   "evidence": [
+    {
+     "evidence_id": "ev_demo_04_01",
+     "field": "business.municipality",
+     "value": "Villa Sintética Sur",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_04",
+     "snippet": "en Villa Sintética Sur",
+     "source_url": "https://taller-delta.example/"
+    },
+    {
+     "evidence_id": "ev_demo_04_02",
+     "field": "business.category",
+     "value": "auto_repair",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_04",
+     "snippet": "Mecánica general y reparación de automóviles",
+     "source_url": "https://taller-delta.example/"
+    },
+    {
+     "evidence_id": "ev_demo_04_03",
+     "field": "business.activity_dated",
+     "value": "2026-10-01",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_04",
+     "snippet": "Revisión publicada el 2026-10-01",
+     "source_url": "https://taller-delta.example/"
+    },
+    {
+     "evidence_id": "ev_demo_04_04",
+     "field": "activity.signal.pickup_service",
+     "value": true,
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_04",
+     "snippet": "Servicio de recogida",
+     "source_url": "https://taller-delta.example/"
+    }
+   ],
+   "findings": [
+    {
+     "finding_id": "fnd_demo_04_01",
+     "code": "NOT_MOBILE_READY",
+     "technical_severity": "MAJOR",
+     "claim_status": "KNOWN"
+    }
+   ]
+  },
+  {
+   "lead": {
+    "lead_id": "lead_demo_05",
+    "entity_key": "reformas-epsilon.example",
+    "business": {
+     "name": "Reformas Epsilon Sintética",
+     "category_id": "renovation",
+     "municipality": "Villa Sintética Norte",
+     "website_url": "https://reformas-epsilon.example",
+     "domain": "reformas-epsilon.example"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    }
+   },
+   "evidence": [
+    {
+     "evidence_id": "ev_demo_05_01",
+     "field": "business.municipality",
+     "value": "Villa Sintética Norte",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_05",
+     "snippet": "en Villa Sintética Norte",
+     "source_url": "https://reformas-epsilon.example/"
+    },
+    {
+     "evidence_id": "ev_demo_05_02",
+     "field": "business.category",
+     "value": "renovation",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_05",
+     "snippet": "Reformas de viviendas",
+     "source_url": "https://reformas-epsilon.example/"
+    },
+    {
+     "evidence_id": "ev_demo_05_03",
+     "field": "business.activity_dated",
+     "value": "2026-09-01",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_05",
+     "snippet": "Proyecto terminado el 2026-09-01",
+     "source_url": "https://reformas-epsilon.example/"
+    },
+    {
+     "evidence_id": "ev_demo_05_04",
+     "field": "activity.signal.service_lines",
+     "value": true,
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_05",
+     "snippet": "Reformas de viviendas",
+     "source_url": "https://reformas-epsilon.example/"
+    },
+    {
+     "evidence_id": "ev_demo_05_05",
+     "field": "contraindication.AGENCY_MAINTAINED",
+     "value": true,
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_05",
+     "snippet": "Web diseñada por Agencia Sintética Uno",
+     "source_url": "https://reformas-epsilon.example/"
+    }
+   ],
+   "findings": [
+    {
+     "finding_id": "fnd_demo_05_01",
+     "code": "NO_HTTPS",
+     "technical_severity": "MAJOR",
+     "claim_status": "KNOWN"
+    }
+   ]
+  },
+  {
+   "lead": {
+    "lead_id": "lead_demo_06",
+    "entity_key": "cristaleria-zeta.example",
+    "business": {
+     "name": "Cristalería Zeta Sintética",
+     "category_id": "renovation",
+     "municipality": null,
+     "website_url": "https://cristaleria-zeta.example",
+     "domain": "cristaleria-zeta.example"
+    },
+    "identity": {
+     "status": "AMBIGUOUS",
+     "evidence_ids": []
+    }
+   },
+   "evidence": [],
+   "findings": []
+  },
+  {
+   "lead": {
+    "lead_id": "lead_demo_07",
+    "entity_key": "cerrajeria-eta.example",
+    "business": {
+     "name": "Cerrajería Eta Sintética",
+     "category_id": "renovation",
+     "municipality": null,
+     "website_url": "https://cerrajeria-eta.example",
+     "domain": "cerrajeria-eta.example"
+    },
+    "identity": {
+     "status": "KNOWN_MISMATCH",
+     "evidence_ids": []
+    }
+   },
+   "evidence": []
+  },
+  {
+   "lead": {
+    "lead_id": "lead_demo_08",
+    "entity_key": "reformas-theta.example",
+    "business": {
+     "name": "Reformas Theta Sintética",
+     "category_id": "renovation",
+     "municipality": "Ciudad Fuera Del Área",
+     "website_url": "https://reformas-theta.example",
+     "domain": "reformas-theta.example"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    }
+   },
+   "evidence": [
+    {
+     "evidence_id": "ev_demo_08_01",
+     "field": "business.municipality",
+     "value": "Ciudad Fuera Del Área",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_08",
+     "snippet": "en Ciudad Fuera Del Área",
+     "source_url": "https://reformas-theta.example/"
+    },
+    {
+     "evidence_id": "ev_demo_08_02",
+     "field": "business.category",
+     "value": "renovation",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_08",
+     "snippet": "Reformas en",
+     "source_url": "https://reformas-theta.example/"
+    },
+    {
+     "evidence_id": "ev_demo_08_03",
+     "field": "business.activity_dated",
+     "value": "2026-09-20",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_08",
+     "snippet": "Obra del 2026-09-20",
+     "source_url": "https://reformas-theta.example/"
+    }
+   ],
+   "findings": [
+    {
+     "finding_id": "fnd_demo_08_01",
+     "code": "NO_HTTPS",
+     "technical_severity": "MAJOR",
+     "claim_status": "KNOWN"
+    }
+   ]
+  },
+  {
+   "lead": {
+    "lead_id": "lead_demo_09",
+    "entity_key": "fontaneria-iota.example",
+    "business": {
+     "name": "Fontanería Iota Sintética",
+     "category_id": "plumbing",
+     "municipality": "Villa Sintética Sur",
+     "website_url": "https://fontaneria-iota.example",
+     "domain": "fontaneria-iota.example"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    }
+   },
+   "evidence": [
+    {
+     "evidence_id": "ev_demo_09_01",
+     "field": "business.municipality",
+     "value": "Villa Sintética Sur",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_09",
+     "snippet": "en Villa Sintética Sur",
+     "source_url": "https://fontaneria-iota.example/"
+    },
+    {
+     "evidence_id": "ev_demo_09_02",
+     "field": "business.category",
+     "value": "plumbing",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_09",
+     "snippet": "Fontanería en",
+     "source_url": "https://fontaneria-iota.example/"
+    },
+    {
+     "evidence_id": "ev_demo_09_03",
+     "field": "business.activity_dated",
+     "value": "2026-09-10",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_09",
+     "snippet": "Noticia del 2026-09-10",
+     "source_url": "https://fontaneria-iota.example/"
+    },
+    {
+     "evidence_id": "ev_demo_09_04",
+     "field": "activity.signal.boiler_installation",
+     "value": true,
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_09",
+     "snippet": "Instalación de calderas",
+     "source_url": "https://fontaneria-iota.example/"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "lead": {
+    "lead_id": "lead_demo_10",
+    "entity_key": "reformas-kappa.example",
+    "business": {
+     "name": "Reformas Kappa Sintética",
+     "category_id": "renovation",
+     "municipality": null,
+     "website_url": "https://reformas-kappa.example",
+     "domain": "reformas-kappa.example"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    }
+   },
+   "evidence": [
+    {
+     "evidence_id": "ev_demo_10_01",
+     "field": "business.municipality",
+     "value": "Villa Sintética Norte",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_10",
+     "snippet": "en Villa Sintética Norte",
+     "source_url": "https://reformas-kappa.example/"
+    },
+    {
+     "evidence_id": "ev_demo_10_02",
+     "field": "business.municipality",
+     "value": "Villa Sintética Sur",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_10b",
+     "snippet": "en Villa Sintética Sur",
+     "source_url": "https://reformas-kappa.example/"
+    },
+    {
+     "evidence_id": "ev_demo_10_03",
+     "field": "business.category",
+     "value": "renovation",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_10",
+     "snippet": "Reformas en",
+     "source_url": "https://reformas-kappa.example/"
+    },
+    {
+     "evidence_id": "ev_demo_10_04",
+     "field": "business.activity_dated",
+     "value": "2026-09-05",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_10",
+     "snippet": "Obra del 2026-09-05",
+     "source_url": "https://reformas-kappa.example/"
+    }
+   ],
+   "findings": [
+    {
+     "finding_id": "fnd_demo_10_01",
+     "code": "NO_HTTPS",
+     "technical_severity": "MAJOR",
+     "claim_status": "KNOWN"
+    }
+   ]
+  },
+  {
+   "lead": {
+    "lead_id": "lead_demo_11",
+    "entity_key": "taller-lambda.example",
+    "business": {
+     "name": "=HYPERLINK(\"http://malicioso.example\",\"Clic\"), Taller\nLambda",
+     "category_id": "auto_repair",
+     "municipality": "Villa Sintética Norte",
+     "website_url": "@SUM(1+1)*cmd|' /C calc'!A0",
+     "domain": "taller-lambda.example",
+     "phone": "+34 000 000 111"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    }
+   },
+   "evidence": [
+    {
+     "evidence_id": "ev_demo_11_01",
+     "field": "business.municipality",
+     "value": "Villa Sintética Norte",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "evidence_origin": "FIRST_PARTY_WEB",
+     "personal_data": "NONE",
+     "seen_in": "PAGE",
+     "kind": "FACT",
+     "capture_ref": "cap_11",
+     "snippet": "en Villa Sintética Norte",
+     "source_url": "https://taller-lambda.example/"
+    }
+   ],
+   "findings": [
+    {
+     "finding_id": "fnd_demo_11_01",
+     "code": "LAYOUT_SHIFT",
+     "technical_severity": "MINOR",
+     "claim_status": "KNOWN"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "pricing_version": "1.0.0-m1-fake",
+ "_doc": "Prices of the FAKE tools available in M1 (no real tool, no network). null = unknown price = always blocked (B6).",
+ "tools": {
+  "fake.free_lookup": {"unit_price_cents": 0},
+  "fake.priced_lookup": {"unit_price_cents": 5},
+  "fake.discounted_lookup": {"unit_price_cents": 10},
+  "fake.unpriced_lookup": {"unit_price_cents": null}
+ }
+}

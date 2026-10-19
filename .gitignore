@@ -11,6 +11,12 @@ data/real/
 captures/
 exports/
 
+# Local M1 databases
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
+
 # Tooling
 __pycache__/
 *.pyc

@@ -1,0 +1,31 @@
+{
+ "$id": "waos.ledger_entry.v1",
+ "title": "LedgerEntry: one row per tool call attempt, including denials.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["schema_version", "entry_id", "ts", "run_id", "tool", "operation", "input_sha256", "pricing_version",
+              "unit_price_cents", "reserved_cents", "actual_cents", "status", "deny_reason", "budget_remaining_cents"],
+ "properties": {
+  "schema_version": {"const": "waos.ledger_entry.v1"},
+  "entry_id": {"type": "string", "pattern": "^led_[a-z0-9_]+$"},
+  "ts": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},
+  "run_id": {"type": "string", "minLength": 1},
+  "tool": {"type": "string", "minLength": 1},
+  "operation": {"type": "string"},
+  "input_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+  "pricing_version": {"type": "string"},
+  "unit_price_cents": {"type": ["integer", "null"], "minimum": 0},
+  "reserved_cents": {"type": "integer", "minimum": 0},
+  "actual_cents": {"type": "integer", "minimum": 0},
+  "status": {"enum": ["OK", "DENIED", "ERROR"]},
+  "deny_reason": {"enum": [null, "PAID_CALLS_DISABLED", "UNKNOWN_PRICE", "NO_BUDGET", "CAP_EXCEEDED", "TOOL_NOT_ALLOWED"]},
+  "budget_remaining_cents": {"type": ["integer", "null"]}
+ },
+ "allOf": [
+  {"if": {"required": ["status"], "properties": {"status": {"const": "DENIED"}}},
+   "then": {"properties": {"deny_reason": {"type": "string"}, "actual_cents": {"const": 0},
+                           "reserved_cents": {"const": 0}}}},
+  {"if": {"required": ["status"], "properties": {"status": {"const": "OK"}}},
+   "then": {"properties": {"deny_reason": {"type": "null"}}}}
+ ]
+}

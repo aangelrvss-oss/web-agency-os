@@ -1,0 +1,1703 @@
+{
+ "lead": {
+  "valid": [
+   {
+    "schema_version": "waos.lead.v1",
+    "lead_id": "lead_demo_01",
+    "campaign_id": "cmp_demo",
+    "entity_key": "reformas-alba.example",
+    "state": "SHORTLISTED",
+    "state_version": 4,
+    "business": {
+     "name": "Reformas Alba Sintética S.L.",
+     "category_id": "renovation",
+     "municipality": "Villa Sintética Norte",
+     "website_url": "https://reformas-alba.example",
+     "domain": "reformas-alba.example",
+     "phone": "+34 000 000 101"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    },
+    "purchase_intent": "UNKNOWN",
+    "suppressed": false,
+    "on_hold_from": null,
+    "diagnosis_recorded": true,
+    "data_mode": "SYNTHETIC",
+    "created_at": "2026-10-19T10:15:13Z"
+   },
+   {
+    "schema_version": "waos.lead.v1",
+    "lead_id": "lead_demo_02",
+    "campaign_id": "cmp_demo",
+    "entity_key": "fontaneria-beatriz.example",
+    "state": "SUPPRESSED",
+    "state_version": 3,
+    "business": {
+     "name": "Fontanería Beatriz Sintética",
+     "category_id": "plumbing",
+     "municipality": "Villa Sintética Sur",
+     "website_url": "https://fontaneria-beatriz.example",
+     "domain": "fontaneria-beatriz.example",
+     "phone": null,
+     "email": null,
+     "owner_name": null
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    },
+    "purchase_intent": "UNKNOWN",
+    "suppressed": true,
+    "on_hold_from": null,
+    "diagnosis_recorded": true,
+    "data_mode": "SYNTHETIC",
+    "created_at": "2026-10-19T10:15:13Z"
+   },
+   {
+    "schema_version": "waos.lead.v1",
+    "lead_id": "lead_demo_03",
+    "campaign_id": "cmp_demo",
+    "entity_key": "pintores-carmen.example",
+    "state": "DIAGNOSED",
+    "state_version": 2,
+    "business": {
+     "name": "Pintores Carmen Sintético",
+     "category_id": "renovation",
+     "municipality": null,
+     "website_url": "https://pintores-carmen.example",
+     "domain": "pintores-carmen.example"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    },
+    "purchase_intent": "UNKNOWN",
+    "suppressed": false,
+    "on_hold_from": null,
+    "diagnosis_recorded": true,
+    "data_mode": "SYNTHETIC",
+    "created_at": "2026-10-19T10:15:13Z"
+   }
+  ],
+  "invalid": [
+   {
+    "schema_version": "waos.lead.v1",
+    "campaign_id": "cmp_demo",
+    "entity_key": "reformas-alba.example",
+    "state": "SHORTLISTED",
+    "state_version": 4,
+    "business": {
+     "name": "Reformas Alba Sintética S.L.",
+     "category_id": "renovation",
+     "municipality": "Villa Sintética Norte",
+     "website_url": "https://reformas-alba.example",
+     "domain": "reformas-alba.example",
+     "phone": "+34 000 000 101"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    },
+    "purchase_intent": "UNKNOWN",
+    "suppressed": false,
+    "on_hold_from": null,
+    "diagnosis_recorded": true,
+    "data_mode": "SYNTHETIC",
+    "created_at": "2026-10-19T10:15:13Z"
+   },
+   {
+    "schema_version": "waos.other.v9",
+    "lead_id": "lead_demo_01",
+    "campaign_id": "cmp_demo",
+    "entity_key": "reformas-alba.example",
+    "state": "SHORTLISTED",
+    "state_version": 4,
+    "business": {
+     "name": "Reformas Alba Sintética S.L.",
+     "category_id": "renovation",
+     "municipality": "Villa Sintética Norte",
+     "website_url": "https://reformas-alba.example",
+     "domain": "reformas-alba.example",
+     "phone": "+34 000 000 101"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    },
+    "purchase_intent": "UNKNOWN",
+    "suppressed": false,
+    "on_hold_from": null,
+    "diagnosis_recorded": true,
+    "data_mode": "SYNTHETIC",
+    "created_at": "2026-10-19T10:15:13Z"
+   },
+   {
+    "schema_version": "waos.lead.v1",
+    "lead_id": "lead_demo_01",
+    "campaign_id": "cmp_demo",
+    "entity_key": "reformas-alba.example",
+    "state": "SHORTLISTED",
+    "state_version": 4,
+    "business": {
+     "name": "Reformas Alba Sintética S.L.",
+     "category_id": "renovation",
+     "municipality": "Villa Sintética Norte",
+     "website_url": "https://reformas-alba.example",
+     "domain": "reformas-alba.example",
+     "phone": "+34 000 000 101"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    },
+    "purchase_intent": "UNKNOWN",
+    "suppressed": false,
+    "on_hold_from": null,
+    "diagnosis_recorded": true,
+    "data_mode": "SYNTHETIC",
+    "created_at": "2026-10-19T10:15:13Z",
+    "unexpected_field": 1
+   },
+   {
+    "schema_version": "waos.lead.v1",
+    "lead_id": "lead_demo_01",
+    "campaign_id": "cmp_demo",
+    "entity_key": "reformas-alba.example",
+    "state": "SHORTLISTED",
+    "state_version": 4,
+    "business": {
+     "name": "Reformas Alba Sintética S.L.",
+     "category_id": "renovation",
+     "municipality": "Villa Sintética Norte",
+     "website_url": "https://reformas-alba.example",
+     "domain": "reformas-alba.example",
+     "phone": "+34 000 000 101"
+    },
+    "identity": {
+     "status": "KNOWN_MATCH",
+     "evidence_ids": []
+    },
+    "purchase_intent": "INTERESTED",
+    "suppressed": false,
+    "on_hold_from": null,
+    "diagnosis_recorded": true,
+    "data_mode": "SYNTHETIC",
+    "created_at": "2026-10-19T10:15:13Z"
+   }
+  ]
+ },
+ "evidence": {
+  "valid": [
+   {
+    "schema_version": "waos.evidence.v1",
+    "subject": {
+     "lead_id": "lead_demo_01",
+     "entity_key": "reformas-alba.example"
+    },
+    "evidence_origin": "FIRST_PARTY_WEB",
+    "method": {
+     "tool": "fixture",
+     "tool_version": "m1",
+     "procedure_id": "FIXTURE"
+    },
+    "retrieved_at": "2026-10-19T10:15:13Z",
+    "confidence": "HIGH",
+    "proposed_by": "fixture",
+    "personal_data": "NONE",
+    "source_url": "https://reformas-alba.example/",
+    "snippet": "en Villa Sintética Norte",
+    "data_mode": "SYNTHETIC",
+    "evidence_id": "ev_demo_01_01",
+    "field": "business.municipality",
+    "value": "Villa Sintética Norte",
+    "claim_status": "KNOWN",
+    "source_class": "OFFICIAL",
+    "seen_in": "PAGE",
+    "kind": "FACT",
+    "capture_sha256": "e5b23efeb8e205b3d7150c85d07d0ead28de695bdd9eb851c9a1151a9a618ddc",
+    "erased": false,
+    "capture_available": true,
+    "strength": "HIGH"
+   },
+   {
+    "schema_version": "waos.evidence.v1",
+    "subject": {
+     "lead_id": "lead_demo_01",
+     "entity_key": "reformas-alba.example"
+    },
+    "evidence_origin": "FIRST_PARTY_WEB",
+    "method": {
+     "tool": "fixture",
+     "tool_version": "m1",
+     "procedure_id": "FIXTURE"
+    },
+    "retrieved_at": "2026-10-19T10:15:13Z",
+    "confidence": "HIGH",
+    "proposed_by": "fixture",
+    "personal_data": "NONE",
+    "source_url": "https://reformas-alba.example/",
+    "snippet": "Reformas integrales de cocinas y baños",
+    "data_mode": "SYNTHETIC",
+    "evidence_id": "ev_demo_01_02",
+    "field": "business.category",
+    "value": "renovation",
+    "claim_status": "KNOWN",
+    "source_class": "OFFICIAL",
+    "seen_in": "PAGE",
+    "kind": "FACT",
+    "capture_sha256": "e5b23efeb8e205b3d7150c85d07d0ead28de695bdd9eb851c9a1151a9a618ddc",
+    "erased": false,
+    "capture_available": true,
+    "strength": "HIGH"
+   },
+   {
+    "schema_version": "waos.evidence.v1",
+    "subject": {
+     "lead_id": "lead_demo_01",
+     "entity_key": "reformas-alba.example"
+    },
+    "evidence_origin": "FIRST_PARTY_WEB",
+    "method": {
+     "tool": "fixture",
+     "tool_version": "m1",
+     "procedure_id": "FIXTURE"
+    },
+    "retrieved_at": "2026-10-19T10:15:13Z",
+    "confidence": "HIGH",
+    "proposed_by": "fixture",
+    "personal_data": "NONE",
+    "source_url": "https://reformas-alba.example/",
+    "snippet": "Última obra entregada el 2026-09-15",
+    "data_mode": "SYNTHETIC",
+    "evidence_id": "ev_demo_01_03",
+    "field": "business.activity_dated",
+    "value": "2026-09-15",
+    "claim_status": "KNOWN",
+    "source_class": "OFFICIAL",
+    "seen_in": "PAGE",
+    "kind": "FACT",
+    "capture_sha256": "e5b23efeb8e205b3d7150c85d07d0ead28de695bdd9eb851c9a1151a9a618ddc",
+    "erased": false,
+    "capture_available": true,
+    "strength": "HIGH"
+   }
+  ],
+  "invalid": [
+   {
+    "schema_version": "waos.evidence.v1",
+    "subject": {
+     "lead_id": "lead_demo_01",
+     "entity_key": "reformas-alba.example"
+    },
+    "evidence_origin": "FIRST_PARTY_WEB",
+    "method": {
+     "tool": "fixture",
+     "tool_version": "m1",
+     "procedure_id": "FIXTURE"
+    },
+    "retrieved_at": "2026-10-19T10:15:13Z",
+    "confidence": "HIGH",
+    "proposed_by": "fixture",
+    "personal_data": "NONE",
+    "source_url": "https://reformas-alba.example/",
+    "snippet": "en Villa Sintética Norte",
+    "data_mode": "SYNTHETIC",
+    "field": "business.municipality",
+    "value": "Villa Sintética Norte",
+    "claim_status": "KNOWN",
+    "source_class": "OFFICIAL",
+    "seen_in": "PAGE",
+    "kind": "FACT",
+    "capture_sha256": "e5b23efeb8e205b3d7150c85d07d0ead28de695bdd9eb851c9a1151a9a618ddc",
+    "erased": false,
+    "capture_available": true,
+    "strength": "HIGH"
+   },
+   {
+    "schema_version": "waos.other.v9",
+    "subject": {
+     "lead_id": "lead_demo_01",
+     "entity_key": "reformas-alba.example"
+    },
+    "evidence_origin": "FIRST_PARTY_WEB",
+    "method": {
+     "tool": "fixture",
+     "tool_version": "m1",
+     "procedure_id": "FIXTURE"
+    },
+    "retrieved_at": "2026-10-19T10:15:13Z",
+    "confidence": "HIGH",
+    "proposed_by": "fixture",
+    "personal_data": "NONE",
+    "source_url": "https://reformas-alba.example/",
+    "snippet": "en Villa Sintética Norte",
+    "data_mode": "SYNTHETIC",
+    "evidence_id": "ev_demo_01_01",
+    "field": "business.municipality",
+    "value": "Villa Sintética Norte",
+    "claim_status": "KNOWN",
+    "source_class": "OFFICIAL",
+    "seen_in": "PAGE",
+    "kind": "FACT",
+    "capture_sha256": "e5b23efeb8e205b3d7150c85d07d0ead28de695bdd9eb851c9a1151a9a618ddc",
+    "erased": false,
+    "capture_available": true,
+    "strength": "HIGH"
+   },
+   {
+    "schema_version": "waos.evidence.v1",
+    "subject": {
+     "lead_id": "lead_demo_01",
+     "entity_key": "reformas-alba.example"
+    },
+    "evidence_origin": "FIRST_PARTY_WEB",
+    "method": {
+     "tool": "fixture",
+     "tool_version": "m1",
+     "procedure_id": "FIXTURE"
+    },
+    "retrieved_at": "2026-10-19T10:15:13Z",
+    "confidence": "HIGH",
+    "proposed_by": "fixture",
+    "personal_data": "NONE",
+    "source_url": "https://reformas-alba.example/",
+    "snippet": "en Villa Sintética Norte",
+    "data_mode": "SYNTHETIC",
+    "evidence_id": "ev_demo_01_01",
+    "field": "business.municipality",
+    "value": "Villa Sintética Norte",
+    "claim_status": "KNOWN",
+    "source_class": "OFFICIAL",
+    "seen_in": "PAGE",
+    "kind": "FACT",
+    "capture_sha256": "e5b23efeb8e205b3d7150c85d07d0ead28de695bdd9eb851c9a1151a9a618ddc",
+    "erased": false,
+    "capture_available": true,
+    "strength": "HIGH",
+    "unexpected_field": 1
+   },
+   {
+    "schema_version": "waos.evidence.v1",
+    "subject": {
+     "lead_id": "lead_demo_01",
+     "entity_key": "reformas-alba.example"
+    },
+    "evidence_origin": "FIRST_PARTY_WEB",
+    "method": {
+     "tool": "fixture",
+     "tool_version": "m1",
+     "procedure_id": "FIXTURE"
+    },
+    "retrieved_at": "2026-10-19T10:15:13Z",
+    "confidence": "HIGH",
+    "proposed_by": "fixture",
+    "personal_data": "NONE",
+    "source_url": null,
+    "snippet": "en Villa Sintética Norte",
+    "data_mode": "SYNTHETIC",
+    "evidence_id": "ev_demo_01_01",
+    "field": "business.municipality",
+    "value": "Villa Sintética Norte",
+    "claim_status": "KNOWN",
+    "source_class": "OFFICIAL",
+    "seen_in": "PAGE",
+    "kind": "FACT",
+    "capture_sha256": "e5b23efeb8e205b3d7150c85d07d0ead28de695bdd9eb851c9a1151a9a618ddc",
+    "erased": false,
+    "capture_available": true,
+    "strength": "HIGH"
+   }
+  ]
+ },
+ "finding": {
+  "valid": [
+   {
+    "schema_version": "waos.finding.v1",
+    "lead_id": "lead_demo_01",
+    "measured_value": null,
+    "threshold_param": null,
+    "rule_version": "catalogue.v1",
+    "evidence_ids": [],
+    "sales_safe": true,
+    "detected_at": "2026-10-19T10:15:13Z",
+    "data_mode": "SYNTHETIC",
+    "finding_id": "fnd_demo_01_01",
+    "code": "NO_MOBILE_CONTACT_PATH",
+    "technical_severity": "MAJOR",
+    "claim_status": "KNOWN"
+   },
+   {
+    "schema_version": "waos.finding.v1",
+    "lead_id": "lead_demo_01",
+    "measured_value": 38,
+    "threshold_param": "P-03",
+    "rule_version": "catalogue.v1",
+    "evidence_ids": [],
+    "sales_safe": true,
+    "detected_at": "2026-10-19T10:15:13Z",
+    "data_mode": "SYNTHETIC",
+    "finding_id": "fnd_demo_01_02",
+    "code": "SLOW_MOBILE",
+    "technical_severity": "MAJOR",
+    "claim_status": "KNOWN"
+   },
+   {
+    "schema_version": "waos.finding.v1",
+    "lead_id": "lead_demo_02",
+    "measured_value": null,
+    "threshold_param": null,
+    "rule_version": "catalogue.v1",
+    "evidence_ids": [],
+    "sales_safe": true,
+    "detected_at": "2026-10-19T10:15:13Z",
+    "data_mode": "SYNTHETIC",
+    "finding_id": "fnd_demo_02_01",
+    "code": "NO_HTTPS",
+    "technical_severity": "MAJOR",
+    "claim_status": "KNOWN"
+   }
+  ],
+  "invalid": [
+   {
+    "schema_version": "waos.finding.v1",
+    "lead_id": "lead_demo_01",
+    "measured_value": null,
+    "threshold_param": null,
+    "rule_version": "catalogue.v1",
+    "evidence_ids": [],
+    "sales_safe": true,
+    "detected_at": "2026-10-19T10:15:13Z",
+    "data_mode": "SYNTHETIC",
+    "code": "NO_MOBILE_CONTACT_PATH",
+    "technical_severity": "MAJOR",
+    "claim_status": "KNOWN"
+   },
+   {
+    "schema_version": "waos.other.v9",
+    "lead_id": "lead_demo_01",
+    "measured_value": null,
+    "threshold_param": null,
+    "rule_version": "catalogue.v1",
+    "evidence_ids": [],
+    "sales_safe": true,
+    "detected_at": "2026-10-19T10:15:13Z",
+    "data_mode": "SYNTHETIC",
+    "finding_id": "fnd_demo_01_01",
+    "code": "NO_MOBILE_CONTACT_PATH",
+    "technical_severity": "MAJOR",
+    "claim_status": "KNOWN"
+   },
+   {
+    "schema_version": "waos.finding.v1",
+    "lead_id": "lead_demo_01",
+    "measured_value": null,
+    "threshold_param": null,
+    "rule_version": "catalogue.v1",
+    "evidence_ids": [],
+    "sales_safe": true,
+    "detected_at": "2026-10-19T10:15:13Z",
+    "data_mode": "SYNTHETIC",
+    "finding_id": "fnd_demo_01_01",
+    "code": "NO_MOBILE_CONTACT_PATH",
+    "technical_severity": "MAJOR",
+    "claim_status": "KNOWN",
+    "unexpected_field": 1
+   },
+   {
+    "schema_version": "waos.finding.v1",
+    "lead_id": "lead_demo_01",
+    "measured_value": null,
+    "threshold_param": null,
+    "rule_version": "catalogue.v1",
+    "evidence_ids": [],
+    "sales_safe": true,
+    "detected_at": "2026-10-19T10:15:13Z",
+    "data_mode": "SYNTHETIC",
+    "finding_id": "fnd_demo_01_01",
+    "code": "OUTDATED_DESIGN",
+    "technical_severity": "MAJOR",
+    "claim_status": "KNOWN"
+   }
+  ]
+ },
+ "score": {
+  "valid": [
+   {
+    "schema_version": "waos.score.v1",
+    "score_id": "scr_01a153a881d6fc66c0840b",
+    "lead_id": "lead_demo_01",
+    "scoring_version": "1.0.0",
+    "rules_hash": "1141867f7f94a2ba3279214d2e97552b3713336fa25a51e35d10a10606f82db5",
+    "computed_at": "2026-10-19T10:15:14Z",
+    "gates": [
+     {
+      "gate_id": "G_IDENTITY",
+      "result": "PASS",
+      "evidence_ids": []
+     },
+     {
+      "gate_id": "G_GEO",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_01"
+      ]
+     },
+     {
+      "gate_id": "G_CATEGORY",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_02"
+      ]
+     },
+     {
+      "gate_id": "G_ACTIVE",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_03"
+      ]
+     },
+     {
+      "gate_id": "G_NOT_EXCLUDED",
+      "result": "PASS",
+      "evidence_ids": []
+     }
+    ],
+    "layer1": {
+     "TG": {
+      "floor": 3,
+      "ceiling": 3,
+      "finding_ids": [
+       "fnd_demo_01_01",
+       "fnd_demo_01_02"
+      ]
+     }
+    },
+    "layer2": {
+     "IM": {
+      "floor": 3,
+      "ceiling": 3,
+      "impact_rule_ids": [
+       "NO_MOBILE_CONTACT_PATH",
+       "SLOW_MOBILE"
+      ]
+     }
+    },
+    "layer3": {
+     "BV": {
+      "floor": 3,
+      "ceiling": 3,
+      "evidence_ids": [
+       "ev_demo_01_02"
+      ]
+     },
+     "AC": {
+      "floor": 1,
+      "ceiling": 1,
+      "evidence_ids": [
+       "ev_demo_01_05"
+      ]
+     },
+     "contraindications": [],
+     "opportunity_points": {
+      "floor": 7,
+      "ceiling": 7
+     },
+     "confidence_band": "STRONG",
+     "bucket": "REVIEW_PRIORITY"
+    },
+    "explanation": [
+     "G_IDENTITY=PASS",
+     "G_GEO=PASS",
+     "G_CATEGORY=PASS",
+     "G_ACTIVE=PASS",
+     "G_NOT_EXCLUDED=PASS",
+     "BV band=HIGH",
+     "bucket=REVIEW_PRIORITY"
+    ],
+    "calibrated": false,
+    "disclaimer": "priority for human review; not a probability or indication of purchase intent"
+   },
+   {
+    "schema_version": "waos.score.v1",
+    "score_id": "scr_01a153a881da05db370bef",
+    "lead_id": "lead_demo_02",
+    "scoring_version": "1.0.0",
+    "rules_hash": "1141867f7f94a2ba3279214d2e97552b3713336fa25a51e35d10a10606f82db5",
+    "computed_at": "2026-10-19T10:15:14Z",
+    "gates": [
+     {
+      "gate_id": "G_IDENTITY",
+      "result": "PASS",
+      "evidence_ids": []
+     },
+     {
+      "gate_id": "G_GEO",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_02_01"
+      ]
+     },
+     {
+      "gate_id": "G_CATEGORY",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_02_02"
+      ]
+     },
+     {
+      "gate_id": "G_ACTIVE",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_02_03"
+      ]
+     },
+     {
+      "gate_id": "G_NOT_EXCLUDED",
+      "result": "PASS",
+      "evidence_ids": []
+     }
+    ],
+    "layer1": {
+     "TG": {
+      "floor": 2,
+      "ceiling": 2,
+      "finding_ids": [
+       "fnd_demo_02_01"
+      ]
+     }
+    },
+    "layer2": {
+     "IM": {
+      "floor": 3,
+      "ceiling": 3,
+      "impact_rule_ids": [
+       "NO_HTTPS"
+      ]
+     }
+    },
+    "layer3": {
+     "BV": {
+      "floor": 2,
+      "ceiling": 2,
+      "evidence_ids": [
+       "ev_demo_02_02"
+      ]
+     },
+     "AC": {
+      "floor": 1,
+      "ceiling": 1,
+      "evidence_ids": [
+       "ev_demo_02_07"
+      ]
+     },
+     "contraindications": [],
+     "opportunity_points": {
+      "floor": 6,
+      "ceiling": 6
+     },
+     "confidence_band": "STRONG",
+     "bucket": "REVIEW_PRIORITY"
+    },
+    "explanation": [
+     "G_IDENTITY=PASS",
+     "G_GEO=PASS",
+     "G_CATEGORY=PASS",
+     "G_ACTIVE=PASS",
+     "G_NOT_EXCLUDED=PASS",
+     "BV band=MEDIUM",
+     "bucket=REVIEW_PRIORITY"
+    ],
+    "calibrated": false,
+    "disclaimer": "priority for human review; not a probability or indication of purchase intent"
+   },
+   {
+    "schema_version": "waos.score.v1",
+    "score_id": "scr_01a153a881de5405894b04",
+    "lead_id": "lead_demo_03",
+    "scoring_version": "1.0.0",
+    "rules_hash": "1141867f7f94a2ba3279214d2e97552b3713336fa25a51e35d10a10606f82db5",
+    "computed_at": "2026-10-19T10:15:14Z",
+    "gates": [
+     {
+      "gate_id": "G_IDENTITY",
+      "result": "PASS",
+      "evidence_ids": []
+     },
+     {
+      "gate_id": "G_GEO",
+      "result": "UNKNOWN",
+      "evidence_ids": [
+       "ev_demo_03_01"
+      ]
+     },
+     {
+      "gate_id": "G_CATEGORY",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_03_02"
+      ]
+     },
+     {
+      "gate_id": "G_ACTIVE",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_03_03"
+      ]
+     },
+     {
+      "gate_id": "G_NOT_EXCLUDED",
+      "result": "PASS",
+      "evidence_ids": []
+     }
+    ],
+    "layer1": {
+     "TG": {
+      "floor": 2,
+      "ceiling": 2,
+      "finding_ids": [
+       "fnd_demo_03_01"
+      ]
+     }
+    },
+    "layer2": {
+     "IM": {
+      "floor": 2,
+      "ceiling": 2,
+      "impact_rule_ids": [
+       "SLOW_MOBILE"
+      ]
+     }
+    },
+    "layer3": {
+     "BV": {
+      "floor": 3,
+      "ceiling": 3,
+      "evidence_ids": [
+       "ev_demo_03_02"
+      ]
+     },
+     "AC": {
+      "floor": 1,
+      "ceiling": 1,
+      "evidence_ids": [
+       "ev_demo_03_04"
+      ]
+     },
+     "contraindications": [],
+     "opportunity_points": {
+      "floor": 6,
+      "ceiling": 6
+     },
+     "confidence_band": "NONE",
+     "bucket": "PENDING"
+    },
+    "explanation": [
+     "G_IDENTITY=PASS",
+     "G_GEO=UNKNOWN",
+     "G_CATEGORY=PASS",
+     "G_ACTIVE=PASS",
+     "G_NOT_EXCLUDED=PASS",
+     "BV band=HIGH",
+     "bucket=PENDING"
+    ],
+    "calibrated": false,
+    "disclaimer": "priority for human review; not a probability or indication of purchase intent"
+   }
+  ],
+  "invalid": [
+   {
+    "schema_version": "waos.score.v1",
+    "lead_id": "lead_demo_01",
+    "scoring_version": "1.0.0",
+    "rules_hash": "1141867f7f94a2ba3279214d2e97552b3713336fa25a51e35d10a10606f82db5",
+    "computed_at": "2026-10-19T10:15:14Z",
+    "gates": [
+     {
+      "gate_id": "G_IDENTITY",
+      "result": "PASS",
+      "evidence_ids": []
+     },
+     {
+      "gate_id": "G_GEO",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_01"
+      ]
+     },
+     {
+      "gate_id": "G_CATEGORY",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_02"
+      ]
+     },
+     {
+      "gate_id": "G_ACTIVE",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_03"
+      ]
+     },
+     {
+      "gate_id": "G_NOT_EXCLUDED",
+      "result": "PASS",
+      "evidence_ids": []
+     }
+    ],
+    "layer1": {
+     "TG": {
+      "floor": 3,
+      "ceiling": 3,
+      "finding_ids": [
+       "fnd_demo_01_01",
+       "fnd_demo_01_02"
+      ]
+     }
+    },
+    "layer2": {
+     "IM": {
+      "floor": 3,
+      "ceiling": 3,
+      "impact_rule_ids": [
+       "NO_MOBILE_CONTACT_PATH",
+       "SLOW_MOBILE"
+      ]
+     }
+    },
+    "layer3": {
+     "BV": {
+      "floor": 3,
+      "ceiling": 3,
+      "evidence_ids": [
+       "ev_demo_01_02"
+      ]
+     },
+     "AC": {
+      "floor": 1,
+      "ceiling": 1,
+      "evidence_ids": [
+       "ev_demo_01_05"
+      ]
+     },
+     "contraindications": [],
+     "opportunity_points": {
+      "floor": 7,
+      "ceiling": 7
+     },
+     "confidence_band": "STRONG",
+     "bucket": "REVIEW_PRIORITY"
+    },
+    "explanation": [
+     "G_IDENTITY=PASS",
+     "G_GEO=PASS",
+     "G_CATEGORY=PASS",
+     "G_ACTIVE=PASS",
+     "G_NOT_EXCLUDED=PASS",
+     "BV band=HIGH",
+     "bucket=REVIEW_PRIORITY"
+    ],
+    "calibrated": false,
+    "disclaimer": "priority for human review; not a probability or indication of purchase intent"
+   },
+   {
+    "schema_version": "waos.other.v9",
+    "score_id": "scr_01a153a881d6fc66c0840b",
+    "lead_id": "lead_demo_01",
+    "scoring_version": "1.0.0",
+    "rules_hash": "1141867f7f94a2ba3279214d2e97552b3713336fa25a51e35d10a10606f82db5",
+    "computed_at": "2026-10-19T10:15:14Z",
+    "gates": [
+     {
+      "gate_id": "G_IDENTITY",
+      "result": "PASS",
+      "evidence_ids": []
+     },
+     {
+      "gate_id": "G_GEO",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_01"
+      ]
+     },
+     {
+      "gate_id": "G_CATEGORY",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_02"
+      ]
+     },
+     {
+      "gate_id": "G_ACTIVE",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_03"
+      ]
+     },
+     {
+      "gate_id": "G_NOT_EXCLUDED",
+      "result": "PASS",
+      "evidence_ids": []
+     }
+    ],
+    "layer1": {
+     "TG": {
+      "floor": 3,
+      "ceiling": 3,
+      "finding_ids": [
+       "fnd_demo_01_01",
+       "fnd_demo_01_02"
+      ]
+     }
+    },
+    "layer2": {
+     "IM": {
+      "floor": 3,
+      "ceiling": 3,
+      "impact_rule_ids": [
+       "NO_MOBILE_CONTACT_PATH",
+       "SLOW_MOBILE"
+      ]
+     }
+    },
+    "layer3": {
+     "BV": {
+      "floor": 3,
+      "ceiling": 3,
+      "evidence_ids": [
+       "ev_demo_01_02"
+      ]
+     },
+     "AC": {
+      "floor": 1,
+      "ceiling": 1,
+      "evidence_ids": [
+       "ev_demo_01_05"
+      ]
+     },
+     "contraindications": [],
+     "opportunity_points": {
+      "floor": 7,
+      "ceiling": 7
+     },
+     "confidence_band": "STRONG",
+     "bucket": "REVIEW_PRIORITY"
+    },
+    "explanation": [
+     "G_IDENTITY=PASS",
+     "G_GEO=PASS",
+     "G_CATEGORY=PASS",
+     "G_ACTIVE=PASS",
+     "G_NOT_EXCLUDED=PASS",
+     "BV band=HIGH",
+     "bucket=REVIEW_PRIORITY"
+    ],
+    "calibrated": false,
+    "disclaimer": "priority for human review; not a probability or indication of purchase intent"
+   },
+   {
+    "schema_version": "waos.score.v1",
+    "score_id": "scr_01a153a881d6fc66c0840b",
+    "lead_id": "lead_demo_01",
+    "scoring_version": "1.0.0",
+    "rules_hash": "1141867f7f94a2ba3279214d2e97552b3713336fa25a51e35d10a10606f82db5",
+    "computed_at": "2026-10-19T10:15:14Z",
+    "gates": [
+     {
+      "gate_id": "G_IDENTITY",
+      "result": "PASS",
+      "evidence_ids": []
+     },
+     {
+      "gate_id": "G_GEO",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_01"
+      ]
+     },
+     {
+      "gate_id": "G_CATEGORY",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_02"
+      ]
+     },
+     {
+      "gate_id": "G_ACTIVE",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_03"
+      ]
+     },
+     {
+      "gate_id": "G_NOT_EXCLUDED",
+      "result": "PASS",
+      "evidence_ids": []
+     }
+    ],
+    "layer1": {
+     "TG": {
+      "floor": 3,
+      "ceiling": 3,
+      "finding_ids": [
+       "fnd_demo_01_01",
+       "fnd_demo_01_02"
+      ]
+     }
+    },
+    "layer2": {
+     "IM": {
+      "floor": 3,
+      "ceiling": 3,
+      "impact_rule_ids": [
+       "NO_MOBILE_CONTACT_PATH",
+       "SLOW_MOBILE"
+      ]
+     }
+    },
+    "layer3": {
+     "BV": {
+      "floor": 3,
+      "ceiling": 3,
+      "evidence_ids": [
+       "ev_demo_01_02"
+      ]
+     },
+     "AC": {
+      "floor": 1,
+      "ceiling": 1,
+      "evidence_ids": [
+       "ev_demo_01_05"
+      ]
+     },
+     "contraindications": [],
+     "opportunity_points": {
+      "floor": 7,
+      "ceiling": 7
+     },
+     "confidence_band": "STRONG",
+     "bucket": "REVIEW_PRIORITY"
+    },
+    "explanation": [
+     "G_IDENTITY=PASS",
+     "G_GEO=PASS",
+     "G_CATEGORY=PASS",
+     "G_ACTIVE=PASS",
+     "G_NOT_EXCLUDED=PASS",
+     "BV band=HIGH",
+     "bucket=REVIEW_PRIORITY"
+    ],
+    "calibrated": false,
+    "disclaimer": "priority for human review; not a probability or indication of purchase intent",
+    "unexpected_field": 1
+   },
+   {
+    "schema_version": "waos.score.v1",
+    "score_id": "scr_01a153a881d6fc66c0840b",
+    "lead_id": "lead_demo_01",
+    "scoring_version": "1.0.0",
+    "rules_hash": "1141867f7f94a2ba3279214d2e97552b3713336fa25a51e35d10a10606f82db5",
+    "computed_at": "2026-10-19T10:15:14Z",
+    "gates": [
+     {
+      "gate_id": "G_IDENTITY",
+      "result": "PASS",
+      "evidence_ids": []
+     },
+     {
+      "gate_id": "G_GEO",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_01"
+      ]
+     },
+     {
+      "gate_id": "G_CATEGORY",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_02"
+      ]
+     },
+     {
+      "gate_id": "G_ACTIVE",
+      "result": "PASS",
+      "evidence_ids": [
+       "ev_demo_01_03"
+      ]
+     },
+     {
+      "gate_id": "G_NOT_EXCLUDED",
+      "result": "PASS",
+      "evidence_ids": []
+     }
+    ],
+    "layer1": {
+     "TG": {
+      "floor": 3,
+      "ceiling": 3,
+      "finding_ids": [
+       "fnd_demo_01_01",
+       "fnd_demo_01_02"
+      ]
+     }
+    },
+    "layer2": {
+     "IM": {
+      "floor": 3,
+      "ceiling": 3,
+      "impact_rule_ids": [
+       "NO_MOBILE_CONTACT_PATH",
+       "SLOW_MOBILE"
+      ]
+     }
+    },
+    "layer3": {
+     "BV": {
+      "floor": 3,
+      "ceiling": 3,
+      "evidence_ids": [
+       "ev_demo_01_02"
+      ]
+     },
+     "AC": {
+      "floor": 1,
+      "ceiling": 1,
+      "evidence_ids": [
+       "ev_demo_01_05"
+      ]
+     },
+     "contraindications": [],
+     "opportunity_points": {
+      "floor": 7,
+      "ceiling": 7
+     },
+     "confidence_band": "STRONG",
+     "bucket": "REVIEW_PRIORITY"
+    },
+    "explanation": [
+     "G_IDENTITY=PASS",
+     "G_GEO=PASS",
+     "G_CATEGORY=PASS",
+     "G_ACTIVE=PASS",
+     "G_NOT_EXCLUDED=PASS",
+     "BV band=HIGH",
+     "bucket=REVIEW_PRIORITY"
+    ],
+    "calibrated": true,
+    "disclaimer": "priority for human review; not a probability or indication of purchase intent"
+   }
+  ]
+ },
+ "event": {
+  "valid": [
+   {
+    "schema_version": "waos.event.v1",
+    "event_id": "evt_01a153a87ce89b55fa6f9e",
+    "ts": "2026-10-19T10:15:13Z",
+    "type": "import.completed",
+    "actor": {
+     "kind": "SYSTEM",
+     "id": "waos"
+    },
+    "lead_id": "lead_demo_01",
+    "subject_refs": [],
+    "causation_id": null,
+    "correlation_id": null,
+    "payload": {
+     "lead_id": "lead_demo_01",
+     "stage": "lead"
+    }
+   },
+   {
+    "schema_version": "waos.event.v1",
+    "event_id": "evt_01a153a87cebf662b483af",
+    "ts": "2026-10-19T10:15:13Z",
+    "type": "evidence.recorded",
+    "actor": {
+     "kind": "SYSTEM",
+     "id": "waos"
+    },
+    "lead_id": "lead_demo_01",
+    "subject_refs": [
+     "ev_demo_01_01"
+    ],
+    "causation_id": null,
+    "correlation_id": null,
+    "payload": {
+     "evidence_id": "ev_demo_01_01",
+     "field": "business.municipality",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "strength": "HIGH"
+    }
+   },
+   {
+    "schema_version": "waos.event.v1",
+    "event_id": "evt_01a153a87ced3dba9a2759",
+    "ts": "2026-10-19T10:15:13Z",
+    "type": "evidence.recorded",
+    "actor": {
+     "kind": "SYSTEM",
+     "id": "waos"
+    },
+    "lead_id": "lead_demo_01",
+    "subject_refs": [
+     "ev_demo_01_02"
+    ],
+    "causation_id": null,
+    "correlation_id": null,
+    "payload": {
+     "evidence_id": "ev_demo_01_02",
+     "field": "business.category",
+     "claim_status": "KNOWN",
+     "source_class": "OFFICIAL",
+     "strength": "HIGH"
+    }
+   }
+  ],
+  "invalid": [
+   {
+    "schema_version": "waos.event.v1",
+    "ts": "2026-10-19T10:15:13Z",
+    "type": "import.completed",
+    "actor": {
+     "kind": "SYSTEM",
+     "id": "waos"
+    },
+    "lead_id": "lead_demo_01",
+    "subject_refs": [],
+    "causation_id": null,
+    "correlation_id": null,
+    "payload": {
+     "lead_id": "lead_demo_01",
+     "stage": "lead"
+    }
+   },
+   {
+    "schema_version": "waos.other.v9",
+    "event_id": "evt_01a153a87ce89b55fa6f9e",
+    "ts": "2026-10-19T10:15:13Z",
+    "type": "import.completed",
+    "actor": {
+     "kind": "SYSTEM",
+     "id": "waos"
+    },
+    "lead_id": "lead_demo_01",
+    "subject_refs": [],
+    "causation_id": null,
+    "correlation_id": null,
+    "payload": {
+     "lead_id": "lead_demo_01",
+     "stage": "lead"
+    }
+   },
+   {
+    "schema_version": "waos.event.v1",
+    "event_id": "evt_01a153a87ce89b55fa6f9e",
+    "ts": "2026-10-19T10:15:13Z",
+    "type": "import.completed",
+    "actor": {
+     "kind": "SYSTEM",
+     "id": "waos"
+    },
+    "lead_id": "lead_demo_01",
+    "subject_refs": [],
+    "causation_id": null,
+    "correlation_id": null,
+    "payload": {
+     "lead_id": "lead_demo_01",
+     "stage": "lead"
+    },
+    "unexpected_field": 1
+   },
+   {
+    "schema_version": "waos.event.v1",
+    "event_id": "evt_01a153a87ce89b55fa6f9e",
+    "ts": "2026-10-19T10:15:13Z",
+    "type": "import.completed",
+    "actor": {
+     "kind": "ROBOT",
+     "id": "waos"
+    },
+    "lead_id": "lead_demo_01",
+    "subject_refs": [],
+    "causation_id": null,
+    "correlation_id": null,
+    "payload": {
+     "lead_id": "lead_demo_01",
+     "stage": "lead"
+    }
+   }
+  ]
+ },
+ "approval": {
+  "valid": [
+   {
+    "schema_version": "waos.approval.v1",
+    "approval_id": "apr_01a153a8aab54fb3aaba7b",
+    "type": "SHORTLIST",
+    "action": {
+     "kind": "SHORTLIST",
+     "lead_id": "lead_demo_01",
+     "score_id": "scr_01a153a881d6fc66c0840b"
+    },
+    "action_sha256": "d9173ca4b11d11b36fd5d3c93a06bfa6b60262455d28cf09ce7dcaa6a5504db4",
+    "requested_by": "system",
+    "requested_at": "2026-10-19T10:15:25Z",
+    "expires_at": "2026-10-26T10:15:25Z",
+    "decision": {
+     "decision": "APPROVED",
+     "by": "human:ana",
+     "at": "2026-10-19T10:15:25Z",
+     "comment": null
+    },
+    "status": "EXECUTED",
+    "executed_at": "2026-10-19T10:15:25Z",
+    "execution_count": 1
+   },
+   {
+    "schema_version": "waos.approval.v1",
+    "approval_id": "apr_01a153a96140cb739b1c1c",
+    "type": "BUDGET_CHANGE",
+    "action": {
+     "kind": "BUDGET_CHANGE",
+     "global_cap_cents": 100,
+     "per_run_cap_cents": 20
+    },
+    "action_sha256": "c6cd84637b80f5c9fa9e1ab4dc024047ccd9d63ed0099ee086d72398d6bbbb76",
+    "requested_by": "system",
+    "requested_at": "2026-10-19T10:16:11Z",
+    "expires_at": "2026-10-21T10:16:11Z",
+    "decision": {
+     "decision": "APPROVED",
+     "by": "human:ana",
+     "at": "2026-10-19T10:16:11Z",
+     "comment": null
+    },
+    "status": "EXECUTED",
+    "executed_at": "2026-10-19T10:16:11Z",
+    "execution_count": 1
+   },
+   {
+    "schema_version": "waos.approval.v1",
+    "approval_id": "apr_01a153a96217827c090e92",
+    "type": "BUDGET_CHANGE",
+    "action": {
+     "kind": "BUDGET_CHANGE",
+     "global_cap_cents": 999,
+     "per_run_cap_cents": 999
+    },
+    "action_sha256": "3f4b886630ab6b772b8fc4916122dcb87654701c1fbc75fd7ac1fd202bda3ed8",
+    "requested_by": "system",
+    "requested_at": "2026-10-19T10:16:12Z",
+    "expires_at": "2026-10-21T10:16:12Z",
+    "decision": {
+     "decision": "REJECTED",
+     "by": "human:ana",
+     "at": "2026-10-19T10:16:12Z",
+     "comment": null
+    },
+    "status": "REJECTED",
+    "executed_at": null,
+    "execution_count": 0
+   }
+  ],
+  "invalid": [
+   {
+    "schema_version": "waos.approval.v1",
+    "type": "SHORTLIST",
+    "action": {
+     "kind": "SHORTLIST",
+     "lead_id": "lead_demo_01",
+     "score_id": "scr_01a153a881d6fc66c0840b"
+    },
+    "action_sha256": "d9173ca4b11d11b36fd5d3c93a06bfa6b60262455d28cf09ce7dcaa6a5504db4",
+    "requested_by": "system",
+    "requested_at": "2026-10-19T10:15:25Z",
+    "expires_at": "2026-10-26T10:15:25Z",
+    "decision": {
+     "decision": "APPROVED",
+     "by": "human:ana",
+     "at": "2026-10-19T10:15:25Z",
+     "comment": null
+    },
+    "status": "EXECUTED",
+    "executed_at": "2026-10-19T10:15:25Z",
+    "execution_count": 1
+   },
+   {
+    "schema_version": "waos.other.v9",
+    "approval_id": "apr_01a153a8aab54fb3aaba7b",
+    "type": "SHORTLIST",
+    "action": {
+     "kind": "SHORTLIST",
+     "lead_id": "lead_demo_01",
+     "score_id": "scr_01a153a881d6fc66c0840b"
+    },
+    "action_sha256": "d9173ca4b11d11b36fd5d3c93a06bfa6b60262455d28cf09ce7dcaa6a5504db4",
+    "requested_by": "system",
+    "requested_at": "2026-10-19T10:15:25Z",
+    "expires_at": "2026-10-26T10:15:25Z",
+    "decision": {
+     "decision": "APPROVED",
+     "by": "human:ana",
+     "at": "2026-10-19T10:15:25Z",
+     "comment": null
+    },
+    "status": "EXECUTED",
+    "executed_at": "2026-10-19T10:15:25Z",
+    "execution_count": 1
+   },
+   {
+    "schema_version": "waos.approval.v1",
+    "approval_id": "apr_01a153a8aab54fb3aaba7b",
+    "type": "SHORTLIST",
+    "action": {
+     "kind": "SHORTLIST",
+     "lead_id": "lead_demo_01",
+     "score_id": "scr_01a153a881d6fc66c0840b"
+    },
+    "action_sha256": "d9173ca4b11d11b36fd5d3c93a06bfa6b60262455d28cf09ce7dcaa6a5504db4",
+    "requested_by": "system",
+    "requested_at": "2026-10-19T10:15:25Z",
+    "expires_at": "2026-10-26T10:15:25Z",
+    "decision": {
+     "decision": "APPROVED",
+     "by": "human:ana",
+     "at": "2026-10-19T10:15:25Z",
+     "comment": null
+    },
+    "status": "EXECUTED",
+    "executed_at": "2026-10-19T10:15:25Z",
+    "execution_count": 1,
+    "unexpected_field": 1
+   },
+   {
+    "schema_version": "waos.approval.v1",
+    "approval_id": "apr_01a153a8aab54fb3aaba7b",
+    "type": "SHORTLIST",
+    "action": {
+     "kind": "SHORTLIST",
+     "lead_id": "lead_demo_01",
+     "score_id": "scr_01a153a881d6fc66c0840b"
+    },
+    "action_sha256": "d9173ca4b11d11b36fd5d3c93a06bfa6b60262455d28cf09ce7dcaa6a5504db4",
+    "requested_by": "system",
+    "requested_at": "2026-10-19T10:15:25Z",
+    "expires_at": "2026-10-26T10:15:25Z",
+    "decision": {
+     "decision": "APPROVED",
+     "by": "agent:x",
+     "at": "2026-10-19T10:15:25Z",
+     "comment": null
+    },
+    "status": "EXECUTED",
+    "executed_at": "2026-10-19T10:15:25Z",
+    "execution_count": 1
+   }
+  ]
+ },
+ "ledger_entry": {
+  "valid": [
+   {
+    "schema_version": "waos.ledger_entry.v1",
+    "entry_id": "led_01a153a8abf1788b022f07",
+    "ts": "2026-10-19T10:15:25Z",
+    "run_id": "cli",
+    "tool": "fake.priced_lookup",
+    "operation": "invoke",
+    "input_sha256": "f18293cf3c5d0ab35176c0be0d971d692d7969a4be76833d1f8c4f901f2030da",
+    "pricing_version": "1.0.0-m1-fake",
+    "unit_price_cents": 5,
+    "reserved_cents": 0,
+    "actual_cents": 0,
+    "status": "DENIED",
+    "deny_reason": "PAID_CALLS_DISABLED",
+    "budget_remaining_cents": null
+   },
+   {
+    "schema_version": "waos.ledger_entry.v1",
+    "entry_id": "led_01a153a8ac25226b9b39d9",
+    "ts": "2026-10-19T10:15:25Z",
+    "run_id": "cli",
+    "tool": "fake.unpriced_lookup",
+    "operation": "invoke",
+    "input_sha256": "81ee99a2ca3c43b6d0da64893febc1ec6cdb92e6a2f5bb41c060a38a87b5ef58",
+    "pricing_version": "1.0.0-m1-fake",
+    "unit_price_cents": null,
+    "reserved_cents": 0,
+    "actual_cents": 0,
+    "status": "DENIED",
+    "deny_reason": "UNKNOWN_PRICE",
+    "budget_remaining_cents": null
+   },
+   {
+    "schema_version": "waos.ledger_entry.v1",
+    "entry_id": "led_01a153a8ac5af5d129a4cd",
+    "ts": "2026-10-19T10:15:25Z",
+    "run_id": "cli",
+    "tool": "fake.free_lookup",
+    "operation": "invoke",
+    "input_sha256": "6c054d3afb13d5d155c8fdd6c7762dd13088ad319d8fa4ec3cb873392c734419",
+    "pricing_version": "1.0.0-m1-fake",
+    "unit_price_cents": 0,
+    "reserved_cents": 0,
+    "actual_cents": 0,
+    "status": "OK",
+    "deny_reason": null,
+    "budget_remaining_cents": null
+   }
+  ],
+  "invalid": [
+   {
+    "schema_version": "waos.ledger_entry.v1",
+    "ts": "2026-10-19T10:15:25Z",
+    "run_id": "cli",
+    "tool": "fake.priced_lookup",
+    "operation": "invoke",
+    "input_sha256": "f18293cf3c5d0ab35176c0be0d971d692d7969a4be76833d1f8c4f901f2030da",
+    "pricing_version": "1.0.0-m1-fake",
+    "unit_price_cents": 5,
+    "reserved_cents": 0,
+    "actual_cents": 0,
+    "status": "DENIED",
+    "deny_reason": "PAID_CALLS_DISABLED",
+    "budget_remaining_cents": null
+   },
+   {
+    "schema_version": "waos.other.v9",
+    "entry_id": "led_01a153a8abf1788b022f07",
+    "ts": "2026-10-19T10:15:25Z",
+    "run_id": "cli",
+    "tool": "fake.priced_lookup",
+    "operation": "invoke",
+    "input_sha256": "f18293cf3c5d0ab35176c0be0d971d692d7969a4be76833d1f8c4f901f2030da",
+    "pricing_version": "1.0.0-m1-fake",
+    "unit_price_cents": 5,
+    "reserved_cents": 0,
+    "actual_cents": 0,
+    "status": "DENIED",
+    "deny_reason": "PAID_CALLS_DISABLED",
+    "budget_remaining_cents": null
+   },
+   {
+    "schema_version": "waos.ledger_entry.v1",
+    "entry_id": "led_01a153a8abf1788b022f07",
+    "ts": "2026-10-19T10:15:25Z",
+    "run_id": "cli",
+    "tool": "fake.priced_lookup",
+    "operation": "invoke",
+    "input_sha256": "f18293cf3c5d0ab35176c0be0d971d692d7969a4be76833d1f8c4f901f2030da",
+    "pricing_version": "1.0.0-m1-fake",
+    "unit_price_cents": 5,
+    "reserved_cents": 0,
+    "actual_cents": 0,
+    "status": "DENIED",
+    "deny_reason": "PAID_CALLS_DISABLED",
+    "budget_remaining_cents": null,
+    "unexpected_field": 1
+   },
+   {
+    "schema_version": "waos.ledger_entry.v1",
+    "entry_id": "led_01a153a8abf1788b022f07",
+    "ts": "2026-10-19T10:15:25Z",
+    "run_id": "cli",
+    "tool": "fake.priced_lookup",
+    "operation": "invoke",
+    "input_sha256": "f18293cf3c5d0ab35176c0be0d971d692d7969a4be76833d1f8c4f901f2030da",
+    "pricing_version": "1.0.0-m1-fake",
+    "unit_price_cents": 5,
+    "reserved_cents": 0,
+    "actual_cents": 7,
+    "status": "DENIED",
+    "deny_reason": "PAID_CALLS_DISABLED",
+    "budget_remaining_cents": null
+   }
+  ]
+ },
+ "suppression": {
+  "valid": [
+   {
+    "schema_version": "waos.suppression.v1",
+    "suppression_id": "sup_01a153a93bb7527bf13dc5",
+    "identifiers_sha256": [
+     "32fbceb46084c41232c44e91d151fbbc8d017823f47b37ea2bb34f678c2eca08",
+     "37911f254212e7cbdadc7da4ae038399a110638134be623a8e0c50167eafb263",
+     "532daeb8d676f7565e24080c0e80be5d0d6280f45708c0551d84c78e72ddbb30"
+    ],
+    "reason": "OPT_OUT",
+    "created_at": "2026-10-19T10:16:02Z",
+    "source_ref": null
+   },
+   {
+    "schema_version": "waos.suppression.v1",
+    "suppression_id": "sup_01a153a93bf53701d4aab1",
+    "identifiers_sha256": [
+     "109c8c1a3f56ca320b2a134edf4f501c28e5d85d3b60b625ee541c631c1bbd0f"
+    ],
+    "reason": "OBJECTION",
+    "created_at": "2026-10-19T10:16:02Z",
+    "source_ref": null
+   },
+   {
+    "schema_version": "waos.suppression.v1",
+    "suppression_id": "sup_01a153a93c3a7c13d2fa86",
+    "identifiers_sha256": [
+     "07a851e7789b6dfe32aa9c1b72e2b8c7fdc7fc9a35da13dc096bc98eabbaee20"
+    ],
+    "reason": "POLICY",
+    "created_at": "2026-10-19T10:16:02Z",
+    "source_ref": null
+   }
+  ],
+  "invalid": [
+   {
+    "schema_version": "waos.suppression.v1",
+    "identifiers_sha256": [
+     "32fbceb46084c41232c44e91d151fbbc8d017823f47b37ea2bb34f678c2eca08",
+     "37911f254212e7cbdadc7da4ae038399a110638134be623a8e0c50167eafb263",
+     "532daeb8d676f7565e24080c0e80be5d0d6280f45708c0551d84c78e72ddbb30"
+    ],
+    "reason": "OPT_OUT",
+    "created_at": "2026-10-19T10:16:02Z",
+    "source_ref": null
+   },
+   {
+    "schema_version": "waos.other.v9",
+    "suppression_id": "sup_01a153a93bb7527bf13dc5",
+    "identifiers_sha256": [
+     "32fbceb46084c41232c44e91d151fbbc8d017823f47b37ea2bb34f678c2eca08",
+     "37911f254212e7cbdadc7da4ae038399a110638134be623a8e0c50167eafb263",
+     "532daeb8d676f7565e24080c0e80be5d0d6280f45708c0551d84c78e72ddbb30"
+    ],
+    "reason": "OPT_OUT",
+    "created_at": "2026-10-19T10:16:02Z",
+    "source_ref": null
+   },
+   {
+    "schema_version": "waos.suppression.v1",
+    "suppression_id": "sup_01a153a93bb7527bf13dc5",
+    "identifiers_sha256": [
+     "32fbceb46084c41232c44e91d151fbbc8d017823f47b37ea2bb34f678c2eca08",
+     "37911f254212e7cbdadc7da4ae038399a110638134be623a8e0c50167eafb263",
+     "532daeb8d676f7565e24080c0e80be5d0d6280f45708c0551d84c78e72ddbb30"
+    ],
+    "reason": "OPT_OUT",
+    "created_at": "2026-10-19T10:16:02Z",
+    "source_ref": null,
+    "unexpected_field": 1
+   },
+   {
+    "schema_version": "waos.suppression.v1",
+    "suppression_id": "sup_01a153a93bb7527bf13dc5",
+    "identifiers_sha256": [
+     "not-a-hash"
+    ],
+    "reason": "OPT_OUT",
+    "created_at": "2026-10-19T10:16:02Z",
+    "source_ref": null
+   }
+  ]
+ }
+}

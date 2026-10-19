@@ -1,0 +1,12 @@
+{
+ "rules_version": "1.0.0",
+ "_status": "HYPOTHESIS H-4: acquisition-impact hypotheses per finding code, to be validated in pilot P1. Impact is always INFERRED, never a measured business loss.",
+ "levels": {"HIGH": 3, "MEDIUM": 2, "LOW": 1},
+ "impact": {
+  "NO_SITE": "HIGH", "SITE_DOWN": "HIGH", "NO_MOBILE_CONTACT_PATH": "HIGH", "NOT_MOBILE_READY": "HIGH",
+  "NO_HTTPS": "HIGH", "TLS_INVALID": "HIGH",
+  "SLOW_MOBILE": "MEDIUM", "SEO_BASICS_MISSING": "MEDIUM", "NO_LOCAL_SIGNALS": "MEDIUM", "BROKEN_INTERNAL_LINKS": "MEDIUM",
+  "LAYOUT_SHIFT": "LOW", "MIXED_CONTENT": "LOW", "A11Y_SERIOUS": "LOW"
+ },
+ "not_used": ["STALE_CONTENT_SIGNAL", "TRACKING_BEFORE_CONSENT"]
+}

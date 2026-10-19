@@ -1,0 +1,26 @@
+{
+ "$id": "waos.event.v1",
+ "title": "Event. Payloads carry ids, hashes, versions, outcomes and reasons, never personal-data values (D-024).",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["schema_version", "event_id", "ts", "type", "actor", "lead_id", "subject_refs", "causation_id",
+              "correlation_id", "payload"],
+ "properties": {
+  "schema_version": {"const": "waos.event.v1"},
+  "seq": {"type": "integer", "minimum": 1},
+  "event_id": {"type": "string", "pattern": "^evt_[a-z0-9_]+$"},
+  "ts": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},
+  "type": {"enum": ["import.completed", "import.rejected", "evidence.recorded", "evidence.rejected", "evidence.erased",
+                    "finding.recorded", "score.computed", "state.transitioned", "state.transition_denied",
+                    "approval.requested", "approval.decided", "approval.executed", "approval.rejected",
+                    "tool.call_completed", "tool.call_denied", "budget.changed", "suppression.recorded",
+                    "retention.purged", "export.created", "export.refused", "system.kill_switch", "integrity.checked"]},
+  "actor": {"type": "object", "additionalProperties": false, "required": ["kind", "id"],
+            "properties": {"kind": {"enum": ["SYSTEM", "HUMAN", "AGENT"]}, "id": {"type": "string", "minLength": 1}}},
+  "lead_id": {"type": ["string", "null"]},
+  "subject_refs": {"type": "array", "items": {"type": "string"}},
+  "causation_id": {"type": ["string", "null"]},
+  "correlation_id": {"type": ["string", "null"]},
+  "payload": {"type": "object"}
+ }
+}

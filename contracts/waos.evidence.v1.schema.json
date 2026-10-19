@@ -1,0 +1,60 @@
+{
+ "$id": "waos.evidence.v1",
+ "title": "EvidenceRecord (M1). strength is derived by rules; a declared value is ignored.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["schema_version", "evidence_id", "subject", "field", "value", "claim_status", "source_class",
+              "evidence_origin", "method", "retrieved_at", "confidence", "proposed_by", "personal_data", "erased",
+              "capture_available", "data_mode"],
+ "properties": {
+  "schema_version": {"const": "waos.evidence.v1"},
+  "evidence_id": {"type": "string", "pattern": "^ev_[a-z0-9_]+$"},
+  "subject": {
+   "type": "object", "additionalProperties": false, "required": ["lead_id", "entity_key"],
+   "properties": {"lead_id": {"type": "string"}, "entity_key": {"type": "string"}, "person_ref": {"type": "null"}}
+  },
+  "field": {"type": "string", "pattern": "^[a-z_]+(\\.[a-zA-Z0-9_]+)+$"},
+  "value": {"type": ["string", "number", "boolean", "null"]},
+  "claim_status": {"enum": ["KNOWN", "INFERRED", "ESTIMATED", "UNKNOWN", "CONFLICTING"]},
+  "source_class": {"enum": ["OFFICIAL", "PUBLIC_REGISTRY", "MEASUREMENT", "PROFESSIONAL_DIRECTORY", "SECTOR_SOURCE",
+                            "OTHER_VERIFIABLE", "HUMAN_REVIEW", "UNVERIFIED", "NOT_FOUND"]},
+  "evidence_origin": {"enum": ["FIRST_PARTY_WEB", "MEASUREMENT", "PUBLIC_REGISTRY", "DIRECTORY", "OPERATOR_IMPORT",
+                               "HUMAN_REVIEW", "FIXTURE", "OTHER_VERIFIABLE"]},
+  "method": {
+   "type": "object", "additionalProperties": false, "required": ["tool", "tool_version", "procedure_id"],
+   "properties": {"tool": {"type": "string"}, "tool_version": {"type": "string"},
+                  "procedure_id": {"type": "string"}, "params_hash": {"type": ["string", "null"]}}
+  },
+  "source_url": {"type": ["string", "null"]},
+  "capture_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+  "capture_available": {"type": "boolean"},
+  "snippet": {"type": ["string", "null"]},
+  "seen_in": {"enum": ["PAGE", "SEARCH_SNIPPET", "STRUCTURED_DATA", "HUMAN"]},
+  "kind": {"enum": ["FACT", "INFERENCE"]},
+  "retrieved_at": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},
+  "dated_on": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+  "confidence": {"enum": ["HIGH", "MEDIUM", "LOW", "UNKNOWN"]},
+  "strength": {"enum": ["HIGH", "MEDIUM", "LOW", "UNKNOWN"]},
+  "corroborated": {"type": "boolean"},
+  "proposed_by": {"type": "string", "pattern": "^(fixture|worker:[a-z_]+@[0-9.]+|human:[A-Za-z0-9_.-]+)$"},
+  "reviewed_by": {"type": ["string", "null"]},
+  "personal_data": {"enum": ["NONE", "BUSINESS_CONTACT", "OTHER"]},
+  "retention_until": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+  "erased": {"type": "boolean"},
+  "data_mode": {"enum": ["SYNTHETIC", "TEST_FIXTURE"]}
+ },
+ "allOf": [
+  {"if": {"required": ["claim_status", "source_class"],
+          "properties": {"claim_status": {"const": "KNOWN"}, "source_class": {"not": {"const": "HUMAN_REVIEW"}}}},
+   "then": {"required": ["source_url"], "properties": {"source_url": {"type": "string", "minLength": 1}}}},
+  {"if": {"required": ["claim_status", "source_class"],
+          "properties": {"claim_status": {"const": "KNOWN"}, "source_class": {"const": "HUMAN_REVIEW"}}},
+   "then": {"required": ["reviewed_by"], "properties": {"reviewed_by": {"type": "string", "minLength": 1}}}},
+  {"if": {"required": ["source_class"], "properties": {"source_class": {"const": "NOT_FOUND"}}},
+   "then": {"properties": {"value": {"type": "null"}, "claim_status": {"const": "UNKNOWN"}}}},
+  {"if": {"required": ["value", "erased"], "properties": {"value": {"type": "null"}, "erased": {"const": false}}},
+   "then": {"properties": {"claim_status": {"enum": ["UNKNOWN", "CONFLICTING"]}}}},
+  {"if": {"required": ["personal_data"], "properties": {"personal_data": {"not": {"const": "NONE"}}}},
+   "then": {"required": ["retention_until"], "properties": {"retention_until": {"type": "string"}}}}
+ ]
+}

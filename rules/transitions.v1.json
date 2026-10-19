@@ -1,0 +1,22 @@
+{
+ "rules_version": "1.0.0",
+ "_doc": "M1 lead transition table (architecture § 5.4). Every pair not listed is rejected. ANY_NON_TERMINAL expands to all non-terminal states.",
+ "terminal": ["DISQUALIFIED", "SUPPRESSED"],
+ "transitions": [
+  {"from": "DISCOVERED", "to": "IDENTITY_RESOLVED", "guard": "identity_known_match"},
+  {"from": "DISCOVERED", "to": "NEEDS_REVIEW", "guard": "identity_ambiguous_or_unknown"},
+  {"from": "DISCOVERED", "to": "DISQUALIFIED", "guard": "identity_mismatch_or_duplicate"},
+  {"from": "NEEDS_REVIEW", "to": "IDENTITY_RESOLVED", "guard": "human_review_identity_match"},
+  {"from": "NEEDS_REVIEW", "to": "DISQUALIFIED", "guard": "human_review_identity_mismatch"},
+  {"from": "IDENTITY_RESOLVED", "to": "DIAGNOSED", "guard": "diagnosis_recorded"},
+  {"from": "DIAGNOSED", "to": "SCORED", "guard": "current_score_exists"},
+  {"from": "SCORED", "to": "SHORTLISTED", "guard": "review_priority_and_shortlist_approval"},
+  {"from": "SCORED", "to": "PARKED", "guard": "bucket_watch_low_or_pending"},
+  {"from": "SCORED", "to": "DISQUALIFIED", "guard": "bucket_disqualified"},
+  {"from": "PARKED", "to": "SCORED", "guard": "new_score_after_parking"},
+  {"from": "SHORTLISTED", "to": "PARKED", "guard": "human_decision"},
+  {"from": "ANY_NON_TERMINAL", "to": "ON_HOLD", "guard": "human_decision"},
+  {"from": "ON_HOLD", "to": "PREVIOUS_STATE", "guard": "human_decision"},
+  {"from": "ANY_NON_TERMINAL", "to": "SUPPRESSED", "guard": "suppression_request"}
+ ]
+}
