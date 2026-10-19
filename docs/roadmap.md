@@ -1,245 +1,257 @@
-# Web Agency OS — Implementation Roadmap (Phase 0)
+# Web Agency OS — Roadmap
 
-Status: **proposal**. Date: 2026-10-19. No milestone starts without the user's go-ahead; each ends with a short report
-(what was built, test results, costs incurred, open risks) and a decision to continue.
+Revision: Phase 0, corrected after the Phase 0 review ([phase0-review.md](phase0-review.md)). Date: 2026-10-19.
+Status: **proposal.** No phase starts without the user's explicit approval. Each phase ends with a short report (what was
+built, test results, costs incurred, open risks) and a decision to continue. Values `P-xx` are provisional parameters
+(HYPOTHESIS) listed in [decisions.md](decisions.md#provisional-parameters).
 
 ## 0. Overview
 
-| Milestone | Theme | Needs LLM? | Needs paid APIs? | Touches real third-party sites? | Outward-facing? |
-|---|---|---|---|---|---|
-| M0 | Phase 0 architecture (this) | No | No | No | No |
-| M1 | Contracts + deterministic control plane (offline) | No | No | No | No |
-| M2 | Website diagnosis engine | No | No | Yes, passive, ≤ 25 sites after approval | No |
-| M3 | Dashboard on real events | No | No | No | No |
-| S1 | AgentScope 2.0 spike (optional) | Mock model only | No | No | No |
-| M4 | Discovery, identity, scoring, export | Optional (A1, A2) | Depends on source | Yes | No |
-| M5 | Agent runtime + research agent | **Yes (first spend)** | LLM | Yes (same-site reads) | No |
-| M6 | Astro factory on synthetic businesses | Yes (A8, A9) | LLM | No | No |
-| M7 | Strategy, creative, T1/T2 previews for real leads | Yes | LLM (+ stock, optional) | Yes | No (private previews) |
-| M8 | Sales prep, CRM, outreach drafts | Yes | LLM | No | **Yes, human-sent only, after legal review** |
-| M9 | Delivery and publication | Yes | Hosting | — | **Yes, after approval** |
+| Phase | Theme | AI? | Paid APIs? | Real third-party sites? | Outward-facing? | Status |
+|---|---|---|---|---|---|---|
+| M0 | Phase 0 design + review + correction | No | No | No | No | Done (pending user review of this correction) |
+| **M1** | Minimal deterministic core (offline, synthetic) | No | No | No | No | **Specified; implementation not authorized (PD-01)** |
+| M2a | Diagnosis engine on local fixture sites | No | No | No (loopback only) | No | Requires PD-08–PD-10 |
+| M2b | Controlled real-site diagnosis pilot | No | No | **Yes — gated** | No | Gated (§2) |
+| P1 | Business validation pilot (manual first) | No | No | Yes (from M2b) | **Yes — gated** | Gated (§2) |
+| M3 | Observability dashboard | No | No | No | No | Deferred (D-004) |
+| M4 | Discovery and scoring on approved sources | Optional | Source-dependent | Yes — gated | No | Gated |
+| M5 | Agent runtime and first agents | **Yes** | **First LLM spend** | Same-site reads — gated | No | Gated |
+| M6a | Reference website built by hand | No | No | No | No | Requires PD-25 |
+| M6b | Factory automation on synthetic businesses | Yes | LLM | No | No | Gated |
+| M7 | Concepts and previews for real leads | Yes | LLM | Yes | Private previews — gated | Gated |
+| M8 | Sales preparation and lawful contact | Yes | LLM | No | **Yes — gated** | Gated |
+| M9 | Delivery and publication | Yes | Hosting | — | **Yes — gated** | Gated |
+| S1 | AgentScope evaluation | — | — | — | — | Excluded this phase (D-005) |
 
-## M0 — Phase 0 (this milestone)
+## 1. Current position
 
-- **Deliverables:** `docs/architecture.md`, `agent-design.md`, `data-contracts.md`, `security-and-compliance.md`,
-  `quality-gates.md`, `roadmap.md`, `decisions.md`; read-only audit of OI.
-- **Acceptance:** documents reviewed by the user; the decisions in [decisions.md § Decisions needed](decisions.md#decisions-needed-from-the-user-prioritized)
-  answered or explicitly deferred.
-- **Cost:** €0 external.
+Phase 0 documentation has been corrected to incorporate the review and the user's decisions D-018 to D-021. The next
+step is the user's review of this correction. M1 implementation starts only after explicit authorization and after the
+decisions blocking M1 (PD-01 to PD-07) are taken.
 
-## M1 — Contracts and deterministic control plane (offline)
+## 2. Gated activities and their entry requirements
 
-- **Scope:** Python package skeleton; JSON Schemas for every contract in [data-contracts](data-contracts.md) with
-  validators; lead and project state machines; event store + read-model projector (SQLite in tests); policy engine;
-  budget service with reservations; approval service with **no** external-write executors wired; tool gateway with the
-  socket lock for tests; OI bridge (vendored, hash-pinned OI schemas); synthetic fixtures; CI with lint, type check,
-  tests, OSV scan.
-- **Acceptance tests:**
-  - AT1.1 Every schema has ≥ 3 valid and ≥ 3 invalid fixtures; evidence invariants (KNOWN needs source + literal
-    snippet; contact values literal; NOT_FOUND ⇒ null/UNKNOWN; conflicting KNOWN ⇒ CONFLICTING) are tested.
-  - AT1.2 Exhaustive test over all state pairs: only declared transitions succeed; guards are enforced.
-  - AT1.3 Budget: no budget ⇒ `BUDGET_REQUIRED`; a reservation exceeding any scope is denied; 50 concurrent reservations
-    never overspend; unknown-price tools are blocked in autonomous mode.
-  - AT1.4 No agent identity can invoke an `X-EXT` tool; an approved action executes exactly once and only for its
-    `exact_action_sha256`.
-  - AT1.5 The whole test suite passes with network access blocked; any socket attempt fails the run.
-  - AT1.6 Replaying the event log rebuilds an identical read model.
-  - AT1.7 Every WAOS `EvidenceRecord` fixture exports to OI `evidence_input.v1` and validates against the vendored OI
-    schema; unmappable values are rejected; the vendored-schema hash test fails on drift.
-- **Stop conditions:** the OI mapping loses information that affects `KNOWN` status → stop and revise D-003.
-- **Dependencies:** Python stdlib, `jsonschema` (MIT), `pytest` (MIT) — subject to admission checks.
-- **Cost:** €0 external.
+These activities are **out of scope** until the listed requirements are met and the user approves the phase (D-020).
 
-## M2 — Website diagnosis engine (the first-party evidence producer)
-
-- **Scope:** fetcher (SSRF guard, robots, rate limits, identifying UA), sanitizer, site auditor (Lighthouse Node API
-  median-of-3, axe, HTML/SEO/contact-path checks), finding catalogue v1, sandbox container images; a local corpus of ≥ 20
-  fixture sites with labelled defects plus adversarial pages; then a real-site pilot on ≤ 25 public sites chosen by the
-  user, run only after a `CAMPAIGN_PLAN`-type approval.
-- **Acceptance tests:**
-  - AT2.1 Each detector: precision ≥ 0.95, recall ≥ 0.90 on the corpus.
-  - AT2.2 Same fixture twice ⇒ identical findings; Lighthouse spread recorded; thresholds have margin.
-  - AT2.3 SSRF suite (private/loopback/link-local/metadata IPv4+IPv6, DNS rebinding, redirect chains) fully blocked.
-  - AT2.4 robots.txt disallow respected; rate limits observed in fetch logs.
-  - AT2.5 Fetch logs from the pilot show only GET/HEAD to linked pages (no form posts, no probing).
-  - AT2.6 Human reviewer agrees with ≥ 90 % of pilot findings.
-  - AT2.7 Adversarial pages do not change deterministic outputs; suspicious content is flagged.
-- **Stop conditions:** pilot agreement < 90 % → diagnosis not used for scoring until fixed; any non-passive request
-  observed → stop and fix before further real fetches.
-- **Dependencies:** Playwright 1.64.x, Lighthouse 13.x, axe-core 4.14 (+ `@axe-core/playwright`), HTML validator (to assess).
-- **Cost:** €0 external (local compute). Compute estimate: ~3 Lighthouse runs × 20–40 s per site ⇒ ~1–2 CPU-minutes per site.
-
-## M3 — Dashboard on real events
-
-- **Scope:** read-model API, SSE stream, views from [architecture § 9.2](architecture.md#92-views), authentication,
-  roles, approval actions, CSRF protection, sandboxed preview origin.
-- **Acceptance tests:** AT3.1 the UI renders only persisted events (no client-side fabricated states); AT3.2 event-to-UI
-  lag ≤ 2 s at 50 events/s; AT3.3 approvals require an authenticated approver and are logged; AT3.4 CSRF and stored-XSS
-  tests with malicious captured content pass; AT3.5 RBAC: viewers cannot see raw prompts/captures.
-- **Stop conditions:** any XSS from captured content → stop.
-- **Cost:** €0 external (hosting decision deferred; runs locally).
-
-## S1 — AgentScope 2.0 spike (optional, parallel to M3–M5)
-
-Goal: decide whether AgentScope 2.0.x replaces the in-house runner behind the `AgentRuntime` interface (D-005).
-Precondition: static review of its pinned dependency tree done (licences, advisories, install scripts). Runs in a
-disposable container with no secrets and egress blocked; uses a **mock model** (no paid calls).
-
-| Test | Pass criterion |
+| Activity | Entry requirements (all) |
 |---|---|
-| S1.1 Zero built-in tools | Agents can be built with none of `Bash/Edit/Write/Read/Glob/Grep` registered; an injected request to use them fails closed |
-| S1.2 Gateway-only model access | All model calls go through our gateway wrapper (budget reservations apply); with egress blocked, nothing else tries to connect |
-| S1.3 Event coverage | Every model call, tool call and agent step can be mirrored into our event store (hooks/middleware/OTel) with ≤ 1 s delay and no loss across a crash |
-| S1.4 No hidden side effects | No telemetry, file writes outside scratch, or network calls at import/run time |
-| S1.5 Schema-validated outputs | Structured output with our JSON Schemas and repair loop works without framework-specific coupling |
-| S1.6 Upgrade risk | Pinned 2.0.x; two consecutive patch upgrades pass the suite unchanged |
-| S1.7 Value | Measurably less code than the in-house runner for the same tests, with no weaker control |
+| Crawling or measuring real websites (M2b and later) | M1 and M2a accepted; sandboxed browser environment approved (PD-08); agency identity, website and opt-out contact for the User-Agent (PD-11, fixes E5); documented legal basis for analysing business sites including sole traders', reviewed by counsel (PD-13, fixes E4); capture retention policy (PD-14); approved site list and its source (PD-15); a CLI-recorded campaign approval |
+| Any commercial contact (P1, M8) | Written legal review of channels and notices (PD-22); agency legal identity (PD-11); legitimate-interest assessment; exclusion-list procedure; suppression working; pilot success criteria set (PD-16); per-contact approval |
+| Automatic preview generation (M6b on real leads, M7) | M6a reference site accepted; design reviewer and rubric (PD-25); asset provenance policy enforced; counsel's view on using prospect names/logos in private previews; preview delivery decided (PD-19); T2 rule decided (PD-21); LLM provider and cap (PD-18) |
+| Any public deployment (previews or sites) | Production quality profile; legal pages; asset licences verified; client sign-off; hosting decision; `PUBLISH` approval |
+| First paid API call | Provider selected; terms and data-processing terms reviewed; prices recorded; user-set cap; provider-side cap; paid-call switch changed by the user in both places |
+| Real personal data stored | Legal basis documented; retention periods decided (PD-24, P-22); storage protection (encryption at rest, access control) decided |
 
-Adopt only if all pass. Otherwise keep the in-house runner; record the outcome as an ADR.
+## M1 — Minimal deterministic core (offline)
 
-## M4 — Discovery, identity, scoring, export
+**Decided scope (D-018):** local Python + SQLite program; no AI; no paid APIs; no network connections; synthetic data
+only. **Excluded (D-019):** OI code integration, PostgreSQL, dashboard, AgentScope, Google Sheets.
 
-- **Preconditions:** discovery sources selected and each approved via `DATA_SOURCE_ENABLE` with ToS/licence review;
-  LIA written; DPIA screening done; target area and categories confirmed.
-- **Scope:** collectors for approved sources (official/open data, OI import, operator CSV), identity resolution,
-  `business_classifier` (optional; if used, it triggers the M5 provider decision early), scoring rules v1, local
-  CSV/XLSX export with formula-injection protection, retention jobs.
-- **Acceptance tests:** AT4.1 dedupe/identity on labelled fixtures (no false merges); AT4.2 scoring deterministic with a
-  full rule trace per lead; AT4.3 formula-injection fixtures neutralized; AT4.4 human calibration on 50 real leads:
-  reviewer agrees with `PRIORITY` membership ≥ 70 % (initial threshold) before any T1/T2 spend; AT4.5 retention job
-  deletes expired personal fields and emits events.
-- **Stop conditions:** no source passes review → operator CSV import only; calibration < 70 % → revise scoring before M7.
-- **Cost:** source-dependent (TBD); free official sources €0.
+### Goal
 
-## M5 — Agent runtime and research agent (first paid spend)
+Prove the foundations on which everything else depends: evidence that cannot be invented, an assessment that keeps
+technical evidence apart from opportunity and intent, guarded state transitions, an append-only event log, approvals
+bound to exact actions, a spend switch that cannot be bypassed, and exports that are safe to open.
 
-- **Preconditions:** LLM provider chosen, DPA reviewed, `pricing.v1.json` filled, monthly cap set by the user.
-- **Scope:** agent runner (or AgentScope if S1 passed), prompt templates, A3 and A4, eval suites (§6 of agent-design),
-  prompt-injection suite (≥ 50 pages).
-- **Acceptance tests:** AT5.1 ≥ 98 % schema-valid outputs after ≤ 1 repair; AT5.2 0 unsupported claims on 30 researched
-  leads; AT5.3 100 % of `KNOWN` snippets found literally in captures; AT5.4 0 tool-policy violations / scope escapes on the
-  injection suite; AT5.5 measured cost per researched lead recorded and within the approved envelope.
-- **Stop conditions:** any injection-induced tool misuse → stop and redesign; ledger vs provider usage mismatch → halt
-  provider.
-- **Cost:** see §2 template.
+### Modules
 
-## M6 — Astro website factory (synthetic businesses)
+| Module | Responsibility |
+|---|---|
+| `contracts/` | JSON Schemas for the 8 core contracts ([data-contracts § 0](data-contracts.md#0-which-contracts-belong-to-m1)) + validator (library choice PD-02) |
+| `store` | SQLite schema, migrations, append-only triggers, integrity check at startup ([architecture § 6](architecture.md#6-m1-storage-sqlite-triggers-and-the-event-log--design-and-limitations)) |
+| `evidence` | Invariants and `evidence_strength` rules |
+| `assessment` | Three-layer scoring from `scoring.v1.json` and `impact_rules.v1.json`, with `rules_hash` |
+| `workflow` | Transition table ([architecture § 5.4](architecture.md#54-lead-state-machine)), guards, optimistic version check |
+| `approvals` | Requests, decisions and executions bound to `action_sha256` |
+| `budget` | Paid-call switch (code constant + configuration, both off), price table, ledger |
+| `gateway` | Only module that invokes tools; M1 tools are fakes; denials are ledger rows and events |
+| `privacy` | Suppression, erasure and retention commands; checks that events carry no personal values |
+| `export` | Safe CSV ([data-contracts § 11](data-contracts.md#11-csv-export-format-m1)) |
+| `cli` | `init`, `import`, `evidence add`, `score`, `transition`, `approve request/decide/list`, `budget show/request-change`, `suppress`, `erase`, `retention run`, `export csv`, `trace`, `verify` |
 
-- **Scope:** tokens, ~25 section components with prop schemas, 3 themes, motion presets, 3 category starters, manifest
-  validator, builder, QA runner, A8 and A9.
-- **Acceptance tests:** AT6.1 3 synthetic businesses × 3 themes pass the preview **and** production profiles in
-  [quality-gates](quality-gates.md); AT6.2 reproducible build hash; AT6.3 designer rubric ≥ 4/5 average; AT6.4 a manifest
-  containing scripts/raw HTML/external URLs is rejected; AT6.5 reduced-motion run shows no animation.
-- **Stop conditions:** design rubric not met after 2 iterations → a human designer reworks the component library before
-  any real preview.
-- **Cost:** LLM for A8/A9 evals (template §2); stock imagery optional.
+### Fixtures
 
-## M7 — Strategy, creative and previews for real shortlisted leads
+Synthetic only: one campaign with synthetic value bands; about a dozen synthetic leads covering every bucket, every gate
+outcome, contraindications, conflicts and suppression; synthetic capture texts; synthetic sole-trader names, phones and
+emails (`.example` domains, reserved test numbers) used to test privacy rules.
 
-- **Preconditions:** preview delivery decided (private hosting or screenshots/PDF only); asset policy enforced; counsel
-  view on using prospect names/logos in private previews (security § 13 Q4).
-- **Scope:** A5, A6, A7; T1 concept cards; T2 previews behind `PREVIEW_T2` approval and quotas.
-- **Acceptance tests:** AT7.1 100 % of factual content traced to evidence or rendered as placeholder; AT7.2 no asset
-  without `AssetRecord`; no `PREVIEW_ONLY` asset outside previews; AT7.3 quotas never exceeded (test + ledger audit);
-  AT7.4 cost per T1/T2 measured; AT7.5 previews non-indexable, access-controlled, expiring, with disclaimer.
-- **Stop conditions:** counsel objects to preview use of business identity → switch to anonymized concepts.
+### Acceptance tests
 
-## M8 — Sales preparation, CRM and outreach drafts
+The five tests from the review (AT1.1–AT1.5) plus seven added tests (AT1.6–AT1.12). All tests run with network access
+blocked.
 
-- **Preconditions:** written legal review of channels (security § 13); agency legal identity and notices; price ranges.
-- **Scope:** A10, CRM module, suppression service, consent records, contact-eligibility policy, approval-gated
-  human-sent outreach, outcome logging.
-- **Acceptance tests:** AT8.1 every draft contains the mandatory notices for its channel; AT8.2 email drafts impossible
-  without a consent record; AT8.3 suppression blocks every channel (cross-channel test); AT8.4 Robinson-check timestamp
-  required before phone/postal outreach approval; AT8.5 no send capability exists in code (static test + review).
-- **Stop conditions:** counsel finds a channel non-viable → channel disabled in policy; any communication without
-  approval detected → global stop.
-- **Cost:** LLM (template §2) + legal fees (TBD, real cost).
+| ID | Test | Pass condition |
+|---|---|---|
+| **AT1.1** | **Evidence is not invented** | A `KNOWN` record whose snippet is not a literal substring of its capture text is rejected (`evidence.rejected`, reason recorded) and not stored as `KNOWN`. A `KNOWN` record without `source_url` fails schema validation. A `KNOWN` phone or email not literally present in its snippet is rejected. Two incompatible `KNOWN` values for one field resolve to `CONFLICTING`. |
+| **AT1.2** | **Guarded transitions** | `DISCOVERED → SHORTLISTED` is rejected; state and version are unchanged; `state.transition_denied` is recorded with the reason. The valid path `DISCOVERED → IDENTITY_RESOLVED → DIAGNOSED → SCORED → SHORTLISTED` (with a valid approval) emits exactly one `state.transitioned` per step. |
+| **AT1.3** | **Unknown never passes; determinism** | A lead with `G_GEO = UNKNOWN` gets bucket `PENDING`, never `REVIEW_PRIORITY`. The same inputs twice give identical score records (excluding id and timestamp) and the same `rules_hash`; editing a rules file changes `rules_hash`. |
+| **AT1.4** | **Zero spend, zero network** | With the switch off, calling a fake tool with a price > 0 or an unknown price is denied: ledger row `DENIED` with reason, plus `tool.call_denied`. A test asserts that the shipped code constant and configuration are both off. The whole suite runs under a socket/DNS lock; any attempt fails the run. |
+| **AT1.5** | **Append-only, traceable log** | `UPDATE` and `DELETE` on `events` fail. `trace <lead>` lists every event of the lead in order, including rejected attempts. If a trigger is missing, the startup integrity check refuses to run. |
+| **AT1.6** | **Invalid transitions rejected (exhaustive)** | For every pair of states not in the transition table, the transition is rejected with state and version unchanged and a denial event. Terminal states (`DISQUALIFIED`, `SUPPRESSED`) have no outgoing transition. Unknown state names are rejected. Guard failures are rejected (e.g. `SCORED → SHORTLISTED` with bucket `WATCH`, or with `REVIEW_PRIORITY` but no approval). Of two attempts with the same `state_version`, only the first succeeds. |
+| **AT1.7** | **Approval bound to the exact action hash** | An approved `SHORTLIST` action executes once; a second execution is rejected. Changing any field of the action (lead id, parameters) gives a different hash and is rejected. An expired approval (clock moved past `expires_at`) is rejected. A decision by a `SYSTEM` or `AGENT` actor is rejected. A rejected approval cannot be executed. A `BUDGET_CHANGE` approval cannot authorize a `SHORTLIST` action. The same action with keys reordered gives the same hash (canonical JSON). |
+| **AT1.8** | **Data protection (synthetic personal data)** | (a) Importing a record with `data_mode = REAL` is rejected, and the rejection event carries no values. (b) After a full scenario, a scan of all event payloads finds none of the fixture personal values (names, phones, emails). (c) Suppressing a lead moves it to `SUPPRESSED`, rejects further transitions, erases its personal values, and causes a re-import of the same identifiers to be rejected. (d) Erasure nulls values and snippets, sets `erased = true` and keeps ids and hashes; `evidence.erased` carries no values. (e) With the clock past `retention_until`, the retention command purges personal values and records `retention.purged`. Retention durations come from configuration (P-22, HYPOTHESIS); tests use synthetic durations. |
+| **AT1.9** | **Export safety** | Cells beginning with `=`, `+`, `-`, `@`, tab, CR, LF or their full-width forms are prefixed with `'`. Reading the file back with a standard CSV reader returns exactly the escaped text, including fields with commas, quotes and newlines. Suppressed or erased leads have blank contact columns. The header uses `priority_for_review` and the `purchase_intent` column is `UNKNOWN`. `export.created` records the file's SHA-256 and row count (no values), and they match the file. Exporting a `REAL` record is refused. |
+| **AT1.10** | **Technical score ≠ purchase intent** | A lead with `TG = 3` whose findings only have `LOW` impact never reaches `REVIEW_PRIORITY`. A lead with `HIGH` impact but an `UNKNOWN` value band does not reach `REVIEW_PRIORITY`. A `KNOWN` contraindication caps the bucket at `WATCH`. No command changes `purchase_intent` from `UNKNOWN` (also enforced by the schema). A `REVIEW_PRIORITY` lead stays `SCORED` until a human `SHORTLIST` approval is executed. |
+| **AT1.11** | **Budget rules** | Tested with injected configuration, never with the shipped configuration. With no budget, any metered call returns `BUDGET_REQUIRED`. A reservation exceeding the per-run or global cap is denied, not truncated. Settlement releases the unused reservation. Changing a cap requires an executed `BUDGET_CHANGE` approval. Ledger totals match the sum of entries. |
+| **AT1.12** | **Contract and storage integrity** | Every core contract has at least 3 valid and 3 invalid fixtures. Foreign keys are enforced. CHECK constraints reject invalid enumeration values at the database level. Triggers are present after every migration. |
 
-## M9 — Delivery and publication (post-sale)
+### Stop conditions
 
-- **Scope:** project state machine, content collection, change requests (A12), production QA profile, publication via
-  `PUBLISH` approval, handover pack (credentials transfer, licences, maintenance terms).
-- **Acceptance tests:** AT9.1 publication impossible without client sign-off + approval; AT9.2 production profile passes;
-  AT9.3 legal pages present; AT9.4 all assets `PRODUCTION_ALLOWED`.
+- Any test needs a network connection or real data → stop and redesign the test.
+- The three-layer separation cannot be expressed without letting technical severity promote a lead → stop and revise
+  the assessment rules before continuing.
 
-## 1. Global stop conditions (any milestone)
+### Dependencies and cost
 
-1. An external network call not made through the gateway, or a gateway call without a policy decision.
-2. Spend without a reservation, or ledger/provider mismatch beyond tolerance.
-3. Any outward-facing action (message, call log without approval, publication, external write) without a matching approval.
-4. Prompt-injection-induced tool misuse or data crossing between leads.
-5. Personal data found in logs, prompts or exports beyond policy.
+Dependencies: Python standard library; test and schema libraries PENDING (PD-02). External cost: €0.
+
+### Definition of done
+
+All twelve acceptance tests pass offline; the M1 README states the SQLite and event-log limitations
+([architecture § 6.3](architecture.md#63-limitations-to-be-stated-in-the-m1-readme-when-implemented)); no network code
+path exists; only synthetic data is present in the repository.
+
+## M2a — Diagnosis engine on local fixture sites
+
+**Requires:** M1 accepted; PD-08 (sandbox and admission review of Playwright, Lighthouse, axe-core), PD-09 (catalogue
+and impact table), PD-10 (fixture corpus owner). **Network:** loopback only — fixture sites are served locally.
+
+Scope: fetcher with SSRF guard, robots handling, rate limiting; sanitizer; site auditor (Lighthouse via Node API, axe-core,
+HTML checks); deterministic basic-fact extractor (fixes E2); local corpus of fixture sites with labelled defects and
+adversarial pages.
+
+Acceptance tests (thresholds P-15, P-31 are HYPOTHESIS): detector precision/recall on the corpus; repeated runs give the
+same findings and Lighthouse spread is recorded; the SSRF suite (private, loopback-other-than-test-server, link-local,
+metadata ranges, IPv4/IPv6, DNS rebinding, redirect chains) is blocked; robots disallow is respected; adversarial pages
+do not change deterministic outputs; extracted facts match corpus labels; no request leaves the machine.
+
+Note: a synthetic corpus mainly tests the code; it says little about real websites.
+
+## M2b — Controlled real-site diagnosis pilot (gated)
+
+**Requires:** everything in §2 for real-site crawling. Scope: passive diagnosis of a small, approved list of real sites
+(size set at approval).
+
+Acceptance (thresholds P-16 are HYPOTHESIS):
+
+1. A human reviewer gives each site **two separate labels**: "are the findings correct?" and "would you propose a new
+   website? yes / no / unsure, and why".
+2. Base rates of each finding are reported; findings present on almost every site are flagged as weakly discriminating
+   (H-7).
+3. Fetch logs show only GET/HEAD of linked pages within P-10 and P-11.
+
+Stop if: any non-passive request is observed; or reviewer agreement on findings is below the agreed level.
+
+## P1 — Business validation pilot (manual first, gated)
+
+**Purpose:** test hypotheses H-2 and H-3 before building generation. **Requires:** everything in §2 for commercial
+contact.
+
+1. Choose one category and one area (PD-12) and a small number of businesses from a documented, lawful source.
+2. Diagnose them (M2b) and apply the two human labels.
+3. Select a handful and prepare a one-page diagnosis (T0) by hand or semi-automatically.
+4. Contact them only through channels approved by counsel, offering the free report; record outcomes as human
+   interactions (the only source of `purchase_intent`).
+5. For those who request it (recorded consent), send the report; for very few, prepare a concept (T1) by hand.
+6. Measure report requests, meetings, proposals, sales, hours spent, and which findings interested people.
+
+Success criteria are set by the user **before** the pilot (PD-16). With small samples the results are directional, not
+statistical. Generation phases (M6b, M7) are reconsidered only after P1.
+
+## M3 — Observability dashboard (deferred)
+
+Projection of the event log: pipeline, activity per worker/agent, sources, outputs, costs, errors, approval queue,
+authentication and roles. No simulated activity. Acceptance thresholds (P-30) are HYPOTHESIS. PostgreSQL is considered
+here if concurrent access requires it.
+
+## M4 — Discovery and scoring on approved sources (gated)
+
+Requires approved sources (terms/licence review), category value bands (PD-17), legal basis and DPIA decision (PD-24),
+retention periods (P-22). Acceptance: no false identity merges on labelled data; full rule trace per lead; calibration
+against human labels (P-17, HYPOTHESIS) before any generation.
+
+## M5 — Agent runtime and first agents (gated; first paid spend)
+
+Requires PD-18 and the §2 requirements for the first paid call. Initial agents: research (A4) and diagnosis narrative
+(A3) only. Acceptance: schema validity, zero unsupported claims, literal snippets, zero tool-policy violations on a
+prompt-injection suite, measured cost within the user's cap (P-29, HYPOTHESIS).
+
+## M6a — Reference website built by hand
+
+Requires PD-25 (design reviewer and rubric criteria). Build one website by hand for a fictional business of the first
+category, at the target quality, and run it through the quality gates. Purpose: set the quality bar, test H-5 and the
+provisional targets P-26, verify browser support for scroll-driven animations, and define the conversion components
+([quality-gates § 1.3](quality-gates.md#13-conversion-components-required-catalogue)).
+
+## M6b — Factory automation on synthetic businesses (gated)
+
+Extract components and tokens from the reference site; one theme and a small component set first; manifest validation;
+deterministic build; QA runner; site-assembler agent. Acceptance: synthetic businesses pass the preview and production
+profiles; reproducible build hash; design rubric met; unsafe manifests rejected; reduced-motion run shows no animation.
+
+## M7 — Concepts and previews for real leads (gated)
+
+Requires §2 automatic-preview requirements. Previews private, labelled, expiring; every fact traced to evidence or
+shown as a placeholder; quotas (P-24) never exceeded.
+
+## M8 — Sales preparation and lawful contact (gated)
+
+Requires §2 commercial-contact requirements. No send capability in code; drafts include mandatory notices; suppression
+blocks every channel; a contact attempt needs an approval for the exact text and channel.
+
+## M9 — Delivery and publication (gated)
+
+Requires §2 public-deployment requirements. Publication only after client sign-off and a `PUBLISH` approval.
+
+## S1 — AgentScope evaluation (excluded this phase)
+
+Only reconsidered once an agent runtime exists. If ever run: sandboxed, mock model, no secrets, egress blocked; pass
+criteria include zero built-in tools (no shell/file tools), all model traffic through the WAOS gateway, lossless event
+mirroring into the WAOS log, no ownership of state transitions, clean dependency review, and stable upgrades.
+Facts about AgentScope in these documents are REPORTED, not verified.
+
+## 3. Global stop conditions
+
+1. A network call outside the gateway, or a gateway call without a policy decision.
+2. Spend without a reservation, or a ledger mismatch.
+3. Any outward-facing action without a matching approval.
+4. Real personal data appearing where only synthetic data is allowed, or personal values found in events.
+5. Prompt-injection-induced tool misuse or data crossing between leads (later phases).
 6. A legal blocker raised by counsel.
 7. A dependency with a new unpatched critical advisory on the execution path.
 
-On a stop: kill switch, incident note, root cause, ADR, user decision to resume.
+## 4. Costs
 
-## 2. Cost model (to be populated once providers are selected)
+### 4.1 Free initial configuration (M1, M2a)
 
-Per stage: `cost = Σ_calls(unit_price) + tokens_in × p_in + tokens_out × p_out + compute_minutes × p_compute`.
-Prices come from `pricing.v1.json` (versioned, with source and date). All € values below are **TBD**.
+Local machine or this environment; Python + SQLite; Node.js tools run locally from M2a (Lighthouse locally, not a hosted
+API that needs an account); no AI; no hosting; fixtures and, later, operator-prepared CSV lists. External API cost: €0.
+Real costs not covered by any API figure: human time (design, review, sales), legal advice, later a domain and hosting.
 
-Illustrative monthly funnel (ASSUMPTION, to be replaced by measured conversion): 1,000 discovered → 700 identity-resolved
-and diagnosed → 140 shortlisted and researched → 40 T1 concepts → 10 T2 previews → sales packages for consented prospects.
+### 4.2 Spend control (layers, strongest first)
 
-| Stage | Units / month | Tokens per unit (in / out, ASSUMPTION) | Other drivers | Unit cost | Monthly cost |
-|---|---|---|---|---|---|
-| Discovery + classification (A1, A2) | 1,000 | 2k / 0.3k | source fees TBD | TBD | TBD |
-| Diagnosis (deterministic) | 700 | — | ~1–2 CPU-min per site | TBD | TBD |
-| Diagnosis narrative (A3) | 140 | 4k / 1k | — | TBD | TBD |
-| Research (A4) | 140 | 25k / 3k | ≤ 10 fetches | TBD | TBD |
-| Strategy + copy + art direction (A5–A7) | 40 | 23k / 7k | stock images TBD | TBD | TBD |
-| T1 concept build + QA | 40 | — | build + QA ~5 CPU-min | TBD | TBD |
-| T2 assembly + QA review (A8, A9) | 10 | 16k / 7k + 4 images | build + QA ~10 CPU-min, ≤ 2 retries | TBD | TBD |
-| Sales package (A10) | ≤ 40 | 8k / 3k | — | TBD | TBD |
-| Evals and regression runs | per release | measured in M5 | — | TBD | TBD |
-| Infrastructure (DB, workers, preview hosting) | monthly | — | TBD | TBD | TBD |
-| Legal review (one-off + periodic) | — | — | counsel | TBD | TBD |
+1. **No credentials exist** in the environment — the strongest control.
+2. **Double switch:** code constant + configuration; both must be changed by the user.
+3. **Single egress** through the gateway; network locked in tests.
+4. **Unknown price = blocked**; prices only from `pricing.v1.json`.
+5. **Reserve before call**; deny when a cap would be exceeded.
+6. **Provider-side cap**: prepaid credit without automatic top-up (when a provider exists).
+7. **Reconciliation** with provider usage; mismatch halts the provider.
+8. **Kill switch**, and an approval for any cap change.
 
-KPIs to measure from M5: cost per diagnosed lead, cost per researched lead, cost per T2 preview, cost per consented
-prospect, cost per won client.
+M1 implements and tests layers 1–5 and the approval for cap changes.
 
-## 3. Phase 0 recommendation
+### 4.3 Cost model (symbolic until providers and volumes exist)
 
-**Build first (no LLM, no paid API, low risk, highest leverage):**
+`cost(stage) = Σ calls × unit_price + tokens_in × p_in + tokens_out × p_out + compute_minutes × p_compute`.
+Volumes and conversion rates are not set (P-33); token envelopes are HYPOTHESIS (P-25). No euro figures are given.
 
-1. **M1 — contracts and deterministic control plane**, offline with synthetic fixtures: schemas, state machines, budget
-   reservations, approval service without executors, gateway with network lock, OI bridge. Everything else depends on it.
-2. **M2 — website diagnosis engine.** It is the core of the value proposition (objectively verifiable problems), it is
-   exactly the first-party evidence producer that OI's pilots identified as the bottleneck, and it needs only free
-   tooling. Quality is measurable against a labelled corpus before any real site is touched.
-3. **M3 — dashboard** over the real event log, so every later agent is observable from day one.
+## 5. Next step
 
-**Defer:**
+1. The user reviews this corrected documentation.
+2. The user takes the decisions blocking M1 (PD-01 to PD-07 in [decisions.md](decisions.md#blocking-m1-implementation)).
+3. Only then, with explicit authorization, M1 is implemented as specified above.
 
-- AgentScope adoption (spike S1 only; never 1.x; Studio is archived).
-- All LLM agents until M5, and image generation indefinitely (licensed library first).
-- Google Sheets sync, external CRM integrations, automated reply handling, any automated sending.
-- T3 full-site generation until a client has signed; multi-tenant features; Temporal or other workflow engines.
-- Paid discovery or data-broker sources.
-
-**Dependencies justified now (subject to the admission checks at each milestone):**
-
-- M1: Python standard library, `jsonschema`, `pytest`.
-- M2: Playwright 1.64.x, Lighthouse 13.x (Node API), axe-core 4.14 + `@axe-core/playwright`.
-- M3: PostgreSQL; a minimal web framework (to be chosen under the admission policy).
-- M6: Astro ≥ 7.2.8 (latest 7.4.x), with restricted image inputs.
-
-**Not justified yet:** AgentScope (pending S1), Lighthouse CI (stale), Temporal, vector databases, general-purpose agent
-frameworks, any paid API.
-
-**Must be tested before integrating any framework** (AgentScope or other):
-
-1. It can run with zero built-in tools and cannot execute shell, filesystem or code tools even if prompted.
-2. All model and tool traffic passes through the WAOS gateway (budget reservation, policy, logging); nothing else egresses.
-3. Its events can be mirrored losslessly into the WAOS event store; its UI is never the system of record.
-4. It never owns workflow state transitions.
-5. Its pinned dependency tree passes licence, advisory and install-script review, and its first run in a sandbox shows
-   no unexpected network or file activity.
-6. Upgrades within the pinned major version do not break the acceptance suite.
-
-**Business-model note for the user:** because of LSSI Art. 21, cold email to Spanish businesses is not an option. The
-pipeline above is designed for first contact by phone, post or in person offering a free diagnosis, with previews and
-email follow-up reserved for prospects who ask for them. Confirming this with Spanish counsel is a precondition of M8 and
-should start early because it can change what is worth building in M7.
+In parallel and outside the system, starting the legal consultation is recommended because it has the longest lead time
+and gates M2b, P1 and every contact phase.

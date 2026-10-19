@@ -1,184 +1,163 @@
-# Web Agency OS — Agent Design (Phase 0)
+# Web Agency OS — Agent Design
 
-Status: **proposal, not implemented**. Date: 2026-10-19. See [architecture](architecture.md) for components and state
-machines, [data-contracts](data-contracts.md) for the schemas named here.
+Revision: Phase 0, corrected after the Phase 0 review ([phase0-review.md](phase0-review.md)). Date: 2026-10-19.
+Status: **design for later phases. M1 and M2 contain no agents and no AI.** Each agent below requires its phase to be
+approved, an LLM provider and a user-set cap (PD-18). Token envelopes and eval thresholds are HYPOTHESIS (P-25, P-29).
+See [architecture](architecture.md) and [data-contracts](data-contracts.md).
 
 ## 1. Design rules
 
-1. **Agents propose, code decides.** An agent's output is a *proposal* validated against a JSON Schema and business
-   invariants. Only the workflow engine changes state; only the budget service authorizes spend; only the approval
-   service performs external writes.
-2. **One bounded task per invocation.** No long-lived autonomous agents and no agent-to-agent free conversation. The
-   workflow engine sequences tasks. Each task has a fixed input, an allowed-tool list, a budget envelope and an output schema.
-3. **Deterministic first.** Anything measurable (performance, accessibility, HTTPS, colours used on a site, scoring,
-   eligibility, prices) is computed by code. LLMs are used for reading, summarizing, classifying, writing and composing.
-4. **No shell, no filesystem, no raw network.** These tools do not exist in the tool registry, so no prompt can unlock them.
-5. **Untrusted content is data.** Fetched pages, search results, documents and inbound emails are passed to agents inside
-   delimited, provenance-labelled blocks. Agents that receive untrusted content have no external-write tool and no secret.
-6. **Every claim is anchored.** A factual statement in any agent output must reference an `evidence_id` or a
-   `finding_id`; textual evidence must contain a snippet that appears literally in the stored capture (checked in code).
-7. **Versioned and evaluated.** Each agent = `name@version` = prompt template hash + output schema version + model tier.
-   A new version ships only if its eval suite passes (§6).
+1. **Agents propose, code decides.** An agent's output is a proposal validated against a JSON Schema and invariants. Only
+   the workflow engine changes state; only the budget service authorizes spend; only the approval service executes
+   approved actions.
+2. **One bounded task per invocation.** No long-lived autonomous agents, no free agent-to-agent conversation.
+3. **Deterministic first.** Anything measurable or rule-based (performance, accessibility, HTTPS, site facts, scoring,
+   contactability, prices, QA pass/fail) is code.
+4. **No shell, no filesystem, no raw network.** These tools are not in the registry, so no prompt can unlock them.
+5. **Untrusted content is data.** Fetched pages, documents and inbound messages are passed inside delimited,
+   provenance-labelled blocks. Agents receiving untrusted content have no external-write tool and no secret.
+6. **Every claim is anchored** to an `evidence_id` or `finding_id`; textual evidence needs a snippet found literally in
+   the stored capture (checked in code).
+7. **No agent sets `purchase_intent`, contactability, a bucket or a state** (D-021, D-023).
+8. **Versioned and evaluated.** `agent@version` = prompt template hash + output schema version + model tier.
 
-## 2. Deterministic services (no LLM)
+## 2. What is deterministic, what an agent may do, what a person decides
 
-| Service | Decides |
+| Deterministic code | Agent (proposes only) | Person |
+|---|---|---|
+| Measurements, findings, basic site facts, three-layer assessment, gates | Read the business's own pages and extract claims with literal snippets | Approve shortlists, campaigns, previews, contacts, budget changes, publication |
+| State transitions, budget, permissions, approvals | Explain measured findings in plain Spanish, citing each finding | Resolve ambiguous identity and conflicting evidence |
+| Contactability (later, per counsel), suppression, opt-out | Propose page structure, copy and component selection | Record interactions with prospects (the only source of `purchase_intent`) |
+| Prices, schema validation, QA pass/fail, builds, exports | Advisory visual critique of screenshots (never a gate) | Design review; legal sign-off |
+
+## 3. LLM agents (later phases)
+
+Model tiers (`small`, `medium`, `vision`) map to provider models by configuration once a provider is chosen (U-1).
+
+**Initial set when agents are first approved:** A4 (research) and A3 (diagnosis narrative) in M5. All others wait for
+their phases.
+
+| # | Agent | Purpose | Output schema | Reads untrusted content? | Envelope (HYPOTHESIS, P-25) | Phase |
+|---|---|---|---|---|---|---|
+| A1 | `discovery_planner` | Query proposals for approved sources | `DiscoveryPlanProposal` | No | 4k / 1k tokens, 2 tool calls | M4 (optional) |
+| A2 | `business_classifier` | Category proposal; always `INFERRED` | `ClassificationProposal` | Yes | 2k / 0.3k, 0 | M4 (optional) |
+| A3 | `diagnosis_narrator` | Plain-language explanation of findings; cannot add findings | `DiagnosisNarrative` | Structured values only | 4k / 1k, 0 | M5 |
+| A4 | `business_researcher` | Claims from the business's own pages, with literal snippets | `EvidenceProposal[]`, `ResearchDossier` | Yes | 25k / 3k, ≤ 10 fetches | M5 |
+| A5 | `website_strategist` | Scope, pages, conversion goal, sections | `WebsiteStrategy` | Validated claims only | 8k / 2k, 2 | M7 |
+| A6 | `copywriter` | Spanish copy; facts cite evidence | `CopyDeck` | Validated claims only | 10k / 4k, 0 | M7 |
+| A7 | `art_director` | Theme, palette roles, type pair, imagery slots, motion preset | `CreativeBrief` | No | 5k / 1k, ≤ 5 library searches | M7 |
+| A8 | `site_assembler` | Typed site manifest from catalogue components | `WebsiteProjectManifest` | No | 12k / 6k, ≤ 3 validations | M6b |
+| A9 | `qa_reviewer` | Advisory visual critique; never a gate | `VisualReview` | No (own artifacts) | 4 images + 3k / 1k | M6b |
+| A10 | `sales_preparer` | Drafts (summary, proposal outline, call script, letter); nothing is sent | `SalesPackage` | Validated claims only | 8k / 3k, 2 | M8 |
+| A11 | `reply_triage` | Classify inbound replies into proposals; opt-outs handled conservatively by code | `ReplyClassification` | Yes | 3k / 0.3k, 0 | Deferred |
+| A12 | `delivery_assistant` | Change requests → manifest diffs | `ManifestDiffProposal` | Yes | 10k / 4k, 1 | Deferred |
+
+### 3.1 Per-agent guardrails (enforced in code)
+
+| Agent | Constraints |
 |---|---|
-| Workflow engine | State transitions, retries, quotas, tier entry (§4.2 of architecture) |
-| Policy engine | Tool permissions, egress, contact-channel eligibility, approval requirements, retention |
-| Budget service | Reservations, settlements, caps, alerts |
-| Identity resolver | `KNOWN_MATCH / KNOWN_MISMATCH / AMBIGUOUS / UNKNOWN` (OI 4-state model, no fuzzy auto-merge) |
-| Fetcher + Sanitizer | What is fetched (robots, rate, scope) and how content is cleaned and labelled |
-| Site auditor | All website measurements and findings (catalogue in [data-contracts § 4](data-contracts.md#4-measurements-and-findings)) |
-| Scoring engine | Gates, eligibility, score interval, bucket |
-| Astro builder | Rendering a validated manifest into a static site |
-| QA runner | Pass/fail on all [quality gates](quality-gates.md) |
-| Pricing table | Offer price ranges per tier (agents read, never invent prices) |
-| Suppression service | Opt-outs and do-not-contact, checked before every contact-related action |
-| CRM module | Pipeline records, outcome logging (human-entered) |
-| Exporters | CSV/XLSX generation with formula-injection neutralization |
+| A1 | Only sources enabled after review; output count within quota; human approves the campaign plan. |
+| A2 | `claim_status` forced to `INFERRED`; cannot satisfy a gate by itself. |
+| A3 | Every sentence references ≥ 1 `finding_id`; findings with `sales_safe = false` excluded from sales text; impact is always worded as a hypothesis. |
+| A4 | Fetch restricted to the lead's registrable domain, GET only, page limit; `KNOWN` only with a literal snippet (else downgraded to `UNKNOWN` and logged); contact values only if literally present; no data about individuals beyond business contact details published by the business. |
+| A5 | Scope within tier limits; must state which findings each choice addresses; catalogue components only. |
+| A6 | Claim detector: digits, years, counts, certifications, awards, ratings, guarantees, superlatives, prices and testimonials must link to evidence or the block is rejected; testimonials never generated; placeholders through `Placeholder`. |
+| A7 | Approved fonts only; assets only with compatible `usage_scope`; contrast checked by code. |
+| A8 | Per-component schema validation; no raw HTML, scripts or external URLs except evidence-backed contact links. |
+| A9 | Advisory only; disagreements logged for evaluation. |
+| A10 | Mandatory notices verbatim from the compliance template store (content PENDING counsel); prices only from the price table; claims state measurement date and tool; no email draft without a consent record; nothing is sent. |
+| A11/A12 | No tools; outputs reviewed by a person. |
 
-## 3. LLM agents
-
-Model tiers are abstract (`small`, `medium`, `large`, `vision`); the mapping to a provider's models is configuration,
-decided when the provider is selected (UNKNOWN today). Budget envelopes are initial ASSUMPTIONS to be replaced by measured
-values in milestone M5.
-
-| # | Agent | Purpose | Input | Output schema | Reads untrusted content? | Model tier | Envelope (in/out tokens, tool calls) | Milestone |
-|---|---|---|---|---|---|---|---|---|
-| A1 | `discovery_planner` | Turn a campaign brief (area, categories) into search query proposals and Spanish category synonyms for allowlisted sources | `Campaign` | `DiscoveryPlanProposal` | No | small | 4k / 1k, 2 | M4 |
-| A2 | `business_classifier` | Map a discovered entity to the internal category taxonomy; always `INFERRED` | listing record (sanitized) | `ClassificationProposal` | **Yes** | small | 2k / 0.3k, 0 | M4 |
-| A3 | `diagnosis_narrator` | Explain measured findings in plain Spanish for internal and sales use; cannot add findings | `Finding[]`, `Measurement[]` (structured only) | `DiagnosisNarrative` | Indirect (structured values only) | small | 4k / 1k, 0 | M5 |
-| A4 | `business_researcher` | Read the business's own pages and allowlisted public sources; extract claims with literal snippets | lead, capture ids, same-site URLs | `EvidenceProposal[]` + `ResearchDossier` | **Yes** | medium | 25k / 3k, ≤ 10 fetches | M5 |
-| A5 | `website_strategist` | Choose scope within the tier, pages, conversion goal, sections, local-SEO themes | dossier, diagnosis, category playbook | `WebsiteStrategy` | Via validated claims only | medium | 8k / 2k, 2 | M7 |
-| A6 | `copywriter` | Write Spanish copy per section; facts must cite evidence | strategy, dossier | `CopyDeck` | Via validated claims only | medium | 10k / 4k, 0 | M7 |
-| A7 | `art_director` | Pick theme, palette roles, type pair, imagery slots from the licensed library, motion preset | strategy, measured brand colours | `CreativeBrief` | No | medium | 5k / 1k, ≤ 5 library searches | M7 |
-| A8 | `site_assembler` | Compose the `WebsiteProjectManifest` from catalogue components with typed props | strategy, copy deck, creative brief, component schemas | `WebsiteProjectManifest` | No | medium | 12k / 6k, ≤ 3 validations | M6–M7 |
-| A9 | `qa_reviewer` | **Advisory** visual critique of screenshots + rubric pre-score; cannot pass a failing gate | `QAReport`, screenshots | `VisualReview` | No (own artifacts) | vision | 4 images + 3k / 1k, 0 | M6 |
-| A10 | `sales_preparer` | Draft diagnostic summary, proposal outline, call script, postal letter; email draft only when a consent record exists | dossier, diagnosis, strategy, preview refs, pricing, required notices | `SalesPackage` (drafts) | Via validated claims only | medium | 8k / 3k, 2 | M8 |
-| A11 | `reply_triage` | Classify inbound replies (interested / not now / opt-out / other) into CRM proposals | inbound message (sanitized) | `ReplyClassification` | **Yes** | small | 3k / 0.3k, 0 | deferred (after M8) |
-| A12 | `delivery_assistant` | Turn client change requests into manifest diffs and content checklists | project, request | `ManifestDiffProposal` | **Yes** (client text) | medium | 10k / 4k, 1 | deferred (M9) |
-
-Deliberately **not** agents: scoring, eligibility, compliance decisions, pricing, QA pass/fail, state transitions,
-suppression, opt-out handling (a detected opt-out is applied deterministically and conservatively; ambiguity goes to a human).
-
-### 3.1 Per-agent guardrails (beyond the global rules)
-
-| Agent | Specific constraints enforced in code |
-|---|---|
-| A1 | Queries only against sources whose `enabled=true` in the source registry; output count ≤ campaign quota; human approves the campaign plan before execution. |
-| A2 | Output `claim_status` forced to `INFERRED`; category must exist in taxonomy; never sets gates. |
-| A3 | Every sentence must reference ≥ 1 `finding_id`; findings with `sales_safe=false` are excluded from sales narrative input. |
-| A4 | `web.fetch_same_site` restricted to the lead's registrable domain (+ allowlisted registries), ≤ 10 pages, GET only; each proposed `KNOWN` claim must carry a snippet that is a literal substring of the sanitized capture (else downgraded to `UNKNOWN` and logged); emails/phones accepted only if literally present; no person-level data beyond business contact details published by the business itself; no inferred attributes about individuals. |
-| A5 | Page count and section count ≤ tier limits; must list which findings each choice addresses; cannot request features outside the component catalogue. |
-| A6 | Claim detector: digits, years, counts, certifications, awards, ratings, guarantees, superlatives ("líder", "nº 1", "el mejor"), prices and testimonials must link to evidence or the block is rejected; testimonials/reviews can never be generated; placeholders must use the `Placeholder` marker. |
-| A7 | Fonts only from the approved (OFL/licensed) list; images only from the asset store with `usage_scope` compatible with the tier; palette contrast checked by code (WCAG AA for text roles). |
-| A8 | Output validated against per-component JSON Schemas; no raw HTML, no scripts, no external URLs except evidence-backed contact links; rich text limited to a safe Markdown subset rendered by the builder. |
-| A9 | Advisory only: its scores are stored but never used as a gate; disagreements with deterministic results are logged for eval. |
-| A10 | Must include the mandatory notices for the channel verbatim (from the compliance template store); prices only from the pricing table; claims about the prospect's site must cite measurement date and tool; email drafts are not generated unless the contact point has a valid `ConsentRecord`; nothing is sent. |
-| A11/A12 | No tools; outputs are proposals reviewed by a human. |
-
-## 4. Tool permission model
+## 4. Tool permission model (later phases)
 
 ### 4.1 Tool classes
 
-| Class | Meaning | Examples | Who may call |
-|---|---|---|---|
-| `R-INT` | Read internal, scoped to the task's lead/project | `catalog.components`, `playbook.get`, `capture.get_text`, `qa.get_report` | Agents per matrix |
-| `R-WEB` | Fetch public web through the Fetcher (robots, rate limit, SSRF guard, scope rules) | `web.fetch_same_site` | A4 only |
-| `P-INT` | Propose internal records (validated before persistence) | `evidence.propose`, `manifest.validate` | Agents per matrix |
-| `M-PAID` | Metered external APIs (the LLM itself, stock library, paid data) — budget reservation mandatory | `llm.complete`, `assets.search_stock` | Runner / A7 |
-| `C-SBX` | Sandboxed compute | `build.astro`, `qa.run`, `audit.site` | **Workflow engine only**; agents can only *request* a rebuild via their output |
-| `X-EXT` | External write / outward-facing | send email, place call, publish site, write Google Sheet, push to external CRM, create accounts | **No agent.** Approval service after a recorded human decision |
-| `SYS` | Shell, filesystem, arbitrary HTTP, code execution, package install | — | **Not implemented**; absent from the registry |
+| Class | Meaning | Who may call |
+|---|---|---|
+| `R-INT` | Read internal data scoped to the task's lead/project | Agents per matrix |
+| `R-WEB` | Fetch public web via the fetcher (robots, rate limit, SSRF guard, scope) | A4 only |
+| `P-INT` | Propose internal records (validated before persistence) | Agents per matrix |
+| `M-PAID` | Metered APIs (the LLM, stock library) — reservation mandatory | Runner; A7 (stock search) |
+| `C-SBX` | Sandboxed compute (audit, build, QA) | Workflow engine only |
+| `X-EXT` | External write / outward-facing | **No agent.** Approval service after a human decision |
+| `SYS` | Shell, filesystem, arbitrary HTTP, code execution, package installation | **Does not exist** |
 
-### 4.2 Responsibility / permission matrix
+### 4.2 Permission matrix
 
-✔ allowed · ✖ not available · ◐ restricted variant (see §3.1)
+✔ allowed · ✖ not available · ◐ restricted (see §3.1)
 
-| Agent | R-INT | R-WEB | P-INT | M-PAID | C-SBX | X-EXT | SYS | Human approval of output required? |
+| Agent | R-INT | R-WEB | P-INT | M-PAID | C-SBX | X-EXT | SYS | Human approval of output |
 |---|---|---|---|---|---|---|---|---|
-| A1 discovery_planner | ✔ | ✖ | ✔ | LLM only | ✖ | ✖ | ✖ | **Yes** (campaign plan) |
-| A2 business_classifier | ✖ | ✖ | ✔ | LLM only | ✖ | ✖ | ✖ | No (INFERRED only; ambiguous → review queue) |
-| A3 diagnosis_narrator | ✔ | ✖ | ✔ | LLM only | ✖ | ✖ | ✖ | Before any external use (part of sales package) |
-| A4 business_researcher | ✔ | ◐ same-site | ✔ | LLM only | ✖ | ✖ | ✖ | No for internal use; conflicts/gates → review queue |
-| A5 website_strategist | ✔ | ✖ | ✔ | LLM only | ✖ | ✖ | ✖ | Implicitly via T2 preview approval |
-| A6 copywriter | ✔ | ✖ | ✔ | LLM only | ✖ | ✖ | ✖ | Via T2 approval; production copy needs client sign-off |
-| A7 art_director | ✔ | ✖ | ✔ | LLM + ◐ stock search | ✖ | ✖ | ✖ | Via T2 approval; designer review |
-| A8 site_assembler | ✔ | ✖ | ✔ | LLM only | ✖ (requests only) | ✖ | ✖ | Via QA gates + designer review |
-| A9 qa_reviewer | ✔ | ✖ | ✔ | LLM (vision) | ✖ | ✖ | ✖ | Advisory only |
-| A10 sales_preparer | ✔ | ✖ | ✔ | LLM only | ✖ | ✖ | ✖ | **Yes** (outreach approval, per message/batch) |
-| A11 reply_triage | ✖ | ✖ | ✔ | LLM only | ✖ | ✖ | ✖ | Yes for anything except clear opt-out (applied automatically, conservatively) |
-| A12 delivery_assistant | ✔ | ✖ | ✔ | LLM only | ✖ | ✖ | ✖ | Yes (client-facing changes) |
+| A1 | ✔ | ✖ | ✔ | LLM | ✖ | ✖ | ✖ | Yes (campaign plan) |
+| A2 | ✖ | ✖ | ✔ | LLM | ✖ | ✖ | ✖ | Ambiguous cases to review |
+| A3 | ✔ | ✖ | ✔ | LLM | ✖ | ✖ | ✖ | Before any external use |
+| A4 | ✔ | ◐ | ✔ | LLM | ✖ | ✖ | ✖ | Conflicts and gate-relevant claims to review |
+| A5–A7 | ✔ | ✖ | ✔ | LLM (A7 ◐ stock) | ✖ | ✖ | ✖ | Via preview approval; designer review |
+| A8 | ✔ | ✖ | ✔ | LLM | requests only | ✖ | ✖ | Via QA gates + designer review |
+| A9 | ✔ | ✖ | ✔ | LLM (vision) | ✖ | ✖ | ✖ | Advisory only |
+| A10 | ✔ | ✖ | ✔ | LLM | ✖ | ✖ | ✖ | Yes (per contact) |
+| A11, A12 | ✖ / ✔ | ✖ | ✔ | LLM | ✖ | ✖ | ✖ | Yes |
 
-### 4.3 Gateway enforcement (per call)
+### 4.3 Gateway enforcement per call
 
-1. Caller identity = `agent@version` bound to `task_id`; the tool must be in the task's allowlist.
-2. Arguments validated against the tool's schema; URL arguments additionally checked against scope rules (registrable
-   domain of the lead, allowlisted registries), SSRF rules (no private/link-local/loopback/metadata addresses, re-resolve
-   at connect time, ≤ 3 redirects re-checked), method = GET/HEAD.
-3. Policy check (Policy engine) → `allow | deny(reason) | require_approval`.
-4. Budget reservation for metered tools; denial if any cap level would be exceeded.
-5. Execute with timeout and size limits; store raw result by hash; return a sanitized, labelled view to the agent.
-6. Emit `tool.call_completed` / `tool.call_denied` with input hash, duration, cost, result reference.
+1. Caller identity `agent@version` bound to `task_id`; tool in the task's allowlist.
+2. Arguments validated; URLs checked against scope and SSRF rules; GET/HEAD only.
+3. Policy check → allow / deny (reason) / require approval.
+4. Budget reservation for metered tools; denial if any cap would be exceeded.
+5. Execution with timeout and size limits; raw result stored by hash; sanitized, labelled view returned.
+6. Event `tool.call_completed` or `tool.call_denied` written by the gateway.
 
 ## 5. Agent runner contract
 
 ```text
 TaskEnvelope {
   task_id, run_id, lead_id?, project_id?,
-  agent: "business_researcher", agent_version: "1.0.0",
-  prompt_template_hash, output_schema_id: "waos.evidence_proposal.v1",
-  model_tier: "medium",
-  allowed_tools: ["capture.get_text", "web.fetch_same_site", "evidence.propose"],
-  budget: { max_input_tokens, max_output_tokens, max_tool_calls, max_cost_eur, max_wall_seconds },
+  agent, agent_version, prompt_template_hash, output_schema_id, model_tier,
+  allowed_tools: [...],
+  budget: { max_input_tokens, max_output_tokens, max_tool_calls, max_cost_cents, max_wall_seconds },
   inputs: [ { ref, kind, trust: "trusted" | "untrusted" } ],
   idempotency_key: hash(agent_version, inputs, output_schema_id)
 }
 ```
 
-Execution: build prompt (immutable system policy → task instructions → inputs, with untrusted inputs wrapped in
-`<untrusted_content source="…" capture="sha256:…">` blocks and a standing instruction that such content is data) →
-loop (≤ N turns) of model call / tool calls through the gateway → final output → schema + invariant validation → one
-repair attempt with the validator's error list → `task.completed` or `FAILED_NEEDS_HUMAN`. Identical idempotency keys
-reuse the stored result (no re-spend). Raw prompts/outputs are stored as artifacts with restricted access, because they may
-contain personal data.
+Execution: immutable system policy → task instructions → inputs, with untrusted inputs wrapped as
+`<untrusted_content source="…" capture="sha256:…">` → bounded loop of model and tool calls through the gateway → schema
+and invariant validation → one repair attempt → completed or `FAILED_NEEDS_HUMAN`. Identical idempotency keys reuse the
+stored result. Raw prompts and outputs are stored with restricted access (they may contain personal data).
 
-Prompt-injection specific controls:
+Prompt-injection controls: untrusted text never enters the instruction sections; agents with untrusted input cannot reach
+`X-EXT`, other leads' data or secrets; URLs in outputs must come from already fetched evidence; the sanitizer removes
+scripts, hidden elements and comments and flags instruction-like text (flagging is not relied on for safety); repeated
+policy denials end the task with a `policy.violation` event.
 
-- Untrusted text never appears in the system or task-instruction section.
-- Agents with untrusted input cannot reach `X-EXT`, cannot read other leads' data, cannot see secrets; their only
-  "exfiltration channel" would be their own output, which is schema-validated and reviewed.
-- URLs in outputs must come from evidence `source_url`s already fetched; new URLs are dropped.
-- The sanitizer removes scripts, styles, hidden elements (`display:none`, `aria-hidden` off-screen text, zero-size text),
-  HTML comments and metadata, and records what it removed; text that looks like instructions to an AI is flagged
-  (`injection_suspect=true`) for the dashboard, but detection is not relied upon for safety.
-- Repeated policy denials from one task trigger task termination and a `policy.violation` event.
+## 6. Evaluation (thresholds P-29, HYPOTHESIS)
 
-## 6. Evaluation (per agent version)
-
-| Agent | Eval set (built in the milestone where the agent ships) | Pass criteria (initial, to be tuned) |
+| Agent | Eval set | Initial pass criteria |
 |---|---|---|
-| A2 | 200 labelled listings (synthetic + reviewed real) | Category accuracy ≥ 90 %; "ambiguous" used rather than wrong guesses |
-| A3 | 30 diagnoses | 0 statements without finding refs; human clarity rating ≥ 4/5 |
-| A4 | 30 businesses with human-labelled claims; 50 adversarial pages (prompt injection, hidden text, fake contact data) | Claim precision ≥ 95 %; 0 fabricated snippets; 0 tool misuse / scope escapes under injection |
-| A5–A8 | 3 synthetic + 5 real (private) businesses | 100 % schema-valid after ≤ 1 repair; 0 unsupported factual claims; designer rubric ≥ 4/5 |
-| A9 | 50 screenshots with human labels | Agreement with designer on major defects ≥ 80 % (advisory only) |
-| A10 | 20 sales packages | 100 % mandatory notices present; 0 prices outside table; 0 claims without measurement date |
-| A11 | 100 labelled replies | Opt-out recall = 100 % (any doubt → human) |
-
-Eval runs use fixtures and recorded captures; they are the only automated LLM spend before real-lead processing, and they
-run under their own budget line.
+| A2 | Labelled listings (synthetic + reviewed) | High category accuracy; "ambiguous" preferred to wrong guesses |
+| A3 | Diagnoses | 0 statements without finding refs; impact always worded as hypothesis |
+| A4 | Human-labelled businesses + adversarial pages | High claim precision; 0 fabricated snippets; 0 tool misuse under injection |
+| A5–A8 | Synthetic and approved real businesses | Schema-valid after ≤ 1 repair; 0 unsupported claims; rubric met |
+| A9 | Labelled screenshots | Agreement with the designer on major defects (advisory only) |
+| A10 | Sales packages | 100 % mandatory notices; 0 prices outside the table; 0 undated claims |
+| A11 | Labelled replies | Opt-out recall 100 % (doubt → human) |
 
 ## 7. Human-in-the-loop points
 
-| Point | Trigger | Approver | Notes |
-|---|---|---|---|
-| Campaign plan | Before discovery runs | Operator | Sources, queries, quotas, budget |
-| Review queue | Ambiguous identity, `CONFLICTING` evidence affecting a gate, failed QA after retries, schema failures | Operator | Not an approval; resolves uncertainty |
-| T2 preview | Before building a full one-page preview | Operator | Shows score, evidence, cost reservation |
-| Budget raise | Any cap reached | Budget owner | New explicit cap number |
-| Outreach | Before any contact attempt (per message or per approved batch with identical template) | Operator (+ second approver if configured) | Shows exact text, channel, eligibility checks, Robinson/suppression results |
-| Publication | Before any site or preview becomes publicly reachable | Operator + client sign-off | Production gates must pass |
-| Data source enable | Before a new discovery source or external API is used | Admin | ToS/licence review attached |
-| External write destination | Before a standing integration (e.g. a specific Google Sheet) | Admin | Scope-limited, revocable |
+| Point | Phase | Notes |
+|---|---|---|
+| Shortlist approval | M1 | `REVIEW_PRIORITY` → `SHORTLISTED` only with an approval for the exact action |
+| Budget change | M1 | Explicit new number |
+| Review queue | M1+ | Ambiguous identity, conflicting evidence affecting a gate, failures |
+| Campaign plan | M2b+ | Sites/sources, quotas, budget |
+| Preview (T1/T2) | M7 | Gated; T2 rule PENDING (PD-21) |
+| Contact | P1, M8 | Gated; exact text and channel |
+| Publication | M9 | Client sign-off + approval |
+| Data source / external destination | later | Terms review attached |
+
+## 8. How agent actions are recorded
+
+The runner and the gateway write the events — model calls (token counts, prompt hash, cost), tool calls (inputs hash,
+outcome, cost), validation results, repairs, denials. The agent's own description of what it did is stored, if at all,
+as output content, never as the record of the action. Each event has actor, cause, input hash, output reference, cost and
+outcome ([data-contracts § 7](data-contracts.md#7-event)), so the future dashboard can show what each agent actually did.

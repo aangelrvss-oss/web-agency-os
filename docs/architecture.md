@@ -1,452 +1,436 @@
-# Web Agency OS — Architecture (Phase 0)
+# Web Agency OS — Architecture
 
-Status: **proposal, not implemented**. Nothing described here exists as code yet.
-Date: 2026-10-19. Related: [agent-design](agent-design.md) · [data-contracts](data-contracts.md) ·
+Revision: Phase 0, corrected after the Phase 0 review ([phase0-review.md](phase0-review.md)). Date: 2026-10-19.
+Status: **design only — nothing is implemented.** M1 implementation is not yet authorized (PD-01 in
+[decisions.md](decisions.md#pending-decisions)).
+
+Related: [agent-design](agent-design.md) · [data-contracts](data-contracts.md) ·
 [security-and-compliance](security-and-compliance.md) · [quality-gates](quality-gates.md) · [roadmap](roadmap.md) ·
 [decisions](decisions.md).
 
-Conventions used in every Phase 0 document:
-
-- **VERIFIED** — checked directly (file read, commit inspected, source cited).
-- **ASSUMPTION** — a working hypothesis we act on until disproved; listed in [decisions.md § Assumptions](decisions.md#assumptions).
-- **UNKNOWN** — not known; must be resolved before the milestone that depends on it.
+Status labels (**VERIFIED**, **REPORTED**, **HYPOTHESIS**, **PENDING**) are defined in
+[decisions.md § Status labels](decisions.md#status-labels). Numeric values marked `P-xx` are provisional parameters
+listed in [decisions.md § Provisional parameters](decisions.md#provisional-parameters).
 
 ---
 
-## 1. Workspace and Git state found (task 1)
+## 1. Workspace and Git state found
 
 | Item | Finding | Status |
 |---|---|---|
-| `web-agency-os` | Empty Git repository, branch `ccr-ebbba00b-pjvlus`, no commits. Phase 0 adds documentation only. | VERIFIED |
-| `aangelrvss-oss/OI` `main` | One commit `cab9f5e` (2026-10-09, "Initial commit") containing only a one-line `README.md` (`# OI`). | VERIFIED |
-| `aangelrvss-oss/OI` branch `claude/zealous-archimedes-qb70kr` | **The real implementation.** Head `19aeeb8`, parent `f66f674`, both 2026-10-09. 218 files: Python package `oi/`, `core/`, `rules/`, `cases/`, `tests/`, `docs/`. Self-described as the *public edition*: real pilot data was removed and replaced by labelled synthetic data (`docs/SANITIZATION_REPORT.md`). | VERIFIED |
-| OI private copy | Referenced by OI docs (601/601 tests, pilot data, F12–F15.1 suites). Not available to this session. | UNKNOWN — not inspected |
-| Local OI workspace | None found on this machine besides the clone made for this audit. | VERIFIED |
+| `web-agency-os` | Git repository created empty; Phase 0 added documentation only. | VERIFIED |
+| `aangelrvss-oss/OI` `main` | One commit `cab9f5e` (2026-10-09) containing only a one-line `README.md` (`# OI`). | VERIFIED |
+| `aangelrvss-oss/OI` branch `claude/zealous-archimedes-qb70kr` | The real implementation. Head `19aeeb8`, parent `f66f674`, both 2026-10-09. 218 files: `oi/`, `core/`, `rules/`, `cases/`, `tests/`, `docs/`. Self-described public edition with synthetic data replacing pilot data. | VERIFIED |
+| OI private copy | Referenced by OI's docs (601/601 tests, pilot data). Not available. | PENDING |
+| Local OI workspace | None found besides the read-only clone made for the audit. | VERIFIED |
 
-How OI was inspected: a read-only clone (`git clone`, then a detached checkout of the branch in the local clone) and static
-reading of source, schemas, rules and docs. **No OI code was executed** (the attempt to run its test suite in an isolated
-export was blocked by the session's code-execution policy, which is consistent with the Phase 0 constraint). No branch,
-commit or remote of OI was modified. The test figures below are therefore OI's *own committed claims*
-(`tests/LAST_RUN.json`: 371 run, 0 failures, 15 skipped), **not independently reproduced**.
+OI was inspected through a read-only clone and static reading. **No OI code was executed.** No OI branch, commit or remote
+was modified. OI's test figures (`tests/LAST_RUN.json`: 371 run, 0 failures, 15 skipped) are OI's own committed record
+and were **not reproduced**.
 
-## 2. Opportunity Intelligence: current architecture (task 2)
+## 2. Opportunity Intelligence (OI): read-only audit
 
-### 2.1 What OI is
+### 2.1 What OI is (VERIFIED by static reading)
 
 A contract-driven B2B research engine: natural-language need → validated *Search Spec* → budgeted *Research Plan* →
 discovery → entity resolution → cheap gates → enrichment → evidence → qualification → contact selection →
-`opportunity_record.v1` → HTML report (ES/EN). Python 3 (tested with 3.13 per README), **standard library only** (static
-import scan confirms no third-party imports in `oi/`; `jsonschema` optional in one test).
-
-```
-Request → Search Spec → Research Plan → Discovery → Normalize + Entity Resolution → Cheap Gates → Enrichment
-        → Qualification / Scoring → Evidence → Results → Approval → Action → Outcome
-```
+`opportunity_record.v1` → HTML report. Python 3, standard library only (a static import scan found no third-party imports
+in `oi/`).
 
 | Stage | Module | OI's own status label |
 |---|---|---|
-| Spec | `oi/engine/spec/` (local deterministic interpreter, no LLM) | partial / implemented |
-| Plan + budget | `oi/engine/planner/` (`budget.py`, `stopping.py`, capabilities) | implemented |
-| Discovery/executor | `oi/engine/executor/` + `oi/pipeline/guard.py` — `offline` (synthetic) and `replay` transports; `real` always raises `RealModeBlocked` | partial |
+| Spec | `oi/engine/spec/` (deterministic local interpreter, no LLM) | partial / implemented |
+| Plan + budget | `oi/engine/planner/` | implemented |
+| Discovery/executor | `oi/engine/executor/`, `oi/pipeline/guard.py` — offline (synthetic) and replay transports; real mode always raises `RealModeBlocked` | partial |
 | Entity resolution | `oi/engine/evaluators/` (4-state identity, no fuzzy matching) | implemented |
-| Gates/qualification | `oi/qualification/qualifier.py` + `rules/qualification.v1.json` | implemented |
-| Evidence | `evidence_input.v1` contract, `oi/evidence/{intake,producers,strength}.py` — **no real first-party evidence producer** | partial |
-| Scoring | `oi/rules/d010/` (D010-v0.2, rules-as-data) — **not wired into the pipeline** | partial |
-| Project opportunities | `core/project_opportunity.py` v0.1 — pure function, lexicographic priority, not wired to CLI | partial |
+| Qualification | `oi/qualification/qualifier.py` + `rules/qualification.v1.json` | implemented |
+| Evidence | `evidence_input.v1`, `oi/evidence/` — no real first-party evidence producer | partial |
+| Scoring | `oi/rules/d010/` — not wired into the pipeline | partial |
+| Project opportunities | `core/project_opportunity.py` v0.1 — not wired to the CLI | partial |
 | Contact | `oi/enrichment/contact/` with anti-invention checks | partial |
-| Approval | `oi/pipeline/approval.py` — offline auto-approval scoped to `DRY_EXECUTION`; real mode unreachable | implemented (offline) |
-| Next action | `oi/rules/next_action.py` + `rules/next_action.v1.json` | partial |
+| Approval | `oi/pipeline/approval.py` — offline auto-approval scoped to dry execution | implemented (offline) |
 | Outcome loop / CRM / sending | — | not implemented |
 
-### 2.2 Reuse assessment
+"Implemented" above is OI's own label; it was not confirmed by running OI.
 
-Reuse means **reusing contracts, vocabularies and rule designs**, not importing OI code into Web Agency OS
-(see D-001 in [decisions.md](decisions.md#decisions)). Every item below must be re-verified against the OI commit pinned at integration time.
+### 2.2 What WAOS reuses: designs, not code
 
-| OI asset | Reuse verdict | Why / caveats |
-|---|---|---|
-| Truth vocabulary `claim_status` = `KNOWN · INFERRED · ESTIMATED · UNKNOWN · CONFLICTING` and the rule "UNKNOWN ≠ PASS, INFERRED ≠ KNOWN" (`common.v1.schema.json`) | **Adopt verbatim** | Exactly what WAOS needs for website findings and business facts. Shared vocabulary makes the bridge lossless. |
-| `source_class` = `OFFICIAL · PROFESSIONAL_DIRECTORY · SECTOR_SOURCE · OTHER_VERIFIABLE · UNVERIFIED · NOT_FOUND` | **Adopt + extend** | WAOS adds `MEASUREMENT` (our own reproducible test, e.g. Lighthouse) and `PUBLIC_REGISTRY` (`core/` already uses `PUBLIC_OFFICIAL`; the two OI vocabularies are not identical — **must be reconciled**, see §2.3). |
-| `evidence_input.v1` (evidence_id, subject, field, value, source_class, claim_status, confidence, retrieved_at, source_url, snippet-like note, data_mode, evidence_origin) | **Adopt as the exchange format** | WAOS `EvidenceRecord` is a superset; a lossless projection to `evidence_input.v1` is defined in [data-contracts § 3](data-contracts.md#3-evidencerecord). |
-| `rules/evidence_strength.v1.json` (ordered rules, first match wins; strength = data reliability, *not* commercial usefulness) | **Adopt design**, copy rules into WAOS rules-as-data | Separating "reliability of the datum" from "usefulness of the lead" is the key idea. |
-| `core/project_opportunity.validate()` rules: KNOWN requires URL + literal snippet; never from a search-result snippet; emails must appear literally in the cited snippet; inference never KNOWN | **Adopt as evidence invariants** | Directly applicable to business research and contact points. |
-| Contact anti-invention checks (`oi/enrichment/contact/checks.py`): no channel without backing evidence; no pattern-built emails; quality derived, not assigned | **Adopt rules** | Required by the compliance model (no invented contact data). |
-| Budget model (`oi/engine/planner/budget.py`): no budget → `BUDGET_REQUIRED`; calls, credits and time are separate dimensions; reserve %; credits only from *observed* costs; hard cap ≠ authorization | **Adopt rules**, reimplement | Matches [§7 budget rules](#7-budget-control-rules). Apollo-specific fields are not reused. |
-| `guard.py` pattern: single egress module; offline socket lock that counts and blocks connections; operation allowlists; real mode blocked by two independent switches | **Adopt pattern** | Becomes the WAOS Tool Gateway + test-time network lock. |
-| `ToolCallLedger` fields (`credit_before/after`, `estimated_cost`, `actual_cost`, `input_hash`, `data_origin`…) | **Adopt fields** | Basis of the WAOS cost ledger. |
-| Rules-as-data with versioning + hash (`d010/rules.json`, `rules_hash`) and "score is not a probability, `calibrated=false`" | **Adopt design** | WAOS scoring rules follow the same discipline. |
-| D010 unit IDs (`F1`, `FIT_KW`, `T1`, `P1`, `O2`…) | **Do not reuse** | Specific to the reseller pilot. |
-| Search Spec v1/v2, spec interpreter, planner field routing | **Do not reuse now** | Built for firmographic B2B search, not "local business with a website problem". Revisit if WAOS uses OI for discovery. |
-| Apollo adapter / paid enrichment ops | **Do not reuse** | Paid provider; contact data from a data broker conflicts with the WAOS contact-eligibility model. |
-| HTML renderer | Not needed | WAOS has its own dashboard. |
+No OI code is imported or integrated in this phase (D-001, D-019). WAOS re-implements the following ideas:
 
-**Pilot learnings worth carrying over** (OI README, aggregate figures only, not reproducible from the public edition):
-provider-based discovery was noisy for a niche (provisional precision 1/9 in the construction pilot); the measured
-bottleneck was **first-party evidence production**, done manually with free web search; human-pre-reviewed candidates
-performed better (58.8 % vs 22.2 % "yes", small non-random sample). Implication for WAOS: invest in a reliable
-first-party *website diagnosis* evidence producer before anything generative — which is also the piece OI lacks.
+| OI design | Use in WAOS |
+|---|---|
+| Truth vocabulary `KNOWN · INFERRED · ESTIMATED · UNKNOWN · CONFLICTING`; "UNKNOWN ≠ PASS" | Adopted verbatim (M1) |
+| `source_class` taxonomy | Adopted and extended (`MEASUREMENT`, `PUBLIC_REGISTRY`, `HUMAN_REVIEW`) (M1) |
+| `evidence_strength` derived by ordered rules; reliability of a datum ≠ commercial usefulness | Adopted (M1) |
+| `KNOWN` needs URL + literal snippet; never from a search-result snippet; contact values must appear literally | Adopted as evidence invariants (M1) |
+| Budget concepts: no budget → `BUDGET_REQUIRED`; separate dimensions; costs only from observed/declared prices; hard cap ≠ authorization | Adopted in simplified form (M1) |
+| Single egress module + offline socket lock + double authorization switch (`guard.py`) | Adopted as the M1 tool gateway pattern |
+| Tool-call ledger fields | Adopted in the M1 `LedgerEntry` |
+| Rules-as-data with version and hash; "score is not a probability" | Adopted (M1) |
+| D010 unit IDs, Search Spec, planner routing, Apollo adapter, HTML renderer | Not reused |
 
-### 2.3 Inconsistencies found in OI (must be resolved before integration)
+**Pilot learnings** (aggregate figures from OI's README, not reproducible from the public edition): provider-based
+discovery was noisy for a niche; the measured bottleneck was first-party evidence production; human pre-review improved
+results on a small, non-random sample. These are OI's reported results, not verified here.
 
-1. Two `source_class` vocabularies: `common.v1.schema.json` (6 values) vs `core/project_opportunity.py` (8 values, adds
-   `PUBLIC_OFFICIAL`, `HUMAN_REVIEW`). WAOS will map both explicitly; OI should converge (an OI change — out of Phase 0 scope).
-2. `main` contains no code; the implementation lives on an unmerged branch. Integration must pin a **commit SHA**, not a branch.
-3. D010 and `core/project_opportunity` are not connected to OI's pipeline; OI's output order is `discovery_rank`.
-4. OI has no LLM integration and no real transport; "LLM proposes, code decides" is a protocol, not yet enforced code.
+### 2.3 Inconsistencies found in OI (VERIFIED, out of scope to fix)
 
-## 3. Proposed Web Agency OS architecture (task 3)
+1. Two `source_class` vocabularies (`common.v1.schema.json` with 6 values; `core/project_opportunity.py` with 8).
+2. The implementation is on an unmerged branch; any future integration must pin a commit SHA.
+3. D010 and `core/project_opportunity` are not connected to OI's pipeline.
+4. OI has no LLM integration and no real transport.
 
-### 3.1 Principles
+## 3. Principles
 
-1. **Deterministic control plane, probabilistic workers.** Agents (LLM calls) *propose*; application code validates,
-   authorizes, budgets and transitions state. No agent can change workflow state, spend, or write externally.
-2. **Evidence before generation.** Every claim about a business or its website is an `EvidenceRecord` with a source and a
-   truth state. Expensive generation is reserved for leads whose evidence and score clear explicit gates.
-3. **Event-sourced observability.** Every task, tool call, cost, error and approval is an immutable event. The dashboard
-   only renders events that happened — no simulated activity.
-4. **Independent from OI.** Integration by versioned JSON contracts and file/HTTP exchange, never by importing each
-   other's code or sharing a database.
-5. **Least privilege.** Agents have no shell, no filesystem, no raw network. They call typed tools through a gateway that
-   enforces per-agent allowlists, egress policy and budget reservations.
-6. **Untrusted input stays data.** Website content, search results and documents are never interpreted as instructions.
-7. **Human approval for anything outward-facing or above budget.**
+1. **Deterministic control plane.** Code validates, authorizes, budgets and transitions state. In later phases, agents
+   (LLM calls) only *propose*.
+2. **Evidence before generation.** Every claim about a business or a website is an `EvidenceRecord` with a source and a
+   truth state.
+3. **Three layers, never merged.** Technical evidence, acquisition impact and commercial opportunity are separate; none
+   of them is purchase intent (§5.2, D-021).
+4. **Event log for observability.** Every action is an append-only event written by the component that performed it.
+5. **Least privilege, single egress.** One gateway is the only path to tools; in M1 no tool reaches the network.
+6. **Untrusted input stays data.** External content is never interpreted as instructions.
+7. **Human approval** for anything outward-facing or above budget. Outward-facing actions do not exist in this phase.
 
-### 3.2 Component diagram
+## 4. Target architecture (long term)
+
+### 4.1 Phase status of each component
+
+| Component | M1 | Later | Notes |
+|---|---|---|---|
+| Contracts + validator | ✔ | | 8 core contracts (data-contracts § 0) |
+| Evidence module (invariants, strength rules) | ✔ | | |
+| Scoring engine (three layers, rules-as-data) | ✔ | | |
+| Lead state machine (subset) | ✔ | full machine later | §5.4 |
+| Event log (SQLite, append-only) | ✔ | PostgreSQL if needed | §6 |
+| CLI approvals bound to action hash | ✔ | dashboard approvals later | |
+| Budget ledger + paid-call switch (off) | ✔ | hierarchical budgets later | §9 |
+| Tool gateway (fake tools only, network locked) | ✔ | real tools later | |
+| Safe CSV export | ✔ | XLSX later; Google Sheets excluded | |
+| Retention / erasure / suppression commands (synthetic data) | ✔ | | Data-protection tests |
+| Fetcher, sanitizer, site auditor | | M2a (fixtures) / M2b (real, gated) | |
+| Job queue, PostgreSQL | | when concurrency requires | D-011 |
+| Dashboard | | M3 | D-004 |
+| Agent runner, LLM agents | | M5+ | agent-design |
+| Astro builder, QA runner | | M6+ | quality-gates |
+| OI bridge | | deferred | D-001 |
+| AgentScope | | excluded this phase | D-005 |
+
+### 4.2 Component diagram (target state)
 
 ```mermaid
 flowchart TB
-  subgraph Human["Humans (authenticated)"]
-    OP[Operator / Sales]:::h
-    DS[Designer reviewer]:::h
+  subgraph Human["Humans"]
+    OP[Operator / Sales]
+    DS[Designer reviewer]
   end
 
-  subgraph UI["Dashboard (read model + approval actions)"]
+  subgraph UI["Dashboard — later phase (M1: CLI)"]
     DB1[Pipeline board]
-    DB2[Agent activity timeline]
+    DB2[Activity timeline]
     DB3[Cost ledger]
     DB4[Approval queue]
     DB5[Evidence & QA viewer]
   end
 
-  subgraph CP["Control plane — deterministic (no LLM)"]
+  subgraph CP["Control plane — deterministic"]
     WF[Workflow engine<br/>state machines]
-    POL[Policy engine<br/>authz · contact eligibility · data use]
-    BUD[Budget service<br/>reservations · caps]
-    APR[Approval service]
-    Q[Job queue<br/>Postgres SKIP LOCKED]
-    SC[Scoring engine<br/>rules-as-data]
+    POL[Policy rules<br/>authz · data use · contactability]
+    BUD[Budget service<br/>switch · ledger · caps]
+    APR[Approval service<br/>action-hash bound]
+    SC[Scoring engine<br/>3 layers, rules-as-data]
   end
 
   subgraph ST["Storage"]
-    ES[(Event store<br/>append-only)]
-    RDB[(Relational state<br/>leads · projects · ledger)]
-    AS[(Artifact store<br/>content-addressed sha256)]
+    ES[(Event log<br/>append-only)]
+    RDB[(State tables)]
+    AS[(Artifact store<br/>sha256)]
   end
 
-  subgraph AR["Agent runtime"]
-    RUN[Agent runner<br/>bounded task · schema-validated output]
-    TG[Tool gateway<br/>allowlist · egress · budget · logging]
-    SAN[Untrusted-content<br/>sanitizer & wrapper]
+  subgraph AR["Agent runtime — later phase"]
+    RUN[Agent runner]
+    SAN[Untrusted-content sanitizer]
   end
 
-  subgraph WK["Deterministic workers (sandboxed)"]
-    FET[Fetcher<br/>robots · rate limit · egress allowlist]
+  TG[Tool gateway<br/>single egress · allowlist · budget · logging]
+
+  subgraph WK["Deterministic workers — later phases, sandboxed"]
+    FET[Fetcher<br/>robots · rate limit · SSRF guard]
     AUD[Site auditor<br/>Lighthouse · axe · HTML checks]
-    BLD[Astro builder<br/>offline build container]
-    QA[QA runner<br/>Playwright · LHCI · axe]
-    EXP[Exporters<br/>CSV/XLSX · drafts]
+    BLD[Astro builder<br/>offline build]
+    QA[QA runner<br/>Playwright · Lighthouse · axe]
+    EXP[Exporters<br/>CSV]
   end
 
-  subgraph EXT["External (only via gateway / approval)"]
+  subgraph EXT["External — none in this phase"]
     WEB[(Public web)]
     LLM[(LLM provider)]
-    DATA[(Discovery data sources<br/>TBD, ToS-checked)]
-    OUT[(Email/phone/CRM/hosting<br/>EXTERNAL WRITE)]
+    OUT[(Contact / hosting<br/>EXTERNAL WRITE)]
   end
-
-  OIB[OI bridge<br/>contract import/export]
-  OI[(Opportunity Intelligence<br/>separate repo)]
 
   OP --> UI
   DS --> UI
   UI -- approve/reject --> APR
-  UI -- SSE subscribe --> ES
-  WF --> Q --> RUN
   WF --> SC
+  WF --> RUN
   RUN --> TG
+  WF --> TG
   TG --> SAN
   TG --> FET & AUD & BLD & QA & EXP
   TG -- metered --> LLM
   FET --> WEB
-  TG -- metered --> DATA
   APR -- human-triggered only --> OUT
   TG -. reserve/settle .-> BUD
   TG -. check .-> POL
   WF -. check .-> POL
-  WF & RUN & TG & APR & BUD --> ES
+  WF & TG & APR & BUD & SC --> ES
   WF --> RDB
   FET & AUD & BLD & QA --> AS
-  OIB <--> OI
-  OIB --> WF
-  classDef h fill:#eef,stroke:#88a
 ```
 
 Text fallback:
 
 ```
-Humans ──► Dashboard ──(approve)──► Approval svc ──(human-triggered)──► External writes
-              ▲ SSE
-              │
-          Event store ◄── every component emits events
-              ▲
-Workflow engine (state machines) ──► Job queue ──► Agent runner ──► Tool gateway ──► Workers / LLM / Public web
-      │  ▲                                                     │  ├─ policy check (Policy engine)
-      │  └── Scoring engine (rules-as-data)                    │  └─ reserve/settle (Budget service)
-      └── OI bridge ◄──► OI (separate repo, JSON contracts)    └─ untrusted content → sanitizer → agent (as data)
+Operator ──► CLI (M1) / Dashboard (later) ──► Approval service (bound to action hash)
+                         │
+                         ▼
+Workflow engine ──► Scoring engine (3 layers)        Event log ◄── every component writes its own events
+      │
+      └──► Tool gateway ──► fake tools (M1) / workers, LLM, public web (later, gated)
+               ├─ policy check
+               └─ budget: paid-call switch OFF, ledger
 ```
 
-### 3.3 Component responsibilities
+### 4.3 Component responsibilities
 
-| Component | Responsibility | Deterministic? |
-|---|---|---|
-| Workflow engine | Owns lead and website-project state machines (§4). Only component that writes state. Transitions require guard predicates (evidence present, score ≥ threshold, approval granted, budget available). | Yes |
-| Policy engine | Evaluates rules: which agent may call which tool with which arguments; contact eligibility; data retention; whether an action needs approval. Policies are versioned data. | Yes |
-| Budget service | Hierarchical caps (global → campaign → stage → task). Reserve-before-call, settle-after-call. Denies rather than truncates. | Yes |
-| Approval service | Creates `ApprovalRequest`s, records human decisions with identity and timestamp, executes approved external writes *once* (idempotency key). | Yes |
-| Scoring engine | Computes eligibility, priority bucket and score from evidence using versioned rules. No LLM. | Yes |
-| Job queue | Durable tasks with retries, leases, idempotency keys, dead-letter. Postgres `FOR UPDATE SKIP LOCKED` (no extra broker in M1). | Yes |
-| Agent runner | Executes one bounded agent task: builds prompt from task spec, calls LLM through gateway, validates output against JSON Schema, emits events. Max turns, max tokens, max tool calls per task. | Orchestration yes; model output no |
-| Tool gateway | Single egress point (OI `guard.py` pattern). Per-agent allowlist, argument validation, egress domain policy, rate limits, budget reservation, full call logging with input hash. | Yes |
-| Sanitizer | Converts fetched HTML to text + structure, strips scripts/hidden text, records what was removed, wraps content as quoted untrusted data with provenance. | Yes |
-| Fetcher | HTTP + headless render in sandbox; robots.txt honoured; per-domain rate limit; identifies itself with a contact User-Agent; stores raw capture by hash. | Yes |
-| Site auditor | Runs reproducible measurements on prospect sites (Lighthouse, axe, TLS, mobile viewport, HTML checks). Produces `Measurement` evidence. | Yes |
-| Astro builder | Renders a validated `WebsiteProjectManifest` with a pinned component library in an offline container. Agents never write arbitrary code (M1–M7). | Yes |
-| QA runner | Executes [quality gates](quality-gates.md). | Yes |
-| OI bridge | Imports/exports OI contracts (`evidence_input.v1`, `opportunity_record.v1`) with schema validation against a vendored, hash-pinned copy of OI's schemas. | Yes |
-| Dashboard | Read model projected from events; approval actions; no direct DB writes. | Yes |
+| Component | Responsibility |
+|---|---|
+| Workflow engine | Owns the state machines (§5.4). Only component that writes lead state. Every transition checks a guard and writes the state change and its event in one transaction. |
+| Policy rules | Plain functions with rules in versioned JSON: which tool may be called, which data may be exported, contactability (later). Not a generic engine. |
+| Budget service | Paid-call switch (two independent settings, both must be on), price table, ledger, caps. In M1 the switch is off and all tools are free fakes. |
+| Approval service | Records a human decision bound to the SHA-256 of the exact action; executes the action at most once. In M1, actions are internal only. |
+| Scoring engine | Computes the three-layer assessment from evidence with versioned rules. No LLM. |
+| Tool gateway | Single path to any tool; allowlist, argument validation, budget check, ledger row and event per call. In M1 tools are fakes and the network is blocked in tests. |
+| Event log | Append-only record of what the program did (§6). |
+| Workers, agent runtime, dashboard, builder, QA | Later phases (see roadmap). |
 
-### 3.4 Technology baseline (proposal — see [decisions.md](decisions.md))
+### 4.4 Technology baseline
 
 | Concern | Choice | Status |
 |---|---|---|
-| Control plane language | Python 3.12+ (same as OI; strong typing via Pydantic or dataclasses + JSON Schema) | Proposed, D-010 |
-| State + events + queue | PostgreSQL (SQLite allowed for local M1 tests) | Proposed, D-011 |
-| Build/QA toolchain | Node.js ≥ 22.22 worker: Astro (≥ 7.2.8, latest 7.4.x), Playwright 1.64.x, Lighthouse 13.x via Node API (not Lighthouse CI — stale), axe-core 4.14 — in a separate sandboxed container image with lockfile | Proposed, pending admission checks (D-012, [dependency assessment](decisions.md#dependency-assessment)) |
-| Agent framework | In-house thin runner first behind an `AgentRuntime` interface; AgentScope 2.0.x evaluated in an isolated spike (never 1.x: 2026 advisories ≤ 1.0.18) | D-005 |
-| LLM provider | **UNKNOWN** — to be selected; cost tables in roadmap stay empty until then | Open |
-| Discovery data source | **UNKNOWN** — candidates must pass ToS/licence review (see security doc) | Open |
-| Hosting (previews, production) | **UNKNOWN** — previews private by default | Open |
+| Language | Python | Accepted for M1 (D-010); version PENDING (PD-04) |
+| Storage | SQLite | Accepted for M1 (D-011) |
+| Test and schema libraries | stdlib only, or `pytest` + `jsonschema` | PENDING (PD-02) |
+| Build/QA toolchain (later) | Node.js worker: Astro, Playwright, Lighthouse (Node API), axe-core | Proposed; versions REPORTED; admission review required |
+| Agent framework (later) | In-house runner first | Proposed; AgentScope excluded this phase |
+| LLM provider, discovery sources, hosting | — | PENDING |
 
-### 3.5 Interface to OI (explicit contract, no coupling)
+### 4.5 Interface to OI (deferred)
 
-```
-            WAOS                                    OI
- ┌───────────────────────────┐          ┌──────────────────────────┐
- │ EvidenceRecord (superset) │──export─►│ evidence_input.v1        │  WAOS website diagnosis = the
- │                           │          │ (OI lacks a first-party  │  first-party evidence producer
- │                           │          │  web producer)           │  OI is missing
- │ Lead import               │◄─import──│ opportunity_record.v1    │  OI-qualified companies can enter
- └───────────────────────────┘          └──────────────────────────┘  WAOS as leads (source = OI)
-```
+When approved, WAOS would export `EvidenceRecord`s as OI `evidence_input.v1` and import OI `opportunity_record.v1` as
+leads, through validated JSON files, with OI schemas vendored and pinned by commit SHA. Not built in this phase.
 
-Rules: (1) exchange is files or HTTP with JSON documents validated on both sides; (2) WAOS vendors OI schemas into
-`contracts/vendor/oi/<commit-sha>/` with a SHA-256 manifest and a test that fails if they drift; (3) no shared database,
-no Python import of `oi.*`; (4) truth states map 1:1, `source_class` maps through an explicit table, unknown values are
-rejected (never coerced); (5) WAOS data with `data_mode=REAL` is never written into OI's public repository.
+## 5. Business workflow
 
-## 4. Business workflow (task 4)
+### 5.1 Stages (target)
 
-### 4.1 Stages
+| # | Stage | Main question | Who does the work | Phase |
+|---|---|---|---|---|
+| 1 | Discovery | Which businesses exist in the target area/category? | Operator CSV first; approved sources later | M1: synthetic fixtures; real: M4 (gated) |
+| 2 | Identity | Is this one real business with a stable key? | Deterministic, 4-state | M1 |
+| 3 | Diagnosis | Which technical problems are measurable? Which basic site facts (phone link, address, structured data) are present? | Deterministic auditor + deterministic fact extractor (fixes E2) | M1: fixtures; M2a: local test sites; M2b: real (gated) |
+| 4 | Assessment | Technical evidence → acquisition impact → commercial opportunity (§5.2) | Scoring engine | M1 |
+| 5 | Human review | Is this worth a proposal? | Operator (shortlist approval) | M1 (CLI) |
+| 6 | Research | What does the business do; what proof exists? | Research agent (later) or human | Later |
+| 7 | Strategy, creative, generation | Scope, copy, visuals, preview | Agents + deterministic Astro build | Gated (D-020) |
+| 8 | QA | Measurable gates | QA runner + human design review | Factory phase |
+| 9 | Sales preparation | Diagnostic summary, proposal, call script | Agent drafts; nothing is sent | Gated |
+| 10 | Contact and CRM | Lawful contact, outcomes, suppression | Human | Gated (legal review) |
+| 11 | Delivery | Signed client → site → publication | Human-led | Gated |
 
-| # | Stage | Main question | Who does the work | Cost class | Output |
-|---|---|---|---|---|---|
-| 1 | Discovery | Which local businesses exist in the target area/category? | Discovery planner agent proposes queries; deterministic collectors execute | Low | `Lead` (status `DISCOVERED`) |
-| 2 | Identity resolution | Is this one real, active business with a stable key (domain / registry id / normalized name+address)? | Deterministic, OI-style 4-state identity | Very low | `KNOWN_MATCH / AMBIGUOUS / …` |
-| 3 | Diagnosis | Does its web presence have *objectively verifiable* problems? | Site auditor (deterministic) + diagnostician agent writes summary that must cite measurement IDs | Low | `WebsiteDiagnosis` + `Finding[]` |
-| 4 | Scoring | How strong and how valuable is the opportunity, and how sure are we? | Scoring engine (no LLM) | ~0 | `ScoreRecord`, bucket |
-| 5 | Research | What does the business do, for whom, where; what proof exists? | Research agent reading the business's own pages + allowlisted public sources | Medium | `ResearchDossier` (claims → evidence) |
-| 6 | Website strategy | Which scope fits (tier, pages, goals, CTA)? | Strategist agent; rules cap scope by tier | Medium | `WebsiteStrategy` |
-| 7 | Creative assets | Visual direction, copy, imagery with provenance | Creative agent within an approved design system and licensed asset library | Medium–High | `CreativeBrief`, `AssetRecord[]` |
-| 8 | Generation | Build a preview | Builder agent fills the manifest; deterministic Astro build | Medium | `WebsiteProjectManifest`, build artifact |
-| 9 | QA | Does it pass measurable gates? | QA runner + advisory reviewer agent + human design review | Low–Medium | `QAReport` |
-| 10 | Sales preparation | Diagnostic report, proposal, outreach draft | Sales-prep agent; nothing is sent | Low | `SalesPackage` (drafts) |
-| 11 | CRM | Track contacts, responses, outcomes, suppression | Deterministic CRM module; human logs outcomes | ~0 | `PipelineEvent`s |
-| 12 | Delivery | Signed client → full site, content collection, publication, handover | Human-led with agent assistance; publication requires approval | High (paid by client) | Production site, handover pack |
+### 5.2 Three layers and contactability (D-021, D-023)
 
-### 4.2 Generation tiers — "do not build a website for every lead"
+| Layer | Question | Produced by | Truth status allowed | Example |
+|---|---|---|---|---|
+| 1. Technical evidence | Does the problem exist and is it reproducible? | Measurements → findings | `KNOWN` for direct measurement; `INFERRED` for weak signals | "LCP 5.2 s, median of 3 lab runs, tool X version Y, date Z" |
+| 2. Acquisition impact | Could this problem plausibly affect how customers find or contact the business? | Versioned rule table `impact_rules.v1` | Always `INFERRED` (it is a hypothesis about effect, H-4) | "No phone link on mobile: impact hypothesis HIGH" |
+| 3. Commercial opportunity | Is this lead worth a human's review for a possible proposal? | Gates + business signals + layer 2 + contraindications | Bucket; never a probability | `REVIEW_PRIORITY` |
+| — Purchase intent | Does the business want to buy? | **Only** a human recording an interaction with the prospect | `UNKNOWN` by default; no automated component may set it | Out of scope in M1 |
+| — Contactability | May we contact this business, by which channel? | Policy rules + legal review | Separate from the score | Out of scope (D-020) |
 
-| Tier | Artifact | Entry condition (all required) | Approx. relative cost |
+Consequences: a high technical score alone can never produce `REVIEW_PRIORITY`; exports and CLI output label the bucket
+as "priority for review", never as interest or intent.
+
+### 5.3 Generation tiers (target; all gated by D-020)
+
+| Tier | Artifact | Entry condition | Relative cost |
 |---|---|---|---|
-| T0 | Diagnosis summary (internal) | `IDENTITY=KNOWN_MATCH`, in target geography/category | 1× |
-| T1 | Concept card: hero mock-up + palette + 3 copy lines (static image/HTML, one screen) | Bucket `PRIORITY` (implies confidence band `STRONG`/`MODERATE` and an eligible contact channel), not suppressed | ~5× |
-| T2 | One-page private preview (Astro, real content from research, placeholders marked) | T1 done + **human approval** + campaign T2 quota not exhausted + per-lead budget envelope available | ~20–40× |
-| T3 | Full multi-page site | Signed engagement (out of the automated sales funnel) | client project |
+| T0 | Internal diagnosis summary | Identity `KNOWN_MATCH`; diagnosis recorded | HYPOTHESIS: lowest (H-8) |
+| T1 | Concept card (one screen) | Lead `SHORTLISTED` (bucket `REVIEW_PRIORITY` + human shortlist approval) + approval of the T1 action | HYPOTHESIS (H-8) |
+| T2 | One-page private preview | T1 done + human approval + quota (P-24) + per-lead budget; whether the prospect must have requested it is PENDING (PD-21) | HYPOTHESIS (H-8) |
+| T3 | Full site | Signed engagement | Client project |
 
-Quotas are policy data, e.g. "max 10 T2 previews per campaign per week" — exact values set by the user.
+### 5.4 Lead state machine
 
-### 4.3 Lead state machine
+**Target machine** (later phases add research, generation, contact and outcome states):
 
 ```mermaid
 stateDiagram-v2
   [*] --> DISCOVERED
   DISCOVERED --> IDENTITY_RESOLVED: identity KNOWN_MATCH
-  DISCOVERED --> DISQUALIFIED: mismatch / duplicate / out of scope
-  DISCOVERED --> NEEDS_REVIEW: AMBIGUOUS
-  NEEDS_REVIEW --> IDENTITY_RESOLVED: human resolves
-  IDENTITY_RESOLVED --> DIAGNOSED: diagnosis complete
-  DIAGNOSED --> SCORED
-  SCORED --> PARKED: bucket WATCH / LOW
-  SCORED --> DISQUALIFIED: gate FAIL (KNOWN evidence)
-  SCORED --> SHORTLISTED: bucket PRIORITY
-  SHORTLISTED --> RESEARCHED
-  RESEARCHED --> STRATEGY_READY
-  STRATEGY_READY --> CONCEPT_READY: T1 built
-  CONCEPT_READY --> AWAITING_PREVIEW_APPROVAL
-  AWAITING_PREVIEW_APPROVAL --> PREVIEW_BUILDING: approved + budget reserved
-  AWAITING_PREVIEW_APPROVAL --> PARKED: rejected
-  PREVIEW_BUILDING --> QA_PENDING
-  QA_PENDING --> PREVIEW_READY: gates pass
-  QA_PENDING --> PREVIEW_BUILDING: fail, retries left
-  QA_PENDING --> NEEDS_REVIEW: fail, attempts exhausted
-  PREVIEW_READY --> SALES_READY: sales package drafted
-  SALES_READY --> AWAITING_OUTREACH_APPROVAL
-  AWAITING_OUTREACH_APPROVAL --> CONTACTED: human approved AND human sent
-  CONTACTED --> IN_CONVERSATION
-  CONTACTED --> NO_RESPONSE
-  IN_CONVERSATION --> WON
-  IN_CONVERSATION --> LOST
-  WON --> [*]
-  LOST --> [*]
-  note right of DISQUALIFIED : Any state → SUPPRESSED on opt-out / objection (terminal, global)
+  DISCOVERED --> NEEDS_REVIEW: identity AMBIGUOUS or UNKNOWN
+  DISCOVERED --> DISQUALIFIED: KNOWN_MISMATCH or duplicate
+  NEEDS_REVIEW --> IDENTITY_RESOLVED: human review evidence
+  NEEDS_REVIEW --> DISQUALIFIED: human review evidence
+  IDENTITY_RESOLVED --> DIAGNOSED: findings recorded
+  DIAGNOSED --> SCORED: assessment computed
+  SCORED --> SHORTLISTED: REVIEW_PRIORITY + shortlist approval
+  SCORED --> PARKED: WATCH, LOW or PENDING
+  SCORED --> DISQUALIFIED: gate FAIL with KNOWN evidence
+  PARKED --> SCORED: re-assessment after new evidence
+  SHORTLISTED --> PARKED: human decision
+  SHORTLISTED --> LATER_PHASES: research, generation, contact (gated)
+  note right of DISQUALIFIED : Any non-terminal state → SUPPRESSED (terminal) or ON_HOLD (kill switch)
 ```
 
-Global rules: any state → `SUPPRESSED` on opt-out, objection or erasure request (terminal; contact data minimized to a
-suppression hash). Any state → `ON_HOLD` via kill switch. Re-entry from `PARKED` only when new evidence arrives or after a
-configured re-check interval.
+**M1 transition table** (normative for M1; every pair not listed is rejected):
 
-### 4.4 Website project state machine (post-sale, T3)
-
-`CONTRACTED → CONTENT_COLLECTION → BUILD → QA → CLIENT_REVIEW → (revisions loop) → AWAITING_PUBLISH_APPROVAL →
-PUBLISHED → HANDOVER → MAINTENANCE|CLOSED`. Publication requires client sign-off **and** internal approval;
-both recorded as `ApprovalRequest`s.
-
-## 5. Data flow
-
-```
- Public sources ─► Fetcher ─► raw capture (sha256, AS) ─► Sanitizer ─► extracted text + structure
-                                                             │
-                     Site auditor ─► Measurements ───────────┤
-                                                             ▼
-                                                     EvidenceRecord[] (claim_status, source_class, snippet, capture hash)
-                                                             │
-                                Scoring engine ◄─────────────┤
-                                     │                       │
-                                 ScoreRecord                 ▼
-                                     │               ResearchDossier ─► WebsiteStrategy ─► CreativeBrief
-                                     ▼                                                       │
-                              Workflow guards ─► (approval) ─► WebsiteProjectManifest ─► Astro build ─► QA ─► QAReport
-                                                                                                         │
-                                                                    SalesPackage (drafts only) ◄─────────┘
-                                                                           │
-                                                          Approval ─► human sends ─► CRM events ─► outcome
-```
-
-Every arrow writes an event; every artifact is content-addressed; every claim shown to a human or placed on a preview
-links to an `evidence_id` or is explicitly marked as a placeholder.
-
-## 6. Failure and retry strategy
-
-| Failure class | Examples | Handling |
+| From | To | Guard |
 |---|---|---|
-| Transient | timeout, 5xx, connection reset | Retry with exponential backoff + full jitter (base 2 s, factor 2, max 3 attempts); same idempotency key. |
-| Rate limited | HTTP 429, provider quota | Honour `Retry-After`; per-provider token bucket; does **not** consume retry attempts; circuit breaker opens after N consecutive 429s. |
-| Permanent input | 404, DNS NXDOMAIN, robots disallow, invalid URL | No retry. Record as evidence (`NOT_FOUND` / `BLOCKED_BY_ROBOTS`), which may itself be a valid finding. |
-| Policy denied | tool not allowed, egress blocked, approval missing | No retry. Task → `BLOCKED_POLICY`; surfaced in dashboard. Repeated denials for the same agent → alert (possible prompt injection). |
-| Budget | reservation exceeds remaining | No retry. Task → `BLOCKED_BUDGET`; approval request for a raised cap. Never auto-raised. |
-| Invalid model output | JSON schema violation, missing evidence refs | One repair attempt with the validator's error list; then `FAILED_NEEDS_HUMAN`. Repair attempts count against the task budget. |
-| Quality gate fail | Lighthouse below threshold, axe violations | Up to 2 regeneration attempts with the gate report as input; then `NEEDS_REVIEW`. |
-| Worker crash / lease expiry | container OOM, node lost | Lease timeout returns job to queue; handler idempotent; attempt count persists; poison jobs → dead-letter after 3. |
-| Data inconsistency | conflicting facts, ledger mismatch with provider balance | Never auto-resolved: claim → `CONFLICTING`; ledger mismatch → **halt all paid calls** for that provider (OI pilot practice). |
+| `DISCOVERED` | `IDENTITY_RESOLVED` | identity `KNOWN_MATCH` |
+| `DISCOVERED` | `NEEDS_REVIEW` | identity `AMBIGUOUS` or `UNKNOWN` |
+| `DISCOVERED` | `DISQUALIFIED` | identity `KNOWN_MISMATCH` or duplicate `entity_key` |
+| `NEEDS_REVIEW` | `IDENTITY_RESOLVED` / `DISQUALIFIED` | a `HUMAN_REVIEW` evidence record resolving identity |
+| `IDENTITY_RESOLVED` | `DIAGNOSED` | ≥ 1 finding set recorded (fixtures in M1) |
+| `DIAGNOSED` | `SCORED` | a score record computed with the current rules hash |
+| `SCORED` | `SHORTLISTED` | bucket `REVIEW_PRIORITY` **and** a valid `SHORTLIST` approval for that exact action |
+| `SCORED` | `PARKED` | bucket `WATCH`, `LOW` or `PENDING` |
+| `SCORED` | `DISQUALIFIED` | bucket `DISQUALIFIED` |
+| `PARKED` | `SCORED` | new evidence + new score record |
+| `SHORTLISTED` | `PARKED` | human decision recorded |
+| any non-terminal | `ON_HOLD` | kill switch (records the previous state) |
+| `ON_HOLD` | previous state | human decision |
+| any non-terminal | `SUPPRESSED` | suppression request |
 
-Checkpointing: each stage persists its output before the transition event; resumption restarts the failed step only.
-Circuit breakers per external provider (open after 5 consecutive failures, half-open after 5 min). A global kill switch
-stops new task leasing and denies all gateway calls within one polling interval.
+Terminal states in M1: `DISQUALIFIED`, `SUPPRESSED`. Each transition uses an optimistic version check so that a stale
+concurrent attempt is rejected.
 
-## 7. Budget-control rules
+### 5.5 Website project state machine (post-sale, later)
 
-Adapted from OI's planner and pilot practice; enforced by the Budget service and Tool gateway, never by agents.
+`CONTRACTED → CONTENT_COLLECTION → BUILD → QA → CLIENT_REVIEW → AWAITING_PUBLISH_APPROVAL → PUBLISHED → HANDOVER`.
+Out of scope in this phase.
 
-| ID | Rule |
+## 6. M1 storage: SQLite, triggers and the event log — design and limitations
+
+### 6.1 Design
+
+- One SQLite file per environment. State tables (`leads`, `evidence`, `findings`, `scores`, `approvals`,
+  `ledger`, `suppressions`) and an `events` table.
+- Every state change and its event are written **in the same transaction**: either both persist or neither does.
+- Event order is the integer sequence of the `events` table, not timestamps.
+- `BEFORE UPDATE` and `BEFORE DELETE` triggers on `events` raise an error (append-only).
+- `PRAGMA foreign_keys = ON` on every connection; CHECK constraints on enumerations.
+- The clock is injected so that expiry, retention and timestamps are testable.
+- Optional hash chain: each event stores the hash of the previous event; a `verify` command recomputes it (PD-05).
+
+### 6.2 Event log rules
+
+- Events are written by the component that performed the action (workflow, gateway, approval, budget, scoring), never
+  narrated by the actor itself.
+- Events carry identifiers, hashes, rule versions, outcomes and reasons — **never personal-data values** (D-024). A
+  phone number appears as `contact_value_sha256`, not as digits.
+- Every rejected action is also an event (`state.transition_denied`, `tool.call_denied`, `approval.rejected`,
+  `export.refused`), so the log shows what was attempted, not only what succeeded.
+
+### 6.3 Limitations (to be stated in the M1 README when implemented)
+
+| Limitation | Consequence | Mitigation in M1 |
+|---|---|---|
+| SQLite allows one writer at a time (readers can be concurrent in WAL mode) | Fine for a local single-operator CLI; unsuitable for concurrent workers or a multi-user dashboard | Single process; PostgreSQL reconsidered later (D-011) |
+| Triggers only constrain SQL executed through SQLite; anyone with file access can drop triggers or rewrite the file | Append-only protects against program bugs, **not** against a person with access to the file | Startup check that triggers exist; optional hash chain gives tamper *evidence*, not tamper *proof*; an exported anchor hash would be needed for stronger guarantees |
+| Schema migrations can drop or alter triggers | Silent loss of protection | Migration test re-checks triggers |
+| Weak typing by default | Wrong types can be stored silently | CHECK constraints; STRICT tables if the SQLite version supports them (PENDING, PD-04) |
+| JSON functions depend on the SQLite build | Queries on JSON columns may be unavailable | Validate JSON in Python; do not depend on SQL JSON functions until verified |
+| Foreign keys are off unless enabled per connection | Orphan rows | Pragma on every connection + test |
+| No native date type | Inconsistent timestamps | RFC 3339 UTC text; injected clock |
+| Not encrypted at rest | Unsuitable for real personal data without disk encryption and access control | M1 accepts **synthetic data only**; records with `data_mode = REAL` are rejected |
+| Copying the file while it is written can corrupt the copy | Broken backups | Use SQLite's backup API; backup policy PENDING |
+| The event log records what the program did, not what happened in the world | Not an audit-grade ledger of external facts | Documented; external facts enter only as evidence with provenance |
+| CLI operator identity is self-declared | Approvals are attributable, not authenticated | Documented limitation; authentication arrives with the dashboard (PD-07) |
+| Append-only log vs. erasure duties | Personal data in events could not be erased | D-024: events contain no personal-data values |
+| No external side effects exist in M1 | Transaction + external call consistency (outbox) is not yet addressed | Must be designed before any real tool is wired |
+
+## 7. Data flow (target; M1 uses fixtures for the first two boxes)
+
+```
+ Fixtures (M1) / public sources (later, gated) ─► captures (sha256) ─► sanitizer
+                                                        │
+              site auditor + fact extractor ─► measurements, findings, basic site facts
+                                                        ▼
+                                              EvidenceRecord[] (claim_status, source_class, snippet, capture hash)
+                                                        │
+                       ┌────────────── three-layer assessment (scoring engine) ──────────────┐
+                       │  layer 1 technical  →  layer 2 impact (INFERRED)  →  layer 3 bucket  │
+                       └──────────────────────────────────────────────────────────────────────┘
+                                                        │
+                                  human shortlist approval (bound to action hash)
+                                                        │
+                                   later phases: research → strategy → generation → QA → sales → contact
+```
+
+## 8. Failure and retry strategy (applies when real tools exist; values are P-18/P-19)
+
+| Failure class | Handling |
 |---|---|
-| B1 | No budget, no run: a campaign without an explicit budget cannot start (`BUDGET_REQUIRED`). |
-| B2 | Separate dimensions: `llm_cost_eur`, `paid_api_cost_eur` per provider, `provider_credits` per provider, `compute_minutes`, `wall_clock_minutes`, and count quotas (`max_leads_diagnosed`, `max_t1`, `max_t2`). One cannot be converted into another. |
-| B3 | Hierarchy: global monthly cap ≥ campaign cap ≥ stage cap ≥ per-lead envelope ≥ per-task envelope. A call must fit every level. |
-| B4 | Reserve-then-settle: before each metered call the gateway reserves the *maximum* possible cost (e.g. max tokens × price); after the call it settles the actual cost and releases the remainder. |
-| B5 | Deny, don't truncate: if the reservation does not fit, the call is not made. |
-| B6 | Unknown cost = blocked in autonomous mode. A tool without an observed or contractual unit price can only run with a per-call human approval. |
-| B7 | A hard cap is not an authorization; account balance is not a budget. |
-| B8 | Reserve: 10 % (configurable) of each campaign budget is held back for retries/repairs. |
-| B9 | Alerts at 50 %, 80 %, 100 %; at 100 % the scope blocks. Raising a cap is an approval with a new explicit number. |
-| B10 | Reconciliation: where a provider exposes balance/usage, read before and after paid batches; a mismatch above tolerance halts that provider. |
-| B11 | Expensive stages are gated by score and evidence (tiers §4.2), and by count quotas, not only by money. |
-| B12 | All prices live in a versioned `pricing.v1.json` with source and date; estimates cite the pricing version used. |
+| Transient (timeout, 5xx) | Retry with exponential backoff + jitter (P-18), same idempotency key |
+| Rate limited (429) | Honour `Retry-After`; circuit breaker (P-19) |
+| Permanent input (404, NXDOMAIN, robots disallow) | No retry; recorded as evidence (`NOT_FOUND`, `BLOCKED_BY_ROBOTS`) |
+| Policy denied | No retry; `BLOCKED_POLICY`; repeated denials raise an alert |
+| Budget | No retry; `BLOCKED_BUDGET`; cap changes need an approval |
+| Invalid model output (later) | One repair attempt, then `FAILED_NEEDS_HUMAN` |
+| Quality gate fail (later) | Limited regenerations (P-18), then human review |
+| Data conflict / ledger mismatch | Never auto-resolved: `CONFLICTING`; ledger mismatch halts the provider |
 
-## 8. Security architecture summary
+In M1 the relevant classes are policy denied, budget, validation errors and transition rejections; all are recorded as
+events and leave state unchanged.
 
-Details in [security-and-compliance.md](security-and-compliance.md). Structural measures:
+## 9. Budget-control rules
 
-- Agents run with **no** shell, filesystem, or socket access; only typed tools via the gateway.
-- Agents that read untrusted content have **no** external-write tools and no access to secrets — breaking the
-  "untrusted input + private data + exfiltration channel" combination.
-- Workers (fetch, audit, build, QA) run in containers with read-only root FS, no credentials, dropped capabilities,
-  CPU/memory/time limits, and egress restricted per worker type (builder: none at build time).
-- Secrets live in a secret manager / environment of the gateway process only; never in prompts, artifacts or events.
-- External writes exist only in the Approval service and execute only after a recorded human decision.
-
-## 9. Visual dashboard specification (task 6)
-
-The dashboard is a **projection of the event store**. It shows only what happened. If a component emitted no event, the
-UI shows nothing for it.
-
-### 9.1 Event model (minimum)
-
-Every event: `event_id` (ULID), `ts`, `type`, `run_id`, `task_id?`, `lead_id?`, `project_id?`, `actor`
-(`system | agent:<name>@<version> | human:<user_id>`), `payload` (schema per type), `cost?`, `causation_id`,
-`correlation_id`. Types:
-
-`task.queued · task.leased · task.started · task.completed · task.failed · task.retry_scheduled · task.blocked`
-`agent.prompt_built (hash + token count, not full text by default) · agent.output (validated summary) · agent.output_rejected`
-`tool.call_requested · tool.call_denied (reason) · tool.call_completed (status, duration, cost, input_hash, result_ref)`
-`source.fetched (url, status, robots decision, capture sha256)` · `evidence.recorded` · `finding.recorded`
-`budget.reserved · budget.settled · budget.threshold_crossed · budget.blocked`
-`approval.requested · approval.granted · approval.rejected · approval.expired`
-`state.transitioned (from, to, guard results)` · `qa.gate_result` · `policy.violation` · `system.kill_switch`
-
-Optional export of agent/tool spans using OpenTelemetry GenAI semantic conventions (still *Development* status as of
-2026-10, medium confidence), so third-party viewers can be evaluated without becoming the source of truth. Note: the
-standalone AgentScope Studio repository is archived; AgentScope 2.0 ships its own Web UI and an Agent Service that streams
-session events over SSE. If the AgentScope spike (D-005) is adopted, its events are mirrored *into* this event store — its
-UI is never the system of record.
-
-### 9.2 Views
-
-| View | Shows | Interactions |
+| ID | Rule | M1 |
 |---|---|---|
-| **Pipeline board** | Leads as cards in columns by state; counts and conversion between stages; filters by campaign, category, area, bucket | Open lead; no drag-to-transition (transitions are guarded by the workflow engine) |
-| **Live agent activity** | One lane per active task: agent name/version, task type, lead, elapsed time, current tool call, tokens/cost so far, retries | Expand to full event timeline; open prompt/output (permission-gated); cancel task |
-| **Task timeline (per run/lead)** | Ordered events with causation tree: task → tool calls → sources → evidence → outputs → transitions | Jump to artifact, evidence, capture |
-| **Sources & evidence** | URL, fetch time, robots decision, capture hash, literal snippet, claim status, source class, strength; conflicts highlighted | View sanitized capture; mark evidence reviewed (creates `HUMAN_REVIEW` evidence) |
-| **Outputs** | Diagnoses, dossiers, strategies, manifests, screenshots of previews at 4 viewports, QA reports | Diff between versions |
-| **Costs** | Spend by campaign / stage / agent / provider / lead vs caps; reservations open; forecast at current burn; pricing version | Request cap change (creates approval) |
-| **Errors & dead letters** | Failures grouped by class (§6), provider circuit-breaker state, policy denials (security signal) | Retry (if retryable), discard with reason |
-| **Approval queue** | Pending requests: type, what exactly will happen (rendered diff / message text / URL / amount), evidence summary, policy check results, expiry | Approve / reject with comment; four-eyes for publication and outbound if configured |
-| **Compliance** | Contact eligibility per lead, suppression list size (hashes), retention jobs, robots/ToS blocks | Process opt-out / erasure |
+| B1 | No budget, no run (`BUDGET_REQUIRED`). | ✔ |
+| B2 | Separate dimensions (money per provider, credits, compute, count quotas); never converted into each other. | ✔ (money + call counts) |
+| B3 | Hierarchy global ≥ campaign ≥ stage ≥ lead ≥ task. | Simplified to global + per run |
+| B4 | Reserve the maximum cost before a metered call, settle after. | ✔ (with fake priced tools in unit tests) |
+| B5 | Deny, don't truncate. | ✔ |
+| B6 | Unknown price = blocked. | ✔ |
+| B7 | A hard cap is not an authorization; balance is not a budget. | ✔ |
+| B8 | Paid-call switch: a code constant **and** a configuration value must both be on; both off in M1 (OI pattern). | ✔ |
+| B9 | Reserve and alert levels (P-20); raising a cap is an approval with an explicit number. | Approval part ✔ |
+| B10 | Reconciliation with provider usage; mismatch halts the provider. | Later |
+| B11 | Expensive stages gated by assessment, approvals and quotas, not only by money. | Later |
+| B12 | Prices in a versioned `pricing.v1.json` with source and date. | ✔ (all fake tools priced 0 or test values) |
 
-Non-functional: live updates via Server-Sent Events from the event store (≤ 2 s lag target); role-based access (viewer,
-operator, approver, admin); every approval action authenticated and written as an event; prompts and raw captures hidden
-by default (may contain personal data).
+## 10. Security summary
 
-## 10. Open items carried to the roadmap
+Details: [security-and-compliance.md](security-and-compliance.md). In M1: no network (socket lock in tests; no network
+code paths), no credentials present, no agents, synthetic data only, no external writes. Later phases add sandboxed
+workers, an SSRF-guarded fetcher, and agents without shell, filesystem or raw network access.
 
-LLM provider, discovery source(s), hosting for previews, CRM/spreadsheet target (Google Sheets vs internal + export),
-Spanish legal review of the outreach channel, AgentScope spike result. See [roadmap.md](roadmap.md).
+## 11. Observability: how real actions are recorded
+
+- The record of an action is written by the code that executed it (gateway, workflow, approval, budget, scoring), with
+  actor, cause (`causation_id`), input hash, output reference, cost and outcome. What an agent *says* it did is never
+  the record.
+- M1: `cli trace <lead_id>` prints the ordered events of a lead, including rejected attempts.
+- Later: a dashboard projects the same events (pipeline, activity per worker/agent, sources, outputs, costs, errors,
+  approval queue). It must not display simulated "thinking" or progress not derived from events. Deterministic workers
+  appear in it too, so it is useful before any LLM exists.
+
+Event envelope: [data-contracts § 7](data-contracts.md#7-event).
+
+## 12. Out of scope in this phase
+
+Real-site crawling or measurement, commercial contact, public deployment, automatic preview generation (D-020); OI code
+integration, PostgreSQL, dashboard, AgentScope, Google Sheets (D-019); any AI, paid API or network connection (D-018).

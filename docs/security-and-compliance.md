@@ -1,212 +1,212 @@
-# Web Agency OS — Security and Compliance Model (Phase 0)
+# Web Agency OS — Security and Compliance Model
 
-Status: **proposal, not implemented**. Date: 2026-10-19.
+Revision: Phase 0, corrected after the Phase 0 review ([phase0-review.md](phase0-review.md)). Date: 2026-10-19.
+Status: **design only.** Labels (VERIFIED, REPORTED, HYPOTHESIS, PENDING): [decisions.md](decisions.md#status-labels).
 
-> **Not legal advice.** This document records an engineering reading of the rules that appear relevant, with sources
-> where they were checked. Before the system collects real personal data at scale (milestone M4) and before any outreach
-> (milestone M8), a Spanish data-protection / commercial-law professional must review it. Items marked **VERIFY** were
-> not confirmed against a primary source in Phase 0.
+> **Not legal advice.** Nothing here is a legal conclusion. Legal statements are at most **REPORTED** — read by the
+> Phase 0 research subagent in the cited sources — and none was independently verified. They must be confirmed by a
+> qualified Spanish lawyer before any activity that depends on them. Where a statement is a preliminary engineering
+> reading, it is labelled as such. Conservative defaults are used until counsel answers.
 
-## 1. Key findings that change the business design
+## 1. Legal position (status: REPORTED, not legal advice)
 
-1. **Cold commercial email is not a viable first-contact channel in Spain, even business-to-business.** LSSI-CE
-   (Ley 34/2002) Art. 21.1 prohibits commercial communications by email or equivalent electronic means that were not
-   previously requested or expressly authorised by the recipient, and the Act's annex defines the recipient
-   (*destinatario*) as a natural **or legal** person. The only exception (Art. 21.2) is a prior contractual relationship
-   with similar products. GDPR legitimate interest does not override this. Source: BOE-A-2002-13758 (checked 2026-10-19).
-   Consequence: the system never sends email (or WhatsApp/SMS/social DMs/web-form messages, treated as equivalent
-   electronic means until counsel says otherwise) to a prospect without a recorded consent or a prior contract.
-2. **Phone and postal first contact are possible only with checks.** Since 29 June 2023, Ley 11/2022 (General de
-   Telecomunicaciones) Art. 66.1.b gives users the right not to receive unsolicited commercial calls unless there is
-   consent or another legal basis such as legitimate interest; AEPD Circular 1/2023 interprets it (source: AEPD press
-   note; BOE text not quoted — **VERIFY**). LOPDGDD (Ley Orgánica 3/2018) Art. 23.4 requires checking advertising
-   exclusion systems (e.g. Lista Robinson) before direct marketing to people who have not consented.
-3. **Sole traders' business data is personal data.** LOPDGDD Art. 19.2 presumes legitimate interest (GDPR Art. 6(1)(f))
-   for processing contact data of sole traders and liberal professionals when it concerns them only in that capacity;
-   Art. 19.1 covers company staff contact data. GDPR Art. 14 requires informing people whose data was not obtained from
-   them, at the latest at the first communication (**VERIFY** exact timing wording with counsel).
-4. **Previews built with a real business's name are sensitive.** They must stay private, be clearly labelled as a
-   proposal from the agency, and never be published or hosted on a look-alike domain.
-5. **Recommended go-to-market adjustment (for the user to decide):** use phone, postal mail or in-person visits to offer
-   a free website diagnosis; send the diagnosis and preview by email **only after the prospect asks for it** (recorded
-   consent). This keeps the expensive T2 preview for prospects who opted in.
+### 1.1 Legal claims and their verification status
+
+| # | Statement used in the design | Source cited in Phase 0 | Status | Needed before |
+|---|---|---|---|---|
+| L1 | LSSI (Ley 34/2002) Art. 21 prohibits unsolicited commercial communications by email or equivalent electronic means without prior request or express authorization; the annex defines the recipient as a natural **or legal** person; Art. 21.2 has an exception for a prior contractual relationship | BOE-A-2002-13758 (read by the research subagent) | REPORTED — read the text directly and confirm with counsel | Any contact |
+| L2 | Web contact forms, WhatsApp, SMS and social-network messages count as "equivalent electronic means" | None (conservative reading) | PENDING | Any contact |
+| L3 | Ley 11/2022 (LGTel) Art. 66.1.b: right not to receive unsolicited commercial calls without consent or another legal basis, applicable since 29 June 2023; AEPD Circular 1/2023 interprets it | AEPD press note; BOE text not quoted | REPORTED — verify in BOE and the Circular | Phone contact |
+| L4 | Differences between calling companies and calling sole traders | — | PENDING | Phone contact |
+| L5 | LOPDGDD Art. 19: presumption of legitimate interest for contact data of sole traders and professionals in that capacity | BOE (subagent) | REPORTED | Any real personal data |
+| L6 | LOPDGDD Art. 23.4: prior consultation of advertising exclusion systems (e.g. Lista Robinson); which channels and how often | BOE (subagent) for the article; scope not established | REPORTED / scope PENDING | Any contact |
+| L7 | GDPR Art. 14: information duties when data is not collected from the person, including timing at first contact | Recalled, not re-checked | PENDING | Any contact; any real personal data |
+| L8 | Whether a DPIA is required | — | PENDING | M4 |
+| L9 | Passive analysis of identifiable sole traders' websites needs a documented legal basis even without contact | Preliminary engineering reading | PENDING | M2b (fixes E4) |
+| L10 | Using a prospect's name or logo in a private preview (IP, trademarks) | — | PENDING | M7 |
+| L11 | Retention periods for leads, captures and suppression entries | None (P-22 values are HYPOTHESIS) | PENDING | Any real personal data |
+| L12 | EU AI Act Art. 50 transparency duties apply from 2 August 2026, with a reported grace period for machine-readable marking to 2 December 2026 | Secondary sources, medium confidence | REPORTED — verify on EUR-Lex | AI-generated content on client sites |
+| L13 | European Accessibility Act: microenterprise exemption for services; Spanish transposition | Recalled, not re-checked | PENDING | Client sites with e-commerce |
+| L14 | Text-and-data-mining reservations (DSM Directive Art. 4) and their Spanish transposition | Recalled, not re-checked | PENDING | M2b |
+| L15 | Google Maps Platform / Places terms: only `place_id` storable indefinitely; lat/lng ≤ 30 days; no other caching; no display on non-Google maps | Google terms pages (subagent) | REPORTED — re-check current terms | Any Google API use |
+| L16 | Reuse conditions of BORME and municipal open data | — | PENDING | M4 |
+| L17 | Rules on misleading claims in B2B sales material | — | PENDING | M8 |
+| L18 | LSSI Art. 10 legal-notice and cookie-consent duties for client sites | Recalled | PENDING | Production sites |
+| L19 | Validity and proof of verbal consent obtained by phone for later email | — | PENDING | Any email follow-up |
+
+### 1.2 Consequences for the design (conservative defaults until counsel answers)
+
+- No contact of any kind is in scope (D-020). When contact is approved, email and other electronic messages are treated
+  as not allowed without recorded consent or a prior contract (L1, L2); phone and postal contact are treated as
+  conditional on checks (L3–L7).
+- The business model idea "first contact by phone, post or in person offering a free diagnosis; email only after the
+  prospect asks" is a **hypothesis** (H-3) that depends on L1–L7 and L19.
+- No real personal data is processed in M1 (synthetic only). Real-site analysis (M2b) requires PD-13.
 
 ## 2. Threat model
 
-| # | Threat | Vector | Impact | Controls |
-|---|---|---|---|---|
-| T1 | Prompt injection | Instructions hidden in prospect websites, search results, documents, replies | Agent misuses tools, leaks data, writes false evidence | Untrusted content wrapped as data; agents with untrusted input have no `X-EXT`, no secrets, no cross-lead access; schema validation; literal-snippet check; URL allowlisting of outputs; adversarial eval suite (≥ 50 pages) gates releases |
-| T2 | SSRF | Fetcher asked to load internal addresses via links/redirects/DNS rebinding | Access to metadata endpoints or internal services | Block private, loopback, link-local, CGNAT, multicast and cloud-metadata ranges (IPv4+IPv6); resolve and pin IP per connection; re-check every redirect (≤ 3); scheme allowlist `https`, `http`; ports 80/443 only; fetcher runs in its own network namespace without route to internal services |
-| T3 | Malicious web content in the browser | Exploits against headless Chromium during audits | Container compromise | Playwright/Chromium kept current; sandboxed container, non-root, read-only root FS, no credentials, downloads disabled, one browser context per site, hard time/memory limits, container recycled per batch |
-| T4 | Supply-chain compromise | Malicious/compromised npm or PyPI packages, install scripts | Code execution in build/QA or control plane | Dependency admission policy (§4); lockfiles with integrity hashes; install scripts disabled unless reviewed; minimum release age; OSV scanning; SBOM; builds in offline containers from a vetted image |
-| T5 | Secret leakage | Keys in prompts, logs, artifacts, generated sites | Account abuse, spend | Secrets only in the gateway process; never in prompts/events/artifacts; log redaction; per-environment keys with provider-side spend limits; no real keys in dev/test |
-| T6 | Cost exhaustion | Runaway loops, injection-induced calls, retries | Unbounded spend | Reserve-then-settle budgets at every scope; deny-not-truncate; max turns/tool calls per task; kill switch |
-| T7 | Data exfiltration via outputs | Agent embeds data/URLs into a generated site or draft | Leak of other leads' data | Per-lead data scoping; manifest URL rules; drafts reviewed before use; previews contain no other lead's data (test) |
-| T8 | Dashboard XSS / CSRF | Captured third-party content rendered in UI; forged approval requests | Account takeover, unauthorized approvals | Render captures as text; previews in sandboxed iframes on a separate origin; strict CSP; CSRF tokens; re-authentication for approvals; four-eyes option |
-| T9 | Approval spoofing / replay | Approval reused for a different action | Unauthorized outreach/publication | Approval bound to `exact_action_sha256`, expiry, single execution via idempotency key |
-| T10 | Spreadsheet formula injection | Website text exported to CSV/XLSX | Code execution / data exfiltration in spreadsheet apps | Prefix dangerous leading characters; export as text |
-| T11 | Unauthorized security testing allegation | Diagnosis behaves like a scanner | Legal exposure, reputational harm | Passive-only rules (§6.2); no vulnerability findings at all |
-| T12 | Misleading sales claims | Overstated diagnosis, fabricated facts in previews | Unfair-practice complaints, reputational harm | Measurement date/tool on every claim; `sales_safe` flag; claim detector in copy; no testimonials/ratings generated |
-| T13 | Event/ledger tampering | Insider or bug alters history | Loss of auditability | Append-only event store (DB permissions); optional hash chain; daily ledger reconciliation |
+| # | Threat | Phase | Controls |
+|---|---|---|---|
+| T1 | Real personal data enters a synthetic-only phase | M1 | `data_mode = REAL` rejected on import and export; fixtures use `.example` domains and reserved test numbers |
+| T2 | Personal data becomes impossible to erase | M1+ | Events carry ids and hashes only (D-024); erasure in state tables; test AT1.8 |
+| T3 | Bypass of the spend switch or approvals | M1+ | Single gateway; double switch; approvals bound to `action_sha256`; tests AT1.4, AT1.7, AT1.11 |
+| T4 | Tampering with the event log | M1+ | Triggers (protect against bugs only); optional hash chain (tamper evidence); limitations in [architecture § 6.3](architecture.md#63-limitations-to-be-stated-in-the-m1-readme-when-implemented) |
+| T5 | Spreadsheet formula injection | M1+ | Escaping and quoting rules; test AT1.9 |
+| T6 | Malicious website content attacking the headless browser | M2a+ | Sandboxed container; non-root; read-only FS; no credentials; downloads disabled; resource limits; browser kept current. **Chromium's own sandbox is often disabled inside containers (`--no-sandbox`), which weakens isolation — status in the chosen environment is PENDING (PD-08).** |
+| T7 | SSRF through the fetcher | M2a+ | Block private, loopback (except the M2a test server), link-local, CGNAT, multicast and metadata ranges (IPv4/IPv6); pin resolved IP per connection; re-check redirects; ports 80/443 |
+| T8 | Supply-chain compromise (npm/PyPI) | M2a+ | Admission policy (§6) |
+| T9 | Prompt injection via websites | M5+ | Untrusted content as data; agents with untrusted input have no external-write tools, no secrets, no cross-lead access; injection eval suite |
+| T10 | Secret leakage and cost exhaustion | M5+ | No credentials until a paid phase; secrets only in the gateway; provider-side caps |
+| T11 | Dashboard XSS/CSRF | M3+ | Captures rendered as text; previews on a separate origin; CSP; CSRF tokens; authentication |
+| T12 | Misleading sales claims | M8 | Measurement date and tool on every claim; `sales_safe`; claim detector; no generated testimonials |
+| T13 | Allegation of unauthorized security testing | M2b+ | Passive-only rules (§5.2); no security findings |
 
-## 3. Agent and runtime security controls
+## 3. Runtime controls
 
-- No `SYS` tools exist (shell, filesystem, code execution, arbitrary HTTP, package installation). This rules out by design
-  framework built-ins such as AgentScope 2.0's `Bash`/`Write`/`Edit`/`Read`/`Glob`/`Grep` tools — any framework
-  integration must register **zero** built-in tools (spike acceptance test, see roadmap).
-- Workers run in containers: non-root, read-only root filesystem, `no-new-privileges`, all Linux capabilities dropped,
-  seccomp default profile, CPU/memory/pids/time limits, ephemeral writable scratch only.
-- Egress per worker type: Fetcher → public internet via SSRF guard; Auditor → same as Fetcher; Astro builder → **no
-  network** (dependencies baked into the image); QA runner → loopback only (serves the built site locally); Agent runner
-  → LLM endpoint only, through the gateway.
-- Test suites run with a socket lock (OI `offline_lock` pattern): any network attempt fails the test.
-- Kill switch: one flag stops task leasing and makes the gateway deny everything except reads of internal state.
+**M1:** no network code paths; socket and DNS lock during tests; no credentials present; no agents; synthetic data only;
+no external writes; the paid-call switch is off in two places; kill switch command; startup integrity check of the
+database (triggers, foreign keys).
 
-## 4. Supply-chain and dependency admission policy
+**Later phases:** workers in containers (non-root, read-only root FS, `no-new-privileges`, capabilities dropped, seccomp,
+CPU/memory/pids/time limits); egress per worker (fetcher: public web through the SSRF guard; builder: none; QA:
+loopback); agents without shell, filesystem, code execution or raw network (these tools do not exist in the registry).
 
-A dependency (direct or framework) is admitted only when all apply:
+## 4. Personal data protection
 
-1. **Licence** in the allowlist: MIT, Apache-2.0, BSD-2/3-Clause, ISC, MPL-2.0 (file-level copyleft; used unmodified),
-   OFL-1.1 (fonts). LGPL needs a recorded decision; GPL/AGPL/SSPL/proprietary are denied by default.
-2. **Maintenance**: a release in the last 12 months, or a written justification (e.g. Lighthouse CI fails this: last
-   release 2025-06-25).
-3. **Advisories**: no unpatched high/critical advisory at the pinned version (OSV/GitHub advisories checked at admission
-   and continuously in CI).
-4. **Transitive tree reviewed**: size, install scripts, native binaries, network calls at install or import time.
-5. **Pinned** exact versions in a lockfile with integrity hashes; upgrades via reviewed PRs; a minimum release age (e.g.
-   14 days) for non-security upgrades.
-6. **First execution in a sandbox** with egress blocked to observe behaviour (no unexpected network calls, telemetry or
-   file writes outside scratch).
-7. **SBOM** (CycloneDX) generated per build; licence and advisory report attached to releases.
-
-The Phase 0 assessment of candidate dependencies is in [decisions.md § Dependency assessment](decisions.md#dependency-assessment).
-
-## 5. Personal data protection (GDPR + LOPDGDD)
-
-| Topic | Rule in WAOS |
+| Topic | Rule |
 |---|---|
-| Role | The agency is the controller for prospect data; LLM, hosting and email providers are processors (DPA required before use). |
-| Data scope | Business-level data first. Personal data limited to business contact details **published by the business itself** (name of a sole trader as business name, business phone/email/address). No private social profiles, no family data, no home addresses unless it is the published business address, no special categories, no inferred traits about individuals. |
-| Legal basis | Legitimate interest (GDPR 6(1)(f)), relying on LOPDGDD Art. 19 presumptions where applicable, with a written Legitimate Interest Assessment (LIA) per campaign stored as `lia_id`. Consent where LSSI requires it. |
-| Transparency | Privacy notice published on the agency site; Art. 14 information (identity, purpose, legal basis, data source, categories, recipients, retention, rights incl. objection, AEPD complaint) given at the latest at first contact — scripted into call scripts and letters by the compliance template store (**VERIFY** with counsel). |
-| Objection / erasure | Any objection → immediate suppression across all channels; erasure → delete personal data, keep salted hash in suppression list to honour it. |
-| Retention (proposal) | Non-qualified leads: personal fields deleted after 6 months; contacted-but-not-converted: 12 months after last contact; suppression hashes: indefinite; raw page captures: 90 days (evidence keeps snippet + hash); clients: per contract/legal duties. Enforced by scheduled jobs that emit events. |
-| Records | Record of processing activities (Art. 30); DPIA **screening** before M4 (systematic evaluation/scoring of sole traders may meet DPIA criteria — decide with counsel). |
-| Minimization in AI | Prompts carry only the fields a task needs; provider zero-/limited-retention options used when available; no personal data in eval sets unless synthetic. |
-| International transfers | Processor locations and transfer mechanisms recorded per provider before onboarding (**UNKNOWN** until providers chosen). |
-| Breach | Incident runbook; AEPD notification within 72 h where required (GDPR Art. 33). |
-| Automated decisions | Scoring only prioritizes sales effort; it has no legal or similarly significant effect on the business. Documented as not Art. 22 processing (**VERIFY**). |
+| M1 | Synthetic data only. Synthetic personal values exist only to test the privacy rules. |
+| Before real data | Legal basis documented and reviewed by counsel (L5, L9; PD-13); retention periods decided (L11, P-22); storage protection decided (SQLite is not encrypted at rest); DPIA decision (L8). These are entry requirements of M2b/M4 (fixes E4). |
+| Scope (later) | Business-level data first; personal data limited to business contact details published by the business itself; no private profiles, no special categories, no inferred traits about individuals. |
+| Event log | Never contains personal-data values (D-024). |
+| Captures and evidence | Evidence keeps the snippet and the capture's SHA-256; when the raw capture is deleted, `capture_available = false` and the evidence can no longer be re-verified (fixes E6). What is kept and for how long is PENDING (PD-14). |
+| Suppression | Salted hashes of identifiers; pseudonymous data may still be personal data; treatment PENDING (L11). |
+| Rights | Objection → suppression across all channels; erasure → values removed from state tables, ids and hashes kept. |
+| Processors | Any LLM, hosting or email provider requires a data-processing agreement before use (later). |
+| Breach | Incident runbook (§13); notification duties to be confirmed by counsel. |
 
-## 6. Public data collection rules
+## 5. Public data collection (later phases; gated)
 
-### 6.1 Sources
+### 5.1 Sources
 
-| Source type | Status | Notes |
+| Source type | Status |
+|---|---|
+| Business's own website | Candidate for M2b, under §5.2 and PD-13 |
+| Official registries and open data | Candidate after a per-source reuse-terms review (L16) |
+| Operator-prepared CSV | Candidate; the operator documents the source of each list |
+| Business directories | Blocked until a terms and database-right review per directory |
+| Google Maps / Places | Not for scraping; API use only if current terms allow the use case (L15; D-015) |
+| Social networks, paid data brokers | Blocked by default |
+| OI import | Deferred (D-001) |
+
+### 5.2 Passive-diagnosis rules (no security testing)
+
+- Only GET/HEAD of URLs linked from the site or listed in its sitemap; page limit P-10; rate limit P-11; back off on 429/503.
+- An identifying User-Agent with a URL describing the crawler and an opt-out contact. **This requires the agency's
+  identity and website (PD-11), an entry requirement of M2b (fixes E5).**
+- robots.txt and text-and-data-mining reservations honoured (L14).
+- No form submission, logins, search-box fuzzing, directory guessing, port scanning, version or vulnerability probing,
+  CAPTCHA solving, or circumvention of any access control.
+- No security findings recorded or reported.
+
+## 6. Supply chain and dependency admission
+
+### 6.1 Verification status
+
+All dependency facts in [decisions.md § Dependency assessment](decisions.md#dependency-assessment) are **REPORTED**. Not
+done for any package: transitive tree audit, install-script review, sandboxed first execution, licence check of
+transitive dependencies. Not assessed at all: `pytest`, `jsonschema`, HTML validator, JSON-LD checker, dashboard
+framework, PostgreSQL driver. OI was read but never executed; its tests were not reproduced.
+
+### 6.2 Admission policy
+
+A dependency is admitted only when all apply:
+
+1. Licence in the allowlist (MIT, Apache-2.0, BSD-2/3-Clause, ISC, MPL-2.0 used unmodified, OFL-1.1 for fonts); LGPL
+   needs a recorded decision; GPL/AGPL/SSPL/proprietary denied by default.
+2. Maintained (P-28) or a written justification.
+3. No unpatched high/critical advisory at the pinned version (checked at admission and continuously).
+4. Transitive tree reviewed: size, install scripts, native binaries, network activity.
+5. Exact versions pinned in a lockfile with integrity hashes; minimum release age for non-security upgrades (P-28).
+6. SBOM generated and kept with each build.
+
+### 6.3 Tests required before executing any third-party tool
+
+1. Install from a lockfile with integrity hashes and install scripts disabled; review any script that is required.
+2. Generate the SBOM and scan the complete tree against an advisory database.
+3. First execution inside a container with no network, no credentials, non-root, resource limits, logging every network
+   attempt and every file write outside scratch space.
+4. Execute against local fixtures only.
+5. Record the status of the Chromium sandbox in that environment and decide whether it is acceptable (PD-08).
+6. Pass the SSRF suite.
+7. Only then, a limited and approved real run (M2b).
+
+## 7. Asset provenance and intellectual property (later phases)
+
+Every asset has an `AssetRecord`. Prospect photos and logos: private previews only (`PREVIEW_ONLY`), and only if counsel
+allows it (L10); written client permission before production. Text from prospect sites is not copied into production
+copy. Stock assets only under licences allowing commercial web use. Fonts self-hosted under OFL or commercial licences.
+AI-generated images only for abstract imagery, never realistic depictions of real people, the client's team, premises or
+work (L12). Testimonials, reviews, ratings, awards, certifications, client logos, project counts and years in business
+are never generated.
+
+## 8. External APIs and accounts (later phases)
+
+Onboarding checklist per provider: terms allow the use case; data-processing terms; data location and retention;
+prices recorded in `pricing.v1.json`; rate limits; provider-side cap; least-privilege key; separate keys per environment;
+rotation; usage endpoint for reconciliation. No accounts were created and no keys used in Phase 0.
+
+## 9. Contactability and outbound communications (later; gated)
+
+Contactability is separate from opportunity scoring (D-023) and computed by deterministic policy once counsel has
+answered L1–L7 and L19. Conservative defaults for that future policy:
+
+| Channel | Default | Becomes usable only with |
 |---|---|---|
-| Business's own website | Allowed (passive, robots.txt honoured) | Primary first-party evidence |
-| Official registries / open data (e.g. BORME, municipal open data) | Allowed after per-source reuse-terms check | **VERIFY** reuse conditions per source |
-| Opportunity Intelligence import | Allowed | Through the OI bridge; carries OI provenance |
-| Operator CSV import | Allowed | Operator attests source legality per file |
-| Business directories | **Blocked until** ToS and database-right review per directory | Many prohibit scraping; EU sui generis database right |
-| Google Maps / Places | **Not for scraping.** API use only if ToS allow the use case | Places terms: `place_id` may be stored indefinitely; lat/lng cacheable ≤ 30 days; other Places content must not be pre-fetched/cached/stored; no display on a non-Google map (Google Maps Platform Service Specific Terms; Places policies — checked 2026-10-19). A lead database built from Places content is therefore not compatible with those terms |
-| Social networks | Blocked | ToS and personal-data risk |
-| Paid data brokers | Blocked by default | Contact data from brokers conflicts with the contact-evidence rules; provider data never `KNOWN` |
+| Email, SMS, WhatsApp, social DM, web form | `NOT_ELIGIBLE` | Recorded consent or prior contract, per counsel (L1, L2, L19) |
+| Phone | `UNKNOWN` until counsel answers | Conditions defined by counsel (L3, L4, L6, L7) |
+| Postal | `UNKNOWN` until counsel answers | Conditions defined by counsel (L5–L7) |
+| In person | `UNKNOWN` until counsel answers | Conditions defined by counsel (L7) |
 
-Text-and-data-mining reservations (EU DSM Directive Art. 4; Spanish transposition — **VERIFY**) and robots.txt are
-honoured; a site that disallows our user agent is recorded as `BLOCKED_BY_ROBOTS` and only its existence is used.
+The system has no sending capability; a human contacts the prospect after an approval for the exact text and channel.
+Every communication would need: sender identity (PD-11), data source, purpose, how to object, privacy-notice link,
+claims stated as lab tests with date and tool, no pressure tactics, no impersonation.
 
-### 6.2 Passive-diagnosis rules (no security testing)
+## 10. Human approvals
 
-- Only GET/HEAD of URLs linked from the site or listed in its sitemap; ≤ 20 pages per site per diagnosis.
-- ≤ 1 request every 2 s per domain; ≤ 1 concurrent browser per domain; back off on 429/503.
-- Identifying User-Agent with a URL explaining the crawler and an opt-out contact.
-- No form submission, login, search-box fuzzing, directory guessing, port scanning, vulnerability or version probing,
-  CAPTCHA solving, or paywall/robots circumvention.
-- No security findings are recorded or reported (outdated CMS, exposed files, etc.).
+| Type | Phase | Purpose |
+|---|---|---|
+| `SHORTLIST` | M1 | Move a `REVIEW_PRIORITY` lead to `SHORTLISTED` |
+| `BUDGET_CHANGE` | M1 | Change any cap (explicit new number) |
+| `CAMPAIGN_PLAN` | M2b+ | Approve a real-site list, sources, quotas |
+| `PREVIEW_T2`, `OUTREACH`, `PUBLISH`, `EXTERNAL_WRITE`, `DATA_SOURCE_ENABLE`, `EXTERNAL_DESTINATION` | later | Defined; no executor in this phase |
 
-## 7. Asset provenance and intellectual property
+Every approval is bound to the SHA-256 of the exact action, expires (P-21), is decided by a human and executes at most
+once ([data-contracts § 8](data-contracts.md#8-approvalrequest)). In M1 the operator identity is self-declared.
 
-| Rule | Detail |
-|---|---|
-| Every asset has an `AssetRecord` | Origin, licence snapshot hash, usage scope, AI-generation metadata |
-| Third-party content from the prospect's site | Facts may be restated in new words; text is not copied verbatim into production copy; their photos/logo may appear **only** in private previews as `PREVIEW_ONLY` and require written client permission before production |
-| Stock assets | Only from libraries whose licence allows commercial web use; licence terms snapshotted |
-| Fonts | Self-hosted, OFL or commercially licensed; no runtime third-party font CDN (avoids IP transfer to third parties; cf. LG München I, 3 O 17493/20, 2022) |
-| AI-generated images | Allowed only for abstract/illustrative imagery; never realistic depictions of real people, the client's team, premises or "completed works"; recorded with model and prompt hash. EU AI Act Art. 50 transparency obligations apply since 2 August 2026 (deep-fake disclosure; machine-readable marking duties fall on generative-system providers — **VERIFY** scope and the reported marking grace period to 2 December 2026 on EUR-Lex) |
-| Fabricated social proof | Testimonials, reviews, ratings, awards, certifications, client logos, project counts and years in business are never generated; they appear only with evidence or client-provided proof |
+## 11. Previews and publication (later; gated)
 
-## 8. External APIs and accounts
+Private access or signed expiring URLs (P-23); `noindex`; no analytics, forms or third-party requests; a visible banner
+"Propuesta conceptual preparada por <agencia>. No es la web oficial de <negocio>."; never hosted on a domain resembling
+the business's name; takedown on request. Publication requires client sign-off, the production quality profile, legal
+pages (L18), verified licences and a `PUBLISH` approval.
 
-Onboarding checklist per provider (recorded as an approval of type `DATA_SOURCE_ENABLE`):
-ToS allow the use case · DPA signed (if personal data) · data location and retention / zero-retention options · pricing
-known and recorded in `pricing.v1.json` · rate limits known · provider-side spend cap configured · key scoped to minimum
-permissions · separate keys per environment · rotation schedule · usage/balance endpoint for reconciliation (if any).
-Phase 0 created **no** accounts and used **no** keys.
+## 12. Questions for counsel
 
-## 9. Contact eligibility and outbound communications
+1. L1, L2: scope of LSSI Art. 21 for B2B and for forms, WhatsApp, SMS and social messages.
+2. L3, L4, L6: conditions for commercial calls to companies and to sole traders; exclusion-list checks per channel.
+3. L5, L9: legal basis for passively analysing business websites, including sole traders', before any contact.
+4. L7: wording and timing of the information to give at first contact by each channel.
+5. L8: is a DPIA required?
+6. L10: may a private preview use the prospect's name or logo, and under what conditions?
+7. L11: retention periods for leads, captures and suppression entries.
+8. L12–L14: AI Act transparency, accessibility obligations and text-and-data-mining reservations relevant to us.
+9. L16: reuse conditions for BORME and municipal open data.
+10. L17, L18: rules for claims in sales material; legal pages and cookies on client sites.
+11. L19: validity and proof of consent given by phone.
 
-### 9.1 Channel policy (deterministic, `policy/contact.v1.json`)
+## 13. Logging, audit and incidents
 
-| Channel | Default status | Conditions to become usable | Basis |
-|---|---|---|---|
-| Email | `NOT_ELIGIBLE` | Valid `ConsentRecord` covering email, or documented prior contractual relationship | LSSI Art. 21 |
-| SMS / WhatsApp / social DM / web contact form | `NOT_ELIGIBLE` | Same as email (treated as equivalent electronic communication until counsel decides otherwise — **VERIFY**) | LSSI Art. 21 |
-| Phone | `ELIGIBLE_WITH_CHECKS` | Number published by the business itself (`KNOWN`, `OFFICIAL`); not suppressed; campaign LIA on file; exclusion-list (Robinson) check for the phone channel within policy window; no automated dialling; call script with Art. 14 information and objection handling; calling-hours policy | LGTel Art. 66.1.b; AEPD Circular 1/2023; LOPDGDD Art. 23 (**VERIFY**) |
-| Postal mail | `ELIGIBLE_WITH_CHECKS` | Business address `KNOWN`; not suppressed; LIA; exclusion-list check for postal; Art. 14 information in the letter | GDPR 6(1)(f); LOPDGDD Arts. 19, 23 |
-| In person | `ELIGIBLE_WITH_CHECKS` | Visit to business premises during opening hours; Art. 14 leaflet; records created only after the visit | GDPR |
-
-The status is computed by code from evidence and records; agents and humans cannot override it except by adding the
-missing record (e.g. a consent record with its evidence), which is itself audited.
-
-### 9.2 Mandatory content of any communication
-
-Sender identity (agency legal entity — **UNKNOWN**, user to provide), how the data was obtained, purpose, how to object
-(simple, free, effective immediately), privacy-notice link; diagnosis claims stated as "lab test on <date> with
-<tool, version>"; no fear or urgency tactics; no statement that the business breaks a law; no impersonation; preview
-disclaimer.
-
-### 9.3 Sending
-
-The system has **no automatic sending capability**. A human sends or calls; the approval service only records
-the approved exact text/script and, after sending, the human logs the outcome. If automated email sending is ever
-added (consented contacts only), it is an `X-EXT` action executed once per approval.
-
-## 10. Human approvals catalogue
-
-| Action | Approval type | Approvers | Expiry |
-|---|---|---|---|
-| Start a campaign (sources, queries, quotas, budget) | `CAMPAIGN_PLAN` | 1 | 7 days |
-| Build a T2 preview | `PREVIEW_T2` | 1 | 7 days |
-| Contact a lead (message/script/letter, channel) | `OUTREACH` | 1 (2 if configured) | 7 days |
-| Raise any budget cap | `BUDGET_RAISE` | budget owner | 48 h |
-| Make any site/preview publicly reachable | `PUBLISH` | operator + client sign-off record | 7 days |
-| Any other external write | `EXTERNAL_WRITE` | 1 | 24 h |
-| Enable a data source / external API | `DATA_SOURCE_ENABLE` | admin | — |
-| Standing destination (e.g. one Google Sheet) | `EXTERNAL_DESTINATION` | admin | revocable |
-
-## 11. Previews and publication
-
-- Previews are private: authenticated access or signed, expiring URLs (≤ 30 days); `X-Robots-Tag: noindex, nofollow` and
-  `robots.txt` disallow; no analytics; forms disabled; no third-party requests.
-- Visible banner on every page: "Propuesta conceptual preparada por <agencia>. No es la web oficial de <negocio>."
-- Never hosted on a domain containing or resembling the business's name; no domain registrations for prospects.
-- Takedown on request within one business day; preview deleted when the lead is suppressed or after expiry.
-- Production publication requires: client sign-off, production quality profile pass, legal pages (LSSI Art. 10 legal
-  notice, privacy policy, cookie policy only if cookies), asset licences verified, `PUBLISH` approval.
-
-## 12. Logging, audit and incidents
-
-All approvals, transitions, tool calls, costs and policy decisions are events; access to prompts and raw captures is
-role-restricted and itself logged. Incident runbook: kill switch → revoke keys → preserve events → assess personal-data
-impact → notify where required → post-mortem as an ADR.
-
-## 13. Open legal questions for counsel (before M4/M8)
-
-1. Do web contact forms, WhatsApp Business and LinkedIn messages count as "equivalent electronic means" under LSSI Art. 21?
-2. Exact obligations for B2B phone prospecting to companies vs sole traders under LGTel Art. 66 and Circular 1/2023.
-3. Which exclusion lists must be checked per channel and how often.
-4. Is showing a private preview that uses a prospect's name/logo acceptable, and under what conditions?
-5. Is a DPIA required for this processing?
-6. Reuse conditions for BORME and municipal open-data sources.
-7. Wording and timing of Art. 14 information for phone and postal first contact.
-8. AI Act Art. 50 applicability to AI-assisted copy and imagery on client sites.
+All approvals, transitions, tool calls, costs and policy decisions are events (no personal values). Incident runbook:
+kill switch → revoke keys (when any exist) → preserve the database file with SQLite's backup API → assess personal-data
+impact → notify where required (to be confirmed by counsel) → post-mortem recorded as a decision.
