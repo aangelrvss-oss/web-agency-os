@@ -74,6 +74,19 @@ Known limitations:
   (the roadmap's `BUDGET_REQUIRED`).
 - Values starting with `+`, `-`, `=` or `@` (including phone numbers such as `+34 …`) are exported with a leading `'`.
 
+## M2a static diagnosis (first demo)
+
+```bash
+python3 -m waos demo-m2a          # fresh DB in demo_out/m2a, diagnoses corpus/m2a, prints labels vs results
+```
+
+`corpus/m2a/` holds 7 synthetic local sites; each `site.json` states its test purpose and expected results (labels
+written by Claude, PD-10, provisional). Only local files are read (no network, no browser). Checks decidable from HTML
+(`SEO_BASICS_MISSING`, `NO_LOCAL_SIGNALS`, `BROKEN_INTERNAL_LINKS`) can return NOT_DETECTED; `MIXED_CONTENT`,
+`NOT_MOBILE_READY` and `NO_MOBILE_CONTACT_PATH` can only be DETECTED or UNKNOWN; `NO_HTTPS`, `TLS_INVALID`, `SITE_DOWN`,
+`SLOW_MOBILE`, `LAYOUT_SHIFT` and `A11Y_SERIOUS` are always UNKNOWN until a browser/network phase (PD-08) is approved.
+UNKNOWN findings only raise score ceilings. Captures are stored as raw HTML (no sanitizer yet).
+
 ## Non-negotiable rules
 
 - Deterministic code decides state transitions, budgets, authorization, scoring and QA; agents (later) only propose.

@@ -1,0 +1,43 @@
+{
+ "site_id": "s01_good",
+ "purpose": "Good site: every statically decidable check must be NOT_DETECTED (false-positive control); browser/network checks stay UNKNOWN.",
+ "base_url": "https://fontaneria-omega.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s01_good",
+  "entity_key": "fontaneria-omega.example",
+  "business": {
+   "name": "Fontanería Omega Sintética",
+   "domain": "fontaneria-omega.example",
+   "website_url": "https://fontaneria-omega.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "NOT_DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.phone": "+34000000201",
+   "business.municipality": "Villa Sintética Sur",
+   "business.category": "plumbing",
+   "business.activity_dated": "2026-09-10",
+   "activity.signal.service_pages": true
+  },
+  "bucket": "LOW"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

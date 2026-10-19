@@ -208,13 +208,13 @@ class AT1_4_ZeroSpendZeroNetwork(Base):
         del ATTEMPTS[-2:]                                   # deliberate attempts in this test only
 
     def test_no_network_modules_in_product_code(self):
-        banned = ("import socket", "urllib", "http.client", "requests", "ftplib", "smtplib", "subprocess")
-        for name in os.listdir(os.path.join(ROOT, "waos")):
+        import re
+        banned = re.compile(r"^\s*(import|from)\s+(socket|ssl|urllib\.request|http\.client|http\.server|requests"
+                            r"|ftplib|smtplib|subprocess|asyncio)\b|^\s*from\s+urllib\s+import\s+request", re.M)
+        for name in os.listdir(os.path.join(ROOT, "waos")):        # urllib.parse (pure string parsing) is allowed
             if name.endswith(".py"):
                 with open(os.path.join(ROOT, "waos", name), encoding="utf-8") as f:
-                    text = f.read()
-                for b in banned:
-                    self.assertNotIn(b, text, f"{name} contains {b!r}")
+                    self.assertIsNone(banned.search(f.read()), f"{name} imports a network-capable module")
 
 
 class AT1_5_AppendOnlyTraceableLog(Base):

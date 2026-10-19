@@ -1,0 +1,39 @@
+{
+ "site_id": "s05_ambiguous",
+ "purpose": "Ambiguous: served over http (mixed content undefined), only 2 broken links (below P-05), contact only through a link, area only in plain text (INFERRED).",
+ "base_url": "http://cristaleria-tau.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s05_ambiguous",
+  "entity_key": "cristaleria-tau.example",
+  "business": {
+   "name": "Cristalería Tau Sintética",
+   "domain": "cristaleria-tau.example",
+   "website_url": "http://cristaleria-tau.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "NOT_DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.municipality": "Villa Sintética Norte"
+  },
+  "bucket": "PENDING"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

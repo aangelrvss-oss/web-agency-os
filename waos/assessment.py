@@ -67,7 +67,7 @@ def _tg(findings, levels):
             return levels["minor"]
         return 0
     known = [f for f in findings if f["claim_status"] == "KNOWN"]
-    possible = [f for f in findings if f["claim_status"] in ("KNOWN", "INFERRED")]
+    possible = [f for f in findings if f["claim_status"] in ("KNOWN", "INFERRED", "UNKNOWN")]   # unverified: ceiling only
     return {"floor": level(known), "ceiling": max(level(known), level(possible)),
             "finding_ids": [f["finding_id"] for f in possible]}
 
@@ -78,7 +78,7 @@ def _im(findings, impact_rules):
     def level(fs):
         return max([lv[impact_rules["impact"][f["code"]]] for f in fs if f["code"] in impact_rules["impact"]] or [0])
     known = [f for f in findings if f["claim_status"] == "KNOWN"]
-    possible = [f for f in findings if f["claim_status"] in ("KNOWN", "INFERRED")]
+    possible = [f for f in findings if f["claim_status"] in ("KNOWN", "INFERRED", "UNKNOWN")]   # unverified: ceiling only
     used = sorted({f["code"] for f in possible if f["code"] in impact_rules["impact"]})
     return {"floor": level(known), "ceiling": max(level(known), level(possible)), "impact_rule_ids": used}
 

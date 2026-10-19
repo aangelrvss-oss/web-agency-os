@@ -28,7 +28,7 @@ def _row(store, lead, now):
     score = store.latest_score(lead["lead_id"]) or {}
     l3 = score.get("layer3", {})
     impact = assessment.load_rules()["impact_rules.v1.json"]["impact"]
-    codes = sorted({f["code"] for f in store.findings_for(lead["lead_id"])})
+    codes = sorted({f["code"] for f in store.findings_for(lead["lead_id"]) if f["claim_status"] == "KNOWN"})
     b = lead["business"]
     hide_contact = lead["suppressed"]
     return {

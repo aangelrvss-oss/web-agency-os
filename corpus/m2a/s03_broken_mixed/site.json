@@ -1,0 +1,43 @@
+{
+ "site_id": "s03_broken_mixed",
+ "purpose": "Exactly 3 broken internal links (threshold P-05) and one http:// image on an https page; complete local data.",
+ "base_url": "https://reformas-rho.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s03_broken_mixed",
+  "entity_key": "reformas-rho.example",
+  "business": {
+   "name": "Reformas Rho Sintética",
+   "domain": "reformas-rho.example",
+   "website_url": "https://reformas-rho.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "NOT_DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "DETECTED",
+   "MIXED_CONTENT": "DETECTED",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.phone": "+34000000203",
+   "business.municipality": "Villa Sintética Norte",
+   "business.category": "renovation",
+   "business.activity_dated": "2026-08-20",
+   "activity.signal.service_pages": true
+  },
+  "bucket": "REVIEW_PRIORITY"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

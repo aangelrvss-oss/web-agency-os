@@ -6,7 +6,7 @@ import argparse
 import json
 import sys
 
-from . import approvals, assessment, budget, privacy, workflow
+from . import approvals, assessment, budget, diagnose, privacy, workflow
 from . import evidence as E
 from .export import ExportRefused, export_csv
 from .ingest import ImportRejected, import_fixture
@@ -121,6 +121,11 @@ def cmd_trace(store, args):
               f"{json.dumps(ev['payload'], ensure_ascii=False, sort_keys=True)}")
 
 
+def cmd_diagnose(store, args):
+    out = diagnose.diagnose(store, args.site, _actor(args))
+    _print({c: r["status"] for c, r in out["results"].items()})
+
+
 def cmd_verify(store, args):
     problems = store.integrity_problems()
     store.event("integrity.checked", _actor(args), None, {"problems": problems})
@@ -163,11 +168,19 @@ def parser():
     s = ex.add_parser("csv"); s.add_argument("--out"); s.set_defaults(fn=cmd_export)
     s = sub.add_parser("trace"); s.add_argument("lead"); s.set_defaults(fn=cmd_trace)
     sub.add_parser("verify").set_defaults(fn=cmd_verify)
+    s = sub.add_parser("diagnose", help="static diagnosis of a LOCAL synthetic site directory")
+    s.add_argument("site"); s.set_defaults(fn=cmd_diagnose)
+    s = sub.add_parser("demo-m2a", help="fresh database + diagnosis of the whole local corpus + report")
+    s.add_argument("--corpus", default="corpus/m2a"); s.add_argument("--out", default="demo_out/m2a")
+    s.set_defaults(fn=None)
     return p
 
 
 def main(argv=None):
     args = parser().parse_args(argv)
+    if args.cmd == "demo-m2a":
+        diagnose.print_report(diagnose.run_demo(args.corpus, args.out))
+        return 0
     try:
         store = Store(args.db)
     except IntegrityError as e:
@@ -175,7 +188,8 @@ def main(argv=None):
         return 2
     try:
         args.fn(store, args)
-    except (workflow.TransitionDenied, approvals.ApprovalError, ImportRejected, ExportRefused) as e:
+    except (workflow.TransitionDenied, approvals.ApprovalError, ImportRejected, ExportRefused,
+            diagnose.DiagnosisError) as e:
         print(f"denied: {e}", file=sys.stderr)
         return 3
     finally:

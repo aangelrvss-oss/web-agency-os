@@ -1,0 +1,37 @@
+{
+ "site_id": "s02_bare",
+ "purpose": "Bare page: missing title, description, H1, viewport, contact path and local signals; nothing else to verify.",
+ "base_url": "https://reformas-pi.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s02_bare",
+  "entity_key": "reformas-pi.example",
+  "business": {
+   "name": "Reformas Pi Sintética",
+   "domain": "reformas-pi.example",
+   "website_url": "https://reformas-pi.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "DETECTED",
+   "NO_LOCAL_SIGNALS": "DETECTED",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "DETECTED",
+   "NO_MOBILE_CONTACT_PATH": "DETECTED",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {},
+  "bucket": "PENDING"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

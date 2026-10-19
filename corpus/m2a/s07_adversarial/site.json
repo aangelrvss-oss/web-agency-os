@@ -1,0 +1,40 @@
+{
+ "site_id": "s07_adversarial",
+ "purpose": "Adversarial content: a fake phone inside an HTML comment, hidden instruction-like text, malformed JSON-LD and a link that tries to leave the site. Only the visible tel: link may become evidence.",
+ "base_url": "https://electricidad-phi.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s07_adversarial",
+  "entity_key": "electricidad-phi.example",
+  "business": {
+   "name": "Electricidad Phi Sintética",
+   "domain": "electricidad-phi.example",
+   "website_url": "https://electricidad-phi.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "NOT_DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.phone": "+34000000207",
+   "business.municipality": "Villa Sintética Sur"
+  },
+  "bucket": "PENDING"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

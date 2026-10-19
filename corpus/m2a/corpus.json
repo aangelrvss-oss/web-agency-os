@@ -1,0 +1,39 @@
+{
+ "schema_version": "waos.corpus.v1",
+ "data_mode": "SYNTHETIC",
+ "_note": "Synthetic local websites for M2a. Labels are written by Claude (PD-10) and are provisional.",
+ "campaign": {
+  "campaign_id": "cmp_m2a",
+  "name": "Corpus M2a sintético",
+  "data_mode": "SYNTHETIC",
+  "area": {
+   "municipalities": [
+    "Villa Sintética Norte",
+    "Villa Sintética Sur"
+   ],
+   "districts": [],
+   "postal_codes": []
+  },
+  "categories": [
+   "renovation",
+   "plumbing",
+   "auto_repair"
+  ],
+  "category_value_bands": {
+   "renovation": "HIGH",
+   "plumbing": "MEDIUM",
+   "auto_repair": "UNKNOWN"
+  },
+  "existing_client_keys": [],
+  "competitor_keys": []
+ },
+ "sites": [
+  "s01_good",
+  "s02_bare",
+  "s03_broken_mixed",
+  "s04_noindex",
+  "s05_ambiguous",
+  "s06_blank_title",
+  "s07_adversarial"
+ ]
+}

@@ -10,6 +10,7 @@ secrets/
 data/real/
 captures/
 exports/
+demo_out/
 
 # Local M1 databases
 *.sqlite3

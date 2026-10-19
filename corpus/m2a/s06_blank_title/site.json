@@ -1,0 +1,37 @@
+{
+ "site_id": "s06_blank_title",
+ "purpose": "Blank <title> must count as missing; contact only via a form; local signal only through an <address> element.",
+ "base_url": "https://pintores-upsilon.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s06_blank_title",
+  "entity_key": "pintores-upsilon.example",
+  "business": {
+   "name": "Pintores Upsilon Sintético",
+   "domain": "pintores-upsilon.example",
+   "website_url": "https://pintores-upsilon.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {},
+  "bucket": "PENDING"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

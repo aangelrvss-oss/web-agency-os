@@ -1,0 +1,43 @@
+{
+ "site_id": "s04_noindex",
+ "purpose": "Otherwise good page with an accidental robots noindex; category value band is UNKNOWN, so it must not reach REVIEW_PRIORITY.",
+ "base_url": "https://taller-sigma.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s04_noindex",
+  "entity_key": "taller-sigma.example",
+  "business": {
+   "name": "Taller Sigma Sintético",
+   "domain": "taller-sigma.example",
+   "website_url": "https://taller-sigma.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.phone": "+34000000204",
+   "business.municipality": "Villa Sintética Sur",
+   "business.category": "auto_repair",
+   "business.activity_dated": "2026-10-01",
+   "activity.signal.service_pages": true
+  },
+  "bucket": "WATCH"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

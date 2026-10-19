@@ -1,0 +1,17 @@
+{
+ "procedure_version": "static-html-1.0.0",
+ "_status": "M2a static diagnosis of LOCAL synthetic sites only (no network, no browser). Thresholds are provisional parameters (HYPOTHESIS).",
+ "broken_internal_links_min": 3,
+ "max_pages": 20,
+ "max_page_bytes": 2000000,
+ "severity": {"NO_SITE": "CRITICAL", "SITE_DOWN": "CRITICAL", "NO_HTTPS": "MAJOR", "TLS_INVALID": "MAJOR",
+              "NOT_MOBILE_READY": "MAJOR", "SLOW_MOBILE": "MAJOR", "LAYOUT_SHIFT": "MINOR",
+              "NO_MOBILE_CONTACT_PATH": "MAJOR", "A11Y_SERIOUS": "MINOR", "SEO_BASICS_MISSING": "MINOR",
+              "NO_LOCAL_SIGNALS": "INFO", "BROKEN_INTERNAL_LINKS": "MINOR", "MIXED_CONTENT": "MINOR"},
+ "not_run_needs_network_or_browser": ["NO_HTTPS", "TLS_INVALID", "SITE_DOWN", "SLOW_MOBILE", "LAYOUT_SHIFT", "A11Y_SERIOUS"],
+ "schema_type_to_category": {"Plumber": "plumbing", "GeneralContractor": "renovation",
+                             "HomeAndConstructionBusiness": "renovation", "RoofingContractor": "renovation",
+                             "HousePainter": "renovation", "AutoRepair": "auto_repair"},
+ "local_business_types": ["LocalBusiness", "Plumber", "GeneralContractor", "HomeAndConstructionBusiness",
+                          "RoofingContractor", "HousePainter", "AutoRepair", "Electrician", "HVACBusiness"]
+}
