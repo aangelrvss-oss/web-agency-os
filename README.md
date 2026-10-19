@@ -80,12 +80,31 @@ Known limitations:
 python3 -m waos demo-m2a          # fresh DB in demo_out/m2a, diagnoses corpus/m2a, prints labels vs results
 ```
 
-`corpus/m2a/` holds 7 synthetic local sites; each `site.json` states its test purpose and expected results (labels
+`corpus/m2a/` holds 17 synthetic local sites; each `site.json` states its test purpose and expected results (labels
 written by Claude, PD-10, provisional). Only local files are read (no network, no browser). Checks decidable from HTML
 (`SEO_BASICS_MISSING`, `NO_LOCAL_SIGNALS`, `BROKEN_INTERNAL_LINKS`) can return NOT_DETECTED; `MIXED_CONTENT`,
 `NOT_MOBILE_READY` and `NO_MOBILE_CONTACT_PATH` can only be DETECTED or UNKNOWN; `NO_HTTPS`, `TLS_INVALID`, `SITE_DOWN`,
 `SLOW_MOBILE`, `LAYOUT_SHIFT` and `A11Y_SERIOUS` are always UNKNOWN until a browser/network phase (PD-08) is approved.
 UNKNOWN findings only raise score ceilings. Captures are stored as raw HTML (no sanitizer yet).
+
+### M2a.1 diagnosis audit
+
+The same command now diagnoses 17 sites (edge cases: valid variations, several defects, malformed HTML, encoded and
+relative links, ambiguous place names, contradictory evidence, no home page, crawl limit, WhatsApp/form-only contact
+and no usable contact channel) and writes, with a fixed clock (`as_of` in `corpus.json`) so every run is byte-identical:
+
+- `demo_out/m2a/audit_report.md` — readable audit in Spanish: executive summary, evaluation status and review
+  priority, confirmed problems with their evidence, unverified checks and why, commercial impact as a separate
+  hypothesis, recommendations for human review. No contact values, page HTML, evidence ids or invented figures.
+- `demo_out/m2a/report.json` — expected vs actual per site (`deviations`, known or unexpected), detector tally and
+  evaluation matrix.
+- `demo_out/m2a/leads_SYNTHETIC_m2a.csv` — M1 columns plus `evaluation_status`, `evaluation_procedure`,
+  `checks_unverified` (appended).
+
+Evaluation status (D-026) is separate from the review bucket: `PROBLEMS_FOUND` (a problem confirmed by valid evidence),
+`NO_PROBLEMS_FOUND` (the three statically decidable checks completed without a problem — the other nine stay listed as
+unverified, so it is not a guarantee), `INSUFFICIENT_EVIDENCE` (one of those checks is still UNKNOWN). See
+[corpus/m2a/README.md](corpus/m2a/README.md) for the cases, their expectations and the first-run log.
 
 ## Non-negotiable rules
 

@@ -1,0 +1,44 @@
+{
+ "site_id": "s11_links",
+ "purpose": "Link handling: anchors, ./ and ../ paths, root-relative and absolute same-host links, query strings, percent-encoded file names (space, accented letter), a PDF, javascript: and legitimate external links. Every internal target exists, so BROKEN_INTERNAL_LINKS must be NOT_DETECTED (0 broken).",
+ "base_url": "https://fontaneria-nu.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s11_links",
+  "entity_key": "fontaneria-nu.example",
+  "business": {
+   "name": "Fontanería Nu Sintética",
+   "domain": "fontaneria-nu.example",
+   "website_url": "https://fontaneria-nu.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "NOT_DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.phone": "+34000000211",
+   "business.municipality": "Villa Sintética Norte",
+   "business.category": "plumbing",
+   "business.activity_dated": "2026-10-01",
+   "activity.signal.service_pages": true
+  },
+  "bucket": "LOW",
+  "evaluation_status": "NO_PROBLEMS_FOUND"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

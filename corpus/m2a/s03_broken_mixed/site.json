@@ -37,7 +37,8 @@
    "business.activity_dated": "2026-08-20",
    "activity.signal.service_pages": true
   },
-  "bucket": "REVIEW_PRIORITY"
+  "bucket": "REVIEW_PRIORITY",
+  "evaluation_status": "PROBLEMS_FOUND"
  },
  "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
 }

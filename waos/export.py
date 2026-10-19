@@ -4,7 +4,7 @@ import hashlib
 import io
 import os
 
-from . import assessment
+from . import assessment, evaluation
 
 DANGEROUS_FIRST = ("=", "+", "-", "@", "\t", "\r", "\n", "＝", "＋", "－", "＠")
 
@@ -12,7 +12,9 @@ COLUMNS = ("lead_id", "campaign_id", "business_name", "category", "municipality"
            "priority_for_review", "opportunity_points_floor", "opportunity_points_ceiling", "TG_floor", "IM_floor",
            "BV_floor", "AC_floor", "confidence_band", "contraindications", "unknown_gates", "top_findings",
            "impact_hypotheses", "purchase_intent", "suppressed", "data_mode", "scoring_version", "rules_hash",
-           "exported_at")
+           "exported_at",
+           # M2a.1, appended so existing columns keep their position: diagnosis state, separate from the priority
+           "evaluation_status", "evaluation_procedure", "checks_unverified")
 
 
 class ExportRefused(Exception):
@@ -31,6 +33,7 @@ def _row(store, lead, now):
     codes = sorted({f["code"] for f in store.findings_for(lead["lead_id"]) if f["claim_status"] == "KNOWN"})
     b = lead["business"]
     hide_contact = lead["suppressed"]
+    ev = evaluation.evaluate_lead(store, lead["lead_id"])
     return {
         "lead_id": lead["lead_id"], "campaign_id": lead["campaign_id"], "business_name": b.get("name"),
         "category": b.get("category_id"), "municipality": b.get("municipality"), "website": b.get("website_url"),
@@ -48,7 +51,9 @@ def _row(store, lead, now):
         "impact_hypotheses": ";".join(f"{c}:{impact[c]}(hypothesis)" for c in codes if c in impact),
         "purchase_intent": lead["purchase_intent"], "suppressed": str(lead["suppressed"]).lower(),
         "data_mode": lead["data_mode"], "scoring_version": score.get("scoring_version"),
-        "rules_hash": score.get("rules_hash"), "exported_at": now}
+        "rules_hash": score.get("rules_hash"), "exported_at": now,
+        "evaluation_status": ev["status"], "evaluation_procedure": ev["procedure"],
+        "checks_unverified": ";".join(p["code"] for p in ev["pending"])}
 
 
 def export_csv(store, out_path, actor="system"):

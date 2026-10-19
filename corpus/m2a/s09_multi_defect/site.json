@@ -1,0 +1,38 @@
+{
+ "site_id": "s09_multi_defect",
+ "purpose": "Several defects at once: no title, no description, no viewport, no contact path, no local signal, an http:// image on an https page and three links to missing pages. The H1 is present.",
+ "base_url": "https://fontaneria-lambda.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s09_multi_defect",
+  "entity_key": "fontaneria-lambda.example",
+  "business": {
+   "name": "Fontanería Lambda Sintética",
+   "domain": "fontaneria-lambda.example",
+   "website_url": "https://fontaneria-lambda.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "DETECTED",
+   "NO_LOCAL_SIGNALS": "DETECTED",
+   "BROKEN_INTERNAL_LINKS": "DETECTED",
+   "MIXED_CONTENT": "DETECTED",
+   "NOT_MOBILE_READY": "DETECTED",
+   "NO_MOBILE_CONTACT_PATH": "DETECTED",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {},
+  "bucket": "PENDING",
+  "evaluation_status": "PROBLEMS_FOUND"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

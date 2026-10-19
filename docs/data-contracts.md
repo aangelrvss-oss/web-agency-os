@@ -320,6 +320,11 @@ File name includes the data mode (e.g. `leads_SYNTHETIC_<timestamp>.csv`); UTF-8
 | `top_findings`, `impact_hypotheses` | Findings / impact rules | Impact column labelled as hypothesis |
 | `purchase_intent` | Lead | Always `UNKNOWN` in M1 |
 | `suppressed`, `data_mode`, `scoring_version`, `rules_hash`, `exported_at` | | |
+| `evaluation_status` | Evidence + findings (M2a.1, D-026) | `PROBLEMS_FOUND` · `NO_PROBLEMS_FOUND` · `INSUFFICIENT_EVIDENCE`; independent of `priority_for_review` |
+| `evaluation_procedure` | Check evidence | e.g. `static-html-1.0.0`; blank if the lead was never diagnosed |
+| `checks_unverified` | Check evidence | Catalogue checks neither confirmed nor verified absent, `;`-separated |
+
+The three M2a.1 columns are appended after `exported_at`, so the M1 column order is unchanged (additive change).
 
 Safety rules:
 

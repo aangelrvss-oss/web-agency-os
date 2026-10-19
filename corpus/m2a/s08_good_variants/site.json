@@ -1,0 +1,44 @@
+{
+ "site_id": "s08_good_variants",
+ "purpose": "Correct site written with valid variations: upper-case tags and attribute names, unquoted attributes, an entity in the title, a nested <span> in the H1, JSON-LD inside @graph (the only local signal), a protocol-relative image, trailing-slash, query-string and fragment links, contact by e-mail only. False-positive control: nothing may be DETECTED.",
+ "base_url": "https://reformas-kappa.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s08_good_variants",
+  "entity_key": "reformas-kappa.example",
+  "business": {
+   "name": "Reformas Kappa Sintética",
+   "domain": "reformas-kappa.example",
+   "website_url": "https://reformas-kappa.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "NOT_DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.email": "info@reformas-kappa.example",
+   "business.municipality": "Villa Sintética Norte",
+   "business.category": "renovation",
+   "business.activity_dated": "2026-08-01",
+   "activity.signal.service_pages": true
+  },
+  "bucket": "LOW",
+  "evaluation_status": "NO_PROBLEMS_FOUND"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

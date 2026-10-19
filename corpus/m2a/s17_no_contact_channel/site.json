@@ -1,0 +1,42 @@
+{
+ "site_id": "s17_no_contact_channel",
+ "purpose": "No contact channel a visitor can use: only a site search form, a WhatsApp link without a number, a link to a look-alike host that is not WhatsApp, and no tel:, mailto:, contact link or contact form. NO_MOBILE_CONTACT_PATH must be DETECTED (false-negative control for the WhatsApp/form rules).",
+ "base_url": "https://cerrajeria-zeta.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s17_no_contact_channel",
+  "entity_key": "cerrajeria-zeta.example",
+  "business": {
+   "name": "Cerrajería Zeta Sintética",
+   "domain": "cerrajeria-zeta.example",
+   "website_url": "https://cerrajeria-zeta.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "NOT_DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "DETECTED",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.municipality": "Villa Sintética Sur",
+   "business.activity_dated": "2026-09-05",
+   "activity.signal.service_pages": true
+  },
+  "bucket": "PENDING",
+  "evaluation_status": "PROBLEMS_FOUND"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

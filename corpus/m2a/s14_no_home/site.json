@@ -1,0 +1,38 @@
+{
+ "site_id": "s14_no_home",
+ "purpose": "Absence of evidence: the capture has no index.html (only an inner page). Nothing about the home page can be said: every check is UNKNOWN, no fact is recorded and the diagnosis must not fail or guess.",
+ "base_url": "https://carpinteria-rho.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s14_no_home",
+  "entity_key": "carpinteria-rho.example",
+  "business": {
+   "name": "Carpintería Rho Sintética",
+   "domain": "carpinteria-rho.example",
+   "website_url": "https://carpinteria-rho.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "UNKNOWN",
+   "NO_LOCAL_SIGNALS": "UNKNOWN",
+   "BROKEN_INTERNAL_LINKS": "UNKNOWN",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {},
+  "bucket": "PENDING",
+  "evaluation_status": "INSUFFICIENT_EVIDENCE"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

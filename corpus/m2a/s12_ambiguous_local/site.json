@@ -1,0 +1,41 @@
+{
+ "site_id": "s12_ambiguous_local",
+ "purpose": "Ambiguous local signal: no JSON-LD and no <address>; the text names 'Villa Sintética Norteña', which contains the campaign municipality 'Villa Sintética Norte' as a substring but is a different name. A static auditor without a gazetteer cannot tell whether that is a place: NO_LOCAL_SIGNALS must be UNKNOWN (neither a problem nor a pass) and the municipality must not be inferred.",
+ "base_url": "https://tejados-xi.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s12_ambiguous_local",
+  "entity_key": "tejados-xi.example",
+  "business": {
+   "name": "Tejados Xi Sintética",
+   "domain": "tejados-xi.example",
+   "website_url": "https://tejados-xi.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "NOT_DETECTED",
+   "NO_LOCAL_SIGNALS": "UNKNOWN",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.phone": "+34000000212",
+   "activity.signal.service_pages": true
+  },
+  "bucket": "PENDING",
+  "evaluation_status": "INSUFFICIENT_EVIDENCE"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

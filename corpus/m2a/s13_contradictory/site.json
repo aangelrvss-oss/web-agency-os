@@ -1,0 +1,47 @@
+{
+ "site_id": "s13_contradictory",
+ "purpose": "Contradictory evidence: two JSON-LD blocks give two different municipalities (the fact must be CONFLICTING, no value chosen, G_GEO stays UNKNOWN) and two robots meta tags disagree ('noindex' and 'index, follow'); the most restrictive directive applies, so SEO_BASICS_MISSING is DETECTED (noindex).",
+ "base_url": "https://reformas-omicron.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s13_contradictory",
+  "entity_key": "reformas-omicron.example",
+  "business": {
+   "name": "Reformas Ómicron Sintética",
+   "domain": "reformas-omicron.example",
+   "website_url": "https://reformas-omicron.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.phone": "+34000000213",
+   "business.municipality": [
+    "Villa Sintética Norte",
+    "Villa Sintética Sur"
+   ],
+   "business.category": "renovation",
+   "business.activity_dated": "2026-09-30",
+   "activity.signal.service_pages": true
+  },
+  "bucket": "PENDING",
+  "evaluation_status": "PROBLEMS_FOUND"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

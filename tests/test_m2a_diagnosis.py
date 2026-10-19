@@ -35,12 +35,13 @@ class Corpus(Base):
 
 
 class Labels(Corpus):
-    def test_every_site_matches_its_labels(self):
+    def test_every_site_matches_its_labels_or_its_documented_deviation(self):
         for sid in SITES:
             manifest = diagnose.load_site(site_dir(sid))
             out = diagnose.run_checks(site_dir(sid), manifest, self.corpus["campaign"])
             actual = {c: r["status"] for c, r in out["results"].items()}
-            self.assertEqual(actual, manifest["expected"]["checks"], sid)
+            known = manifest.get("known_deviation", {}).get("actual", {}).get("checks", {})
+            self.assertEqual(actual, dict(manifest["expected"]["checks"], **known), sid)
 
     def test_corpus_has_good_bad_and_ambiguous_cases_with_purposes(self):
         detected, controls = set(), 0
@@ -88,11 +89,10 @@ class Integration(Corpus):
     def test_site_facts_follow_the_evidence_rules(self):
         for sid in SITES:
             manifest = self.diagnose(sid)
-            facts = {e["field"]: e for e in self.store.evidence_for(manifest["lead"]["lead_id"])
-                     if not e["field"].startswith("site.check.")}
-            self.assertEqual({k: e["value"] for k, e in facts.items()}, manifest["expected"]["facts"], sid)
-            for e in facts.values():
-                if e["claim_status"] == "KNOWN":
+            lead_id = manifest["lead"]["lead_id"]
+            self.assertEqual(diagnose._facts_of(self.store, lead_id), manifest["expected"]["facts"], sid)
+            for e in self.store.evidence_for(lead_id):
+                if e["claim_status"] == "KNOWN" and not e["field"].startswith("site.check."):
                     self.assertIn(e["snippet"], self.store.capture_text(e["capture_sha256"]))
         s05 = {e["field"]: e for e in self.store.evidence_for("lead_m2a_s05_ambiguous")}
         self.assertEqual(s05["business.municipality"]["claim_status"], "INFERRED")     # plain text is not KNOWN
@@ -142,10 +142,15 @@ class Demo(Base):
     def test_one_command_demo_is_reproducible(self):
         out = os.path.join(self.tmp, "demo")
         first = diagnose.run_demo(CORPUS, out, clock=Clock())
+        with open(os.path.join(out, "audit_report.md"), encoding="utf-8") as f:
+            audit_first = f.read()
         second = diagnose.run_demo(CORPUS, out, clock=Clock())
-        self.assertTrue(first["all_match"])
-        strip = lambda r: [{k: v for k, v in s.items()} for s in r["sites"]]
-        self.assertEqual(strip(first), strip(second))
+        self.assertEqual(first["unexpected_deviations"], 0)
+        self.assertEqual(first["known_deviations"], 0)                     # s16 was fixed after review
+        self.assertEqual(first["sites"], second["sites"])
+        self.assertEqual(first["export"]["sha256"], second["export"]["sha256"])
+        with open(os.path.join(out, "audit_report.md"), encoding="utf-8") as f:
+            self.assertEqual(f.read(), audit_first)                         # no ids or random values in the audit
         with open(os.path.join(out, "report.json"), encoding="utf-8") as f:
             report_text = f.read()
         phones = {diagnose.load_site(site_dir(s))["expected"]["facts"].get("business.phone") for s in SITES} - {None}

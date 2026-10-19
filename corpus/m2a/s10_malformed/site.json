@@ -1,0 +1,44 @@
+{
+ "site_id": "s10_malformed",
+ "purpose": "Malformed and truncated HTML that browsers repair: unquoted attributes, no </head>, an H1 implicitly closed by an H2, an <a> implicitly closed by the next <a>, stray end tags and no </body></html>. The H1, the tel: link and the services link exist for a browser, so nothing may be DETECTED.",
+ "base_url": "https://pinturas-mu.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s10_malformed",
+  "entity_key": "pinturas-mu.example",
+  "business": {
+   "name": "Pinturas Mu Sintética",
+   "domain": "pinturas-mu.example",
+   "website_url": "https://pinturas-mu.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "NOT_DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.phone": "+34000000210",
+   "business.municipality": "Villa Sintética Sur",
+   "business.category": "renovation",
+   "business.activity_dated": "2026-07-15",
+   "activity.signal.service_pages": true
+  },
+  "bucket": "LOW",
+  "evaluation_status": "NO_PROBLEMS_FOUND"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

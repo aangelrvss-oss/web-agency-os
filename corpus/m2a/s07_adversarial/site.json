@@ -34,7 +34,8 @@
    "business.phone": "+34000000207",
    "business.municipality": "Villa Sintética Sur"
   },
-  "bucket": "PENDING"
+  "bucket": "PENDING",
+  "evaluation_status": "NO_PROBLEMS_FOUND"
  },
  "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
 }

@@ -8,6 +8,8 @@
               "NOT_MOBILE_READY": "MAJOR", "SLOW_MOBILE": "MAJOR", "LAYOUT_SHIFT": "MINOR",
               "NO_MOBILE_CONTACT_PATH": "MAJOR", "A11Y_SERIOUS": "MINOR", "SEO_BASICS_MISSING": "MINOR",
               "NO_LOCAL_SIGNALS": "INFO", "BROKEN_INTERNAL_LINKS": "MINOR", "MIXED_CONTENT": "MINOR"},
+ "evaluation_scope": ["SEO_BASICS_MISSING", "NO_LOCAL_SIGNALS", "BROKEN_INTERNAL_LINKS"],
+ "_evaluation_scope": "Checks whose ABSENCE this procedure can establish from static HTML. NO_PROBLEMS_FOUND means only that these completed without a problem; every other check stays listed as not verified.",
  "not_run_needs_network_or_browser": ["NO_HTTPS", "TLS_INVALID", "SITE_DOWN", "SLOW_MOBILE", "LAYOUT_SHIFT", "A11Y_SERIOUS"],
  "schema_type_to_category": {"Plumber": "plumbing", "GeneralContractor": "renovation",
                              "HomeAndConstructionBusiness": "renovation", "RoofingContractor": "renovation",

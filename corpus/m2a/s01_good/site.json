@@ -37,7 +37,8 @@
    "business.activity_dated": "2026-09-10",
    "activity.signal.service_pages": true
   },
-  "bucket": "LOW"
+  "bucket": "LOW",
+  "evaluation_status": "NO_PROBLEMS_FOUND"
  },
  "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
 }

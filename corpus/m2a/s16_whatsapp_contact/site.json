@@ -1,0 +1,43 @@
+{
+ "site_id": "s16_whatsapp_contact",
+ "purpose": "Contact only through a WhatsApp click-to-chat link (https://wa.me/<number>) and a 'Pide presupuesto' link to a page with a form; no tel:, mailto:, form or 'contact' word on the home page. A possible contact path exists, so the correct result is UNKNOWN: nothing says the number works or is answered, and its mobile position needs a browser. First run: false positive (DETECTED); fixed in M2a.1 after review.",
+ "base_url": "https://taller-psi.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s16_whatsapp_contact",
+  "entity_key": "taller-psi.example",
+  "business": {
+   "name": "Taller Psi Sintético",
+   "domain": "taller-psi.example",
+   "website_url": "https://taller-psi.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "NOT_DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "NOT_DETECTED",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.municipality": "Villa Sintética Norte",
+   "business.category": "auto_repair",
+   "business.activity_dated": "2026-09-20",
+   "activity.signal.service_pages": true
+  },
+  "bucket": "LOW",
+  "evaluation_status": "NO_PROBLEMS_FOUND"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

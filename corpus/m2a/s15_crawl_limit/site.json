@@ -1,0 +1,44 @@
+{
+ "site_id": "s15_crawl_limit",
+ "purpose": "Crawl limit (P max_pages = 20) reached on a 24-page site whose last three pages hold the only three broken links. The links beyond the limit are never read, so BROKEN_INTERNAL_LINKS must be UNKNOWN (not NOT_DETECTED). Bucket LOW must not be read as a healthy site.",
+ "base_url": "https://taller-chi.example/",
+ "lead": {
+  "lead_id": "lead_m2a_s15_crawl_limit",
+  "entity_key": "taller-chi.example",
+  "business": {
+   "name": "Taller Chi Sintético",
+   "domain": "taller-chi.example",
+   "website_url": "https://taller-chi.example/"
+  },
+  "identity": {
+   "status": "KNOWN_MATCH",
+   "evidence_ids": []
+  }
+ },
+ "expected": {
+  "checks": {
+   "SEO_BASICS_MISSING": "NOT_DETECTED",
+   "NO_LOCAL_SIGNALS": "NOT_DETECTED",
+   "BROKEN_INTERNAL_LINKS": "UNKNOWN",
+   "MIXED_CONTENT": "UNKNOWN",
+   "NOT_MOBILE_READY": "UNKNOWN",
+   "NO_MOBILE_CONTACT_PATH": "UNKNOWN",
+   "NO_HTTPS": "UNKNOWN",
+   "TLS_INVALID": "UNKNOWN",
+   "SITE_DOWN": "UNKNOWN",
+   "SLOW_MOBILE": "UNKNOWN",
+   "LAYOUT_SHIFT": "UNKNOWN",
+   "A11Y_SERIOUS": "UNKNOWN"
+  },
+  "facts": {
+   "business.phone": "+34000000215",
+   "business.municipality": "Villa Sintética Norte",
+   "business.category": "auto_repair",
+   "business.activity_dated": "2026-09-25",
+   "activity.signal.service_pages": true
+  },
+  "bucket": "LOW",
+  "evaluation_status": "INSUFFICIENT_EVIDENCE"
+ },
+ "_note": "Synthetic site for local tests only. Business, domain and phone are fictitious."
+}

@@ -132,6 +132,22 @@ data values, so that erasure and retention can be honoured in the state tables w
 in [provisional parameters](#provisional-parameters) as HYPOTHESIS until calibrated with data or decided by the user or
 counsel. No commercial values, empirical thresholds or legal periods are asserted as facts.
 
+### D-026 — Evaluation status is separate from review priority and limited to a declared scope
+**Status:** Accepted (user decision, 2026-10-19; implemented in M2a.1). Each diagnosed lead gets
+`PROBLEMS_FOUND`, `NO_PROBLEMS_FOUND` or `INSUFFICIENT_EVIDENCE`, derived from stored evidence and findings. A problem
+counts only with a KNOWN finding whose evidence is stored, KNOWN and not erased. `NO_PROBLEMS_FOUND` requires every
+check in `evaluation_scope` (rules/diagnosis.v1.json; in `static-html-1.0.0` the three checks whose absence static HTML
+can establish) to be KNOWN `NOT_DETECTED`; every other check stays listed as unverified, so the status is never a
+guarantee of a healthy site; the audit report says that it does not guarantee the overall quality of the site and lists
+the other nine checks as unverified.
+
+### D-027 — A detectable contact channel is a possible contact path, not a working one
+**Status:** Accepted (user decision, 2026-10-19; implemented in M2a.1). `NO_MOBILE_CONTACT_PATH` is DETECTED only when
+the home page has no `tel:`/`mailto:` link, no WhatsApp click-to-chat link with a number (`https://wa.me/<n>`,
+`https://api.whatsapp.com/send?phone=<n>`, `whatsapp://send?phone=<n>`), no contact form (site-search forms excluded)
+on the home page or a page it links to, and no "contact" link. A channel found makes the check UNKNOWN: nothing says
+the number works, the form submits or the business answers. A WhatsApp number is never stored as a contact fact.
+
 ## Verification status
 
 | Item | Status | Detail |
